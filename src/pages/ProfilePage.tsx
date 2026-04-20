@@ -1,0 +1,562 @@
+import { useState, useMemo } from 'react'
+import { LogOut, Trophy, Target, Zap, Star, Pencil, Check, X, Sun, Moon, Sparkles, TrendingUp, AlertCircle } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
+import { useTheme } from '../context/ThemeContext'
+import BottomNav from '../components/ui/BottomNav'
+import GlassCard from '../components/ui/GlassCard'
+import { generateCoachFeedback } from '../lib/aiMocks'
+
+const STATS = [
+  { icon: Trophy, label: 'Partidos',   value: 42, color: '#CCFF00' },
+  { icon: Target, label: 'Goles',      value: 32, color: '#FFB800' },
+  { icon: Zap,    label: 'Asistencias', value: 15, color: '#FF5B3A' },
+  { icon: Star,   label: 'MVPs',       value: 5, color: '#CCFF00' },
+]
+
+const RATINGS = [
+  ['PAC', 92], ['DRI', 87], ['SHO', 88], ['DEF', 54], ['PAS', 79], ['FÍS', 81],
+] as [string, number][]
+
+const RECENT = [
+  { opponent: 'Rayo Urbano',     result: 'W 3-1', goals: 2 },
+  { opponent: 'Águilas Doradas', result: 'D 1-1', goals: 1 },
+  { opponent: 'Tigres Verdes',   result: 'W 4-0', goals: 1 },
+]
+
+const POSITIONS = ['Portero', 'Defensa', 'Mediocampista', 'Delantero', 'Extremo']
+
+export default function ProfilePage() {
+  const { user, logout, updateUser, setToast } = useAuth()
+  const { mode, toggle } = useTheme()
+  const nav = useNavigate()
+  const name = user?.name ?? 'Alex Rivera'
+  const position = user?.position ?? 'Delantero'
+  const team = user?.team ?? 'Los Pumas FC'
+  const overall = Math.round(RATINGS.reduce((a, [, v]) => a + v, 0) / RATINGS.length)
+
+  const coach = useMemo(() => generateCoachFeedback({
+    name, position,
+    matches: 42, goals: 32, assists: 15, mvps: 5,
+  }), [name, position])
+
+  const [editing, setEditing] = useState(false)
+  const [draftName, setDraftName] = useState(name)
+  const [draftPos, setDraftPos] = useState(position)
+  const [draftTeam, setDraftTeam] = useState(team)
+
+  function startEdit() {
+    setDraftName(name)
+    setDraftPos(position)
+    setDraftTeam(team)
+    setEditing(true)
+  }
+
+  function saveEdit() {
+    updateUser({
+      name: draftName.trim() || name,
+      position: draftPos,
+      team: draftTeam.trim() || team,
+    })
+    setEditing(false)
+    setToast('Perfil actualizado')
+    if ('vibrate' in navigator) navigator.vibrate(25)
+  }
+
+  function cancelEdit() {
+    setEditing(false)
+  }
+
+  function handleLogout() {
+    logout()
+    nav('/')
+  }
+
+  return (
+    <div style={{ position: 'absolute', inset: 0, background: 'var(--bg-deep, #0F0D0A)', overflow: 'hidden' }}>
+      <div
+        className="screen-scroll"
+        style={{ position: 'absolute', inset: 0, overflowY: 'auto', paddingTop: 60, paddingBottom: 90 }}
+      >
+        {/* Header */}
+        <div style={{ padding: '0 20px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div
+            style={{
+              fontFamily: 'Archivo, sans-serif', fontWeight: 800,
+              fontSize: 28, color: '#FAF5EB', letterSpacing: '-0.02em',
+            }}
+          >
+            Perfil
+          </div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            {!editing ? (
+              <button
+                onClick={startEdit}
+                style={{
+                  width: 40, height: 40, borderRadius: 10,
+                  background: 'rgba(204, 255, 0, 0.12)',
+                  border: '1px solid rgba(204, 255, 0, 0.3)',
+                  color: '#CCFF00', cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}
+                title="Editar"
+              >
+                <Pencil size={16} />
+              </button>
+            ) : (
+              <>
+                <button
+                  onClick={cancelEdit}
+                  style={{
+                    width: 40, height: 40, borderRadius: 10,
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    border: '1px solid rgba(255, 220, 180, 0.12)',
+                    color: 'rgba(250, 245, 235, 0.7)', cursor: 'pointer',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}
+                >
+                  <X size={16} />
+                </button>
+                <button
+                  onClick={saveEdit}
+                  style={{
+                    width: 40, height: 40, borderRadius: 10,
+                    background: 'linear-gradient(135deg, #CCFF00, #FFB800)',
+                    border: 'none', color: '#0F0D0A', cursor: 'pointer',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    boxShadow: '0 0 14px rgba(204, 255, 0, 0.45)',
+                  }}
+                >
+                  <Check size={16} />
+                </button>
+              </>
+            )}
+            <button
+              onClick={() => { toggle(); setToast(mode === 'dark' ? 'Tema claro activado' : 'Tema oscuro activado') }}
+              style={{
+                width: 40, height: 40, borderRadius: 10,
+                background: 'rgba(255, 184, 0, 0.12)',
+                border: '1px solid rgba(255, 184, 0, 0.3)',
+                color: '#FFB800', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}
+              title={mode === 'dark' ? 'Cambiar a claro' : 'Cambiar a oscuro'}
+            >
+              {mode === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+            </button>
+            <button
+              onClick={handleLogout}
+              style={{
+                width: 40, height: 40, borderRadius: 10,
+                background: 'rgba(255, 91, 58, 0.12)',
+                border: '1px solid rgba(255, 91, 58, 0.3)',
+                color: '#FF5B3A', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}
+              title="Cerrar sesión"
+            >
+              <LogOut size={18} />
+            </button>
+          </div>
+        </div>
+
+        {/* FIFA-style card */}
+        <div style={{ padding: '0 20px 20px' }}>
+          <GlassCard accent="#CCFF00" padding={0}>
+            <div
+              style={{
+                background: 'linear-gradient(135deg, rgba(204, 255, 0, 0.2), rgba(255, 184, 0, 0.15))',
+                padding: 20,
+                display: 'flex', gap: 16, alignItems: 'center',
+              }}
+            >
+              {/* Avatar */}
+              <div
+                style={{
+                  width: 96, height: 96, borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #CCFF00, #FFB800)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 34,
+                  color: '#0F0D0A',
+                  boxShadow: '0 0 24px rgba(204, 255, 0, 0.4)',
+                  border: '3px solid #CCFF00',
+                  flexShrink: 0,
+                }}
+              >
+                {(editing ? draftName : name).split(' ').map(n => n[0]).join('').slice(0, 2)}
+              </div>
+
+              {/* Info */}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div
+                  style={{
+                    fontFamily: 'Archivo, sans-serif', fontWeight: 900, fontStyle: 'italic',
+                    fontSize: 42, color: '#CCFF00', lineHeight: 1,
+                    textShadow: '0 0 16px rgba(204, 255, 0, 0.5)',
+                  }}
+                >
+                  {overall}
+                </div>
+
+                {editing ? (
+                  <>
+                    <input
+                      value={draftName}
+                      onChange={e => setDraftName(e.target.value)}
+                      placeholder="Nombre"
+                      style={{
+                        marginTop: 6, width: '100%',
+                        padding: '6px 10px', borderRadius: 8,
+                        background: 'rgba(15, 13, 10, 0.5)',
+                        border: '1px solid rgba(204, 255, 0, 0.35)',
+                        outline: 'none',
+                        fontFamily: 'Archivo, sans-serif', fontWeight: 800,
+                        fontSize: 16, color: '#FAF5EB',
+                      }}
+                    />
+                    <input
+                      value={draftTeam}
+                      onChange={e => setDraftTeam(e.target.value)}
+                      placeholder="Equipo"
+                      style={{
+                        marginTop: 6, width: '100%',
+                        padding: '5px 10px', borderRadius: 8,
+                        background: 'rgba(15, 13, 10, 0.5)',
+                        border: '1px solid rgba(255, 220, 180, 0.15)',
+                        outline: 'none',
+                        fontFamily: 'Space Grotesk, sans-serif',
+                        fontSize: 12, color: 'rgba(250, 245, 235, 0.9)',
+                      }}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <div
+                      style={{
+                        marginTop: 4,
+                        fontFamily: 'Archivo, sans-serif', fontWeight: 800,
+                        fontSize: 18, color: '#FAF5EB',
+                      }}
+                    >
+                      {name}
+                    </div>
+                    <div
+                      style={{
+                        marginTop: 2,
+                        fontFamily: 'Space Grotesk, sans-serif',
+                        fontSize: 12, color: 'rgba(250, 245, 235, 0.6)',
+                      }}
+                    >
+                      {position} · {team}
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {editing && (
+              <div style={{ padding: '14px 16px 4px' }}>
+                <div
+                  style={{
+                    fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700,
+                    fontSize: 11, color: 'rgba(250, 245, 235, 0.5)',
+                    textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8,
+                  }}
+                >
+                  Posición
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                  {POSITIONS.map(p => {
+                    const active = draftPos === p
+                    return (
+                      <button
+                        key={p}
+                        onClick={() => setDraftPos(p)}
+                        style={{
+                          padding: '6px 12px', borderRadius: 999,
+                          background: active ? 'rgba(204, 255, 0, 0.18)' : 'rgba(255, 255, 255, 0.04)',
+                          border: `1px solid ${active ? '#CCFF00' : 'rgba(255, 220, 180, 0.12)'}`,
+                          color: active ? '#CCFF00' : 'rgba(250, 245, 235, 0.7)',
+                          fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 12,
+                          cursor: 'pointer',
+                          boxShadow: active ? '0 0 10px rgba(204,255,0,0.25)' : 'none',
+                        }}
+                      >
+                        {p}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Ratings grid */}
+            <div style={{ padding: 16, display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
+              {RATINGS.map(([label, val]) => (
+                <div
+                  key={label}
+                  style={{
+                    padding: '8px 12px',
+                    background: 'rgba(255, 255, 255, 0.04)',
+                    borderRadius: 8,
+                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                  }}
+                >
+                  <span
+                    style={{
+                      fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700,
+                      fontSize: 10, color: 'rgba(250, 245, 235, 0.6)',
+                      letterSpacing: '0.1em',
+                    }}
+                  >
+                    {label}
+                  </span>
+                  <span
+                    style={{
+                      fontFamily: 'Archivo, sans-serif', fontWeight: 800,
+                      fontSize: 15,
+                      color: val >= 85 ? '#CCFF00' : val >= 70 ? '#FFB800' : '#FAF5EB',
+                    }}
+                  >
+                    {val}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </GlassCard>
+        </div>
+
+        {/* Stats strip */}
+        <div style={{ padding: '0 20px 20px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+          {STATS.map((s, i) => {
+            const I = s.icon
+            return (
+              <GlassCard key={i} padding={14}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <div
+                    style={{
+                      width: 34, height: 34, borderRadius: 8,
+                      background: `${s.color}22`, color: s.color,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    }}
+                  >
+                    <I size={16} />
+                  </div>
+                  <div>
+                    <div
+                      style={{
+                        fontFamily: 'Archivo, sans-serif', fontWeight: 800,
+                        fontSize: 20, color: '#FAF5EB',
+                      }}
+                    >
+                      {s.value}
+                    </div>
+                    <div
+                      style={{
+                        fontFamily: 'Space Grotesk, sans-serif',
+                        fontSize: 10, color: 'rgba(250, 245, 235, 0.5)',
+                        textTransform: 'uppercase', letterSpacing: '0.05em',
+                      }}
+                    >
+                      {s.label}
+                    </div>
+                  </div>
+                </div>
+              </GlassCard>
+            )
+          })}
+        </div>
+
+        {/* Coach AI Feedback */}
+        <div style={{ padding: '0 20px 20px' }}>
+          <div style={{
+            padding: 16, borderRadius: 16,
+            background: 'linear-gradient(135deg, rgba(179, 71, 255, 0.16), rgba(0, 212, 255, 0.08))',
+            border: '1px solid rgba(179, 71, 255, 0.4)',
+            boxShadow: '0 6px 24px rgba(179, 71, 255, 0.2)',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+              <div style={{
+                width: 30, height: 30, borderRadius: 8,
+                background: 'rgba(179, 71, 255, 0.25)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: '#B347FF',
+              }}>
+                <Sparkles size={15} />
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{
+                  fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 10,
+                  color: '#B347FF', letterSpacing: '0.12em', textTransform: 'uppercase',
+                }}>
+                  Coach AI · análisis personal
+                </div>
+                <div style={{
+                  fontFamily: 'Archivo, sans-serif', fontWeight: 800,
+                  fontSize: 15, color: '#FAF5EB', letterSpacing: '-0.01em',
+                }}>
+                  Tu desempeño de temporada
+                </div>
+              </div>
+              {/* Grade badge */}
+              <div style={{
+                padding: '6px 12px', borderRadius: 10,
+                background: 'linear-gradient(135deg, #CCFF00, #FFB800)',
+                color: '#0F0D0A',
+                fontFamily: 'Archivo', fontStyle: 'italic', fontWeight: 900,
+                fontSize: 18, lineHeight: 1,
+                boxShadow: '0 0 14px rgba(204, 255, 0, 0.4)',
+              }}>
+                {coach.grade}
+              </div>
+            </div>
+
+            <div style={{
+              fontFamily: 'Space Grotesk', fontSize: 13, lineHeight: 1.5,
+              color: 'rgba(250, 245, 235, 0.9)', marginBottom: 14,
+            }}>
+              {coach.verdict}
+            </div>
+
+            {/* Strengths */}
+            <div style={{ marginBottom: 12 }}>
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6,
+                fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 10,
+                color: '#CCFF00', letterSpacing: '0.1em', textTransform: 'uppercase',
+              }}>
+                <TrendingUp size={11} /> Fortalezas
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+                {coach.strengths.map((t, i) => (
+                  <div key={i} style={{
+                    padding: '7px 10px', borderRadius: 8,
+                    background: 'rgba(204, 255, 0, 0.06)',
+                    border: '1px solid rgba(204, 255, 0, 0.18)',
+                    fontFamily: 'Space Grotesk', fontSize: 12,
+                    color: 'rgba(250, 245, 235, 0.85)',
+                  }}>
+                    {t}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Improvements */}
+            <div style={{ marginBottom: 12 }}>
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6,
+                fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 10,
+                color: '#FF5B3A', letterSpacing: '0.1em', textTransform: 'uppercase',
+              }}>
+                <AlertCircle size={11} /> A mejorar
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+                {coach.improvements.map((t, i) => (
+                  <div key={i} style={{
+                    padding: '7px 10px', borderRadius: 8,
+                    background: 'rgba(255, 91, 58, 0.06)',
+                    border: '1px solid rgba(255, 91, 58, 0.18)',
+                    fontFamily: 'Space Grotesk', fontSize: 12,
+                    color: 'rgba(250, 245, 235, 0.85)',
+                  }}>
+                    {t}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Next focus */}
+            <div style={{
+              padding: '10px 12px', borderRadius: 10,
+              background: 'rgba(0, 212, 255, 0.08)',
+              border: '1px solid rgba(0, 212, 255, 0.3)',
+            }}>
+              <div style={{
+                fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 10,
+                color: '#00D4FF', letterSpacing: '0.1em', textTransform: 'uppercase',
+                marginBottom: 4,
+              }}>
+                🎯 Próximo foco
+              </div>
+              <div style={{
+                fontFamily: 'Space Grotesk', fontSize: 12, lineHeight: 1.4,
+                color: 'rgba(250, 245, 235, 0.9)',
+              }}>
+                {coach.nextFocus}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Recent matches */}
+        <div style={{ padding: '0 20px' }}>
+          <div
+            style={{
+              fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700,
+              fontSize: 13, color: 'rgba(250, 245, 235, 0.6)',
+              textTransform: 'uppercase', letterSpacing: '0.08em',
+              marginBottom: 10,
+            }}
+          >
+            Últimos partidos
+          </div>
+          <GlassCard padding={0}>
+            {RECENT.map((r, i) => {
+              const won = r.result.startsWith('W')
+              const drew = r.result.startsWith('D')
+              const resultColor = won ? '#CCFF00' : drew ? '#FFB800' : '#FF5B3A'
+              return (
+                <div
+                  key={i}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 12,
+                    padding: '12px 14px',
+                    borderBottom: i < RECENT.length - 1 ? '1px solid rgba(255, 220, 180, 0.05)' : 'none',
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 6, height: 36, borderRadius: 3, background: resultColor,
+                      boxShadow: `0 0 8px ${resultColor}66`,
+                    }}
+                  />
+                  <div style={{ flex: 1 }}>
+                    <div
+                      style={{
+                        fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700,
+                        fontSize: 13, color: '#FAF5EB',
+                      }}
+                    >
+                      vs {r.opponent}
+                    </div>
+                    <div
+                      style={{
+                        fontFamily: 'Space Grotesk, sans-serif',
+                        fontSize: 11, color: resultColor,
+                      }}
+                    >
+                      {r.result}
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: 4,
+                      fontFamily: 'Archivo, sans-serif', fontWeight: 800,
+                      fontSize: 14, color: '#CCFF00',
+                    }}
+                  >
+                    <Target size={14} />
+                    {r.goals}
+                  </div>
+                </div>
+              )
+            })}
+          </GlassCard>
+        </div>
+      </div>
+
+      <BottomNav />
+    </div>
+  )
+}

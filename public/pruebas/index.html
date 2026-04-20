@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FutbolBase — Prototipo</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,700;1,800;1,900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    /* Tweakable — edited live from panel, persisted via editmode */
+    /* ═══ ELECTRIC CITRUS PREMIUM — Warm obsidian + lime/coral/amber ═══ */
+    --accent-green: #CCFF00;
+    --accent-cyan: #FFB800;
+    --accent-orange: #FF5B3A;
+    --accent-purple: #FF5B3A;
+    --accent-primary: #CCFF00;
+    --accent-secondary: #FFB800;
+    --accent-warm: #FF5B3A;
+    --bg-base: #141009;
+    --bg-deep: #0F0D0A;
+    --surface-1: #1A1612;
+    --surface-2: #241F18;
+    --text-warm: #FAF5EB;
+    --border-warm: rgba(255, 220, 180, 0.08);
+    --glow-strength: 1;
+    --bg-depth: 1;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg-deep);
+    min-height: 100vh;
+    font-family: 'Space Grotesk', -apple-system, system-ui, sans-serif;
+    color: var(--text-warm);
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 50% 10%, rgba(204, 255, 0, 0.10), transparent 60%),
+      radial-gradient(ellipse 60% 50% at 85% 85%, rgba(255, 91, 58, 0.09), transparent 60%),
+      radial-gradient(ellipse 50% 40% at 15% 70%, rgba(255, 184, 0, 0.06), transparent 60%),
+      var(--bg-deep);
+    pointer-events: none;
+  }
+
+  #root { position: relative; z-index: 1; }
+
+  /* utility — hide scrollbar inside phone */
+  .screen-scroll::-webkit-scrollbar { display: none; }
+  .screen-scroll { scrollbar-width: none; -ms-overflow-style: none; }
+
+  /* keyframes */
+  @keyframes pulse-glow {
+    0%, 100% { opacity: 0.7; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.08); }
+  }
+  @keyframes float-slow {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  @keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  @keyframes speed-line {
+    0% { transform: translateX(-120%) skewX(-20deg); opacity: 0; }
+    15% { opacity: 1; }
+    100% { transform: translateX(220%) skewX(-20deg); opacity: 0; }
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+  @keyframes screen-in {
+    from { opacity: 0; transform: translateX(24px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes screen-in-back {
+    from { opacity: 0; transform: translateX(-24px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes ring-sweep {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  @keyframes ray-pulse {
+    0%, 100% { opacity: var(--ray-opacity, 0.3); }
+    50% { opacity: calc(var(--ray-opacity, 0.3) * 1.8); }
+  }
+  @keyframes spark-fly {
+    0% { transform: rotate(var(--angle, 0deg)) translateX(0); opacity: 0; }
+    20% { opacity: 1; }
+    100% { transform: rotate(var(--angle, 0deg)) translateX(var(--dist, 80px)); opacity: 0; }
+  }
+  @keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    20% { transform: scale(1.12); }
+    40% { transform: scale(1); }
+  }
+  @keyframes glow-breathe {
+    0%, 100% { filter: drop-shadow(0 0 8px var(--accent-primary)) drop-shadow(0 0 16px var(--accent-primary)); }
+    50% { filter: drop-shadow(0 0 14px var(--accent-primary)) drop-shadow(0 0 28px var(--accent-primary)); }
+  }
+  @keyframes orbit {
+    from { transform: rotate(0deg) translateX(var(--r, 60px)) rotate(0deg); }
+    to { transform: rotate(360deg) translateX(var(--r, 60px)) rotate(-360deg); }
+  }
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(200%); }
+  }
+  @keyframes float-up {
+    0% { transform: translateY(110vh) translateX(0) scale(0.6); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 0.8; }
+    100% { transform: translateY(-20vh) translateX(var(--drift, 30px)) scale(1); opacity: 0; }
+  }
+  @keyframes float-drift {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    33% { transform: translate(14px, -18px) rotate(8deg); }
+    66% { transform: translate(-12px, 10px) rotate(-6deg); }
+  }
+  @keyframes float-ball {
+    0%, 100% { transform: translate(0,0) rotate(0deg); }
+    25% { transform: translate(18px,-24px) rotate(90deg); }
+    50% { transform: translate(-10px,-36px) rotate(180deg); }
+    75% { transform: translate(-22px,-12px) rotate(270deg); }
+  }
+  @keyframes scroll-y {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-50%); }
+  }
+  @keyframes count-pop {
+    0% { transform: scale(0.4); opacity: 0; }
+    50% { transform: scale(1.15); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  @keyframes burst {
+    0% { transform: scale(0); opacity: 1; }
+    100% { transform: scale(3); opacity: 0; }
+  }
+  @keyframes gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  @keyframes pulse-ring {
+    0% { transform: scale(0.6); opacity: 0.9; }
+    100% { transform: scale(2.2); opacity: 0; }
+  }
+  @keyframes slide-up-fade {
+    0% { transform: translateY(12px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+  @keyframes bg-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes bg-fade-out {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+  @keyframes ken-burns {
+    0% { transform: scale(1.08) translate(0,0); }
+    100% { transform: scale(1.18) translate(-2%, -1%); }
+  }
+
+  /* Tweaks panel */
+  #tweaks-panel {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    width: 280px;
+    z-index: 1000;
+    background: rgba(10, 12, 18, 0.85);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(0, 229, 255, 0.25);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 0 40px rgba(0, 229, 255, 0.15), 0 20px 60px rgba(0,0,0,0.6);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: #fff;
+    display: none;
+  }
+  #tweaks-panel.visible { display: block; }
+  #tweaks-panel h3 {
+    margin: 0 0 12px;
+    font-family: 'Archivo', sans-serif;
+    font-weight: 900;
+    font-style: italic;
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent-cyan);
+    text-shadow: 0 0 10px var(--accent-cyan);
+  }
+  .tweak-row { margin-bottom: 14px; }
+  .tweak-row label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+  }
+  .tweak-row input[type="range"] {
+    width: 100%;
+    accent-color: var(--accent-green);
+  }
+  .accent-swatches { display: flex; gap: 6px; }
+  .accent-swatch {
+    flex: 1;
+    height: 28px;
+    border-radius: 6px;
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .accent-swatch.active { border-color: #fff; }
+</style>
+
+<script>
+  // Tweakable defaults
+  const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+    "accentName": "citrus",
+    "glowStrength": 2,
+    "bgDepth": 1.5
+  }/*EDITMODE-END*/;
+
+  const ACCENTS = {
+    citrus:   { primary: '#CCFF00', secondary: '#FFB800', warm: '#FF5B3A', label: 'Citrus' },
+    coral:    { primary: '#FF5B3A', secondary: '#FFB800', warm: '#CCFF00', label: 'Coral' },
+    amber:    { primary: '#FFB800', secondary: '#CCFF00', warm: '#FF5B3A', label: 'Amber' },
+    royal:    { primary: '#6366F1', secondary: '#F59E0B', warm: '#EC4899', label: 'Royal' },
+    gold:     { primary: '#F59E0B', secondary: '#6366F1', warm: '#EC4899', label: 'Gold' },
+    pink:     { primary: '#EC4899', secondary: '#F59E0B', warm: '#6366F1', label: 'Pink' },
+    sunset:   { primary: '#FF3B30', secondary: '#FF9500', warm: '#BF5AF2', label: 'Sunset' },
+    neon:     { primary: '#00ff87', secondary: '#00e5ff', warm: '#FF5B3A', label: 'Neón (old)' },
+  };
+</script>
+</head>
+<body>
+
+<div id="root"></div>
+
+<!-- Tweaks panel (shown when edit mode active) -->
+<div id="tweaks-panel">
+  <h3>Tweaks · FutbolBase</h3>
+  <div class="tweak-row">
+    <label>Color de acento</label>
+    <div class="accent-swatches" id="accent-swatches"></div>
+  </div>
+  <div class="tweak-row">
+    <label>Intensidad del glow</label>
+    <input type="range" id="glow-slider" min="0" max="2" step="0.1">
+  </div>
+  <div class="tweak-row">
+    <label>Profundidad del fondo</label>
+    <input type="range" id="bg-slider" min="0" max="1.5" step="0.05">
+  </div>
+</div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="components/ios-frame.jsx"></script>
+<script type="text/babel" src="screens/shared.jsx"></script>
+<script type="text/babel" src="screens/welcome.jsx"></script>
+<script type="text/babel" src="screens/auth.jsx"></script>
+<script type="text/babel" src="screens/home.jsx"></script>
+<script type="text/babel" src="screens/chat.jsx"></script>
+<script type="text/babel" src="screens/community.jsx"></script>
+<script type="text/babel" src="screens/league.jsx"></script>
+<script type="text/babel" src="screens/profile.jsx"></script>
+<script type="text/babel" src="app.jsx"></script>
+
+<script>
+  // ── Tweaks / Edit mode host bridge ─────────────────────────────
+  (function() {
+    const panel = document.getElementById('tweaks-panel');
+    const swatchWrap = document.getElementById('accent-swatches');
+    const glowSlider = document.getElementById('glow-slider');
+    const bgSlider = document.getElementById('bg-slider');
+
+    let state = { ...TWEAK_DEFAULTS };
+
+    function applyState() {
+      const accent = ACCENTS[state.accentName] || ACCENTS.green;
+      document.documentElement.style.setProperty('--accent-primary', accent.primary);
+      document.documentElement.style.setProperty('--accent-secondary', accent.secondary);
+      document.documentElement.style.setProperty('--glow-strength', state.glowStrength);
+      document.documentElement.style.setProperty('--bg-depth', state.bgDepth);
+      // update swatches
+      Array.from(swatchWrap.children).forEach(el => {
+        el.classList.toggle('active', el.dataset.accent === state.accentName);
+      });
+      glowSlider.value = state.glowStrength;
+      bgSlider.value = state.bgDepth;
+    }
+
+    // build swatches
+    Object.entries(ACCENTS).forEach(([name, a]) => {
+      const el = document.createElement('div');
+      el.className = 'accent-swatch';
+      el.dataset.accent = name;
+      el.style.background = `linear-gradient(135deg, ${a.primary}, ${a.secondary})`;
+      el.title = a.label;
+      el.onclick = () => update({ accentName: name });
+      swatchWrap.appendChild(el);
+    });
+
+    glowSlider.oninput = e => update({ glowStrength: parseFloat(e.target.value) });
+    bgSlider.oninput = e => update({ bgDepth: parseFloat(e.target.value) });
+
+    function update(patch) {
+      state = { ...state, ...patch };
+      applyState();
+      try {
+        window.parent.postMessage({ type: '__edit_mode_set_keys', edits: patch }, '*');
+      } catch (e) {}
+    }
+
+    applyState();
+
+    window.addEventListener('message', (e) => {
+      const d = e.data || {};
+      if (d.type === '__activate_edit_mode') panel.classList.add('visible');
+      if (d.type === '__deactivate_edit_mode') panel.classList.remove('visible');
+    });
+    try { window.parent.postMessage({ type: '__edit_mode_available' }, '*'); } catch (e) {}
+  })();
+</script>
+
+</body>
+</html>
