@@ -26,8 +26,8 @@ export default function RegisterPage() {
 
   function handleSubmit() {
     if (!validate()) return
-    login({ name, email, position: 'Delantero', team: 'Los Pumas FC' })
-    nav('/home')
+    login({ name, email })
+    nav('/setup')
   }
 
   return (

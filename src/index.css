@@ -6,15 +6,22 @@
 
 :root {
   /* ═══ ELECTRIC CITRUS PREMIUM ═══ */
-  --accent-primary: #CCFF00;
+  --accent-primary:   #CCFF00;
   --accent-secondary: #FFB800;
-  --accent-warm: #FF5B3A;
-  --bg-deep: #0F0D0A;
-  --bg-base: #141009;
-  --surface-1: #1A1612;
-  --surface-2: #241F18;
-  --text-warm: #FAF5EB;
-  --border-warm: rgba(255, 220, 180, 0.08);
+  --accent-warm:      #FF5B3A;
+  --accent-purple:    #B347FF;
+  --bg-deep:    #0F0D0A;
+  --bg-base:    #141009;
+  --surface-1:  #1A1612;
+  --surface-2:  #241F18;
+  --text-warm:  #FAF5EB;
+  --text-primary: #FAF5EB;
+  --text-muted:   rgba(250, 245, 235, 0.6);
+  --text-dim:     rgba(250, 245, 235, 0.4);
+  --border-warm:  rgba(255, 220, 180, 0.08);
+  --border:       rgba(255, 220, 180, 0.08);
+  --bg-surface:     rgba(255, 255, 255, 0.04);
+  --bg-surface-alt: rgba(255, 255, 255, 0.06);
   --glow-strength: 1;
 }
 

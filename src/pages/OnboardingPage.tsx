@@ -13,9 +13,9 @@ export default function OnboardingPage() {
   useEffect(() => { setMounted(true) }, [])
 
   const CHIPS = [
-    { label: 'jugadores',    value: '12K+', color: '#CCFF00', delay: 0.2 },
-    { label: 'online ahora', value: '847',  color: '#FFB800', delay: 0.35 },
-    { label: 'goles hoy',    value: '2.3K', color: '#FFB800', delay: 0.5 },
+    { label: 'jugadores activos', value: '12K+', color: '#CCFF00', delay: 0.2 },
+    { label: 'partidos en vivo',  value: '47',   color: '#FFB800', delay: 0.35 },
+    { label: 'ligas creadas',     value: '380+', color: '#FFB800', delay: 0.5 },
   ]
 
   return (

@@ -5,6 +5,8 @@ export interface User {
   email: string
   position?: string
   team?: string
+  level?: string
+  setupDone?: boolean
 }
 
 interface AuthCtx {
