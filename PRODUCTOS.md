@@ -1,35 +1,109 @@
-# GRADA · Mapa completo de productos y desarrollos
+# Krujens · Mapa completo de productos y desarrollos
 
-> Documento de contexto generado automáticamente recorriendo `src/`, `docs/`, `api/` y `public/`.
-> Sirve como índice maestro: qué hay construido en este repo, qué hace cada pieza y dónde mirar.
+> Documento maestro del portfolio Krujens. Cubre los cinco productos del holding,
+> con detalle técnico de **GRADA** (única vertical cuyo código vive en este repo) y
+> contexto de marca/negocio del resto, extraído de `docs/krujens-brand-context.md`.
 > Última actualización: 2026-05-06.
 
 ---
 
-## 0. Resumen ejecutivo
+## 0. Krujens (matriz)
 
-**GRADA** es una PWA mobile-first (React 19 + Vite 8 + TypeScript + Tailwind + Framer Motion) para el ecosistema del fútbol amateur federado. Es el **producto insignia 2026** del holding **Krujens**, que también opera otras verticales (Vitas, Elite 380, Essence Bloom).
+**Una frase:** holding español de SaaS verticales mobile-first que construye PWAs donde hoy solo hay Excel y WhatsApp.
 
-Lo que hay en este repo se agrupa en cuatro grandes capas:
+**Tagline corto:** *Tecnología que entiende tu mundo.*
+**Tagline largo:** *Krujens construye herramientas digitales donde hoy sólo hay hojas de Excel, WhatsApp y papel.*
 
-1. **Aplicación GRADA** — 11 páginas, ~14 features modulares, capa de "AI" determinista con agentes/RAG mock, librería de componentes UI con efectos (glassmorphism, neón, partículas).
-2. **Documentación comercial / marketing** — 30+ entregables HTML, 3 PDFs, scripts Python para regenerarlos, brand book, GTM playbook, dossier para clubes/familias/jugadores/federación.
-3. **Estudio de mercado y proyecciones financieras** — TAM/SAM/SOM CV, tres escenarios (conservador / realista / optimista), comparativa competitiva, plan de prospección de clubes.
-4. **Infra de desarrollo** — Playwright para e2e + screenshots, Vitest, ESLint, PWA config (`vite-plugin-pwa`), Vercel deploy, OG image API serverless, generador de iconos.
+**Misión:** democratizar el acceso a tecnología de nivel enterprise en sectores infraestructurados (deporte base, salud, educación, comunidad local).
 
-Stack: React 19.2, Vite 8, TypeScript 5.9, Tailwind 3.4, Framer Motion 12, React Router 7, Vitest 2, Playwright 1.59, vite-plugin-pwa 1.2.
+**Visión 2030:** referente iberoamericano en PWAs verticales para sectores sub-digitalizados — 3-5 productos activos, 150.000+ usuarios acumulados, ARR > 1,5M€, presencia España + LATAM.
+
+**Valores (4 pilares):**
+1. Mobile-first real (no adaptamos webs).
+2. IA útil, no IA marketing.
+3. Precio justo (5-15€/mes, accesible al usuario final).
+4. Datos del usuario son del usuario (RGPD máximo, cero reventa).
+
+**Stack común a todos los verticales:** React + Vite + TypeScript + Tailwind + Supabase/Firebase + PWA (vite-plugin-pwa).
+
+**Playbook por vertical:**
+1. Elegir sector sub-digitalizado con dolor real.
+2. MVP PWA en 8-12 semanas con stack reutilizable.
+3. Validar con 50-100 usuarios antes de invertir en ads.
+4. Monetizar a 5-15€/mes (precio que se paga sin pensarlo).
+5. Escalar por comunidad, no por ads.
+6. Reinvertir cash en el siguiente vertical.
+
+**Fundador:** Pedro Paredes (Valencia, España).
 
 ---
 
-## 1. Producto: GRADA (PWA)
+## 1. Arquitectura del portfolio
+
+```
+                              KRUJENS (matriz)
+                                    │
+   ┌────────┬────────┬─────────┬────┴────┬──────────┬───────────┬─────────┐
+   ▼        ▼        ▼         ▼         ▼          ▼           ▼         ▼
+GRADA   Elite 380  SportOS   VITAS    Café       Essence    [futuro]
+fútbol  academia   sistema   análisis (vertical  Bloom      próximo
+base    fútbol     deportivo deportivo café —    bienestar/ vertical
+                   transversal        nombre     rituales
+                                      por
+                                      confirmar)
+```
+
+Sistema **endorsed brand**: cada vertical tiene marca propia, pero firma "una solución Krujens" en footer / about / legal.
+
+**Color asignado a cada vertical** (paleta corporativa Krujens):
+
+| Vertical | Color secundario | Hex | Por qué |
+|---|---|---|---|
+| GRADA | Neon Orange | `#FF6B00` | acción, deporte |
+| Elite 380 | Neon Orange | `#FF6B00` | acción, deporte (mismo sector) |
+| SportOS | _por asignar_ | _por confirmar_ | sistema deportivo transversal |
+| VITAS | Electric Cyan | `#00D4FF` | tech, confianza |
+| Café (nombre por confirmar) | _por asignar_ | _por confirmar_ | hospitality / café |
+| Essence Bloom | Deep Purple | `#B347FF` | bienestar, premium |
+| Krujens (matriz) | Krujens Green `#00E676` + Obsidian Navy `#0A1628` | — | identidad corporativa |
+
+---
+
+## 2. Comparativa rápida del portfolio
+
+| Producto | Sector | Audiencia | Modelo | Estado | Código |
+|---|---|---|---|---|---|
+| **GRADA** | Fútbol amateur federado | Jugador + club + familia + federación | Free + Pro 4,99€/mes + Club 29€/mes/equipo | Lanzamiento 2026 Q2, ronda seed 250k€ | **Este repo** |
+| **Elite 380** | Academia de fútbol | Academia + alumnos + familias | A definir | Primer MVP en producción 2025 Q4 | Repo aparte (no tocar) |
+| **SportOS** | Sistema deportivo transversal *(scope por confirmar)* | A definir | A definir | Vertical nuevo, info pendiente | No en este repo |
+| **VITAS** | Análisis deportivo | A definir (deportistas / clubes) | A definir | En portfolio, no lanzado | No en este repo |
+| **Café** *(nombre por confirmar)* | Hospitality / café | A definir (cafetería / cliente / barista) | A definir | Vertical nuevo, info pendiente | No en este repo |
+| **Essence Bloom** | Bienestar / rituales | Usuario final B2C | A definir | En portfolio, no lanzado | No en este repo |
+| **[Futuro]** | Próximo vertical | A definir | A definir | A definir tras ARR Y2 GRADA | — |
+
+---
+
+## 3. GRADA (producto insignia 2026 — único cuyo código vive aquí)
 
 **Una frase:** Red social + IA + carrera gamificada para el jugador amateur federado.
 
-**Posicionamiento:** ningún competidor combina simultáneamente red social del jugador, IA determinista útil, gamificación FIFA-style, B2C direct-to-player y mobile-first PWA. Gap recogido en `docs/market-study.md` (sección 5.1).
+**Producto insignia 2026** del portfolio Krujens. Primera vertical en ir a mercado con go-to-market, ronda seed y modelo SaaS recurrente.
 
-**Modelo de negocio (mix):** Free (ads + límites IA) · Pro 4,99€/mes ó 39€/año · Club 29€/mes por equipo. ARPU mezclado proyectado ~2€/mes.
+**Posicionamiento:** ningún competidor combina simultáneamente red social del jugador, IA determinista útil, gamificación FIFA-style, B2C direct-to-player y mobile-first PWA (gap recogido en `docs/market-study.md` §5.1).
 
-**Estructura de ruteo** (`src/App.tsx`):
+**Modelo:** Free (ads + límites IA) · Pro 4,99€/mes ó 39€/año · Club 29€/mes/equipo. ARPU mezclado proyectado ~2€/mes.
+
+**Mercado (CV):** TAM 126k jugadores federados → SAM 84k → SOM Y5 21k usuarios activos → ARR Y5 504k€ (escenario base). Techo teórico 1-pago-por-federado @ 4,99€ = 7,58M€/año.
+
+**Hitos comunicados:**
+- 2026 Q2 — lanzamiento + ronda seed 250k€.
+- 2026 Q3 — acuerdo piloto FFCV.
+- 2027 — expansión a 3 CCAA.
+- 2030 — break-even Y5 escenario base.
+
+**Stack del repo:** React 19.2 + Vite 8 + TypeScript 5.9 + Tailwind 3.4 + Framer Motion 12 + React Router 7 + Vitest 2 + Playwright 1.59 + vite-plugin-pwa 1.2.
+
+### 3.1 Estructura de ruteo (`src/App.tsx`)
 
 | Ruta | Página | Eager / Lazy | Protegida |
 |---|---|---|---|
@@ -45,17 +119,11 @@ Stack: React 19.2, Vite 8, TypeScript 5.9, Tailwind 3.4, Framer Motion 12, React
 | `/profile` | ProfilePage | lazy | sí |
 | `/landing` | LandingPage | lazy | no |
 
-Ancho fijo del viewport a 430px (formato móvil enmarcado). Animaciones de transición por ruta (`PageTransition` con variantes `slide` / `fade` / `scale`).
+Viewport fijo a 430px (formato móvil enmarcado). Animaciones por ruta vía `PageTransition` (`slide` / `fade` / `scale`).
 
-**Providers de contexto** (`src/context/`):
-- `ThemeContext.tsx` — tema visual.
-- `AuthContext.tsx` — usuario, toast global.
-- `NotificationsContext.tsx` — bandeja en la campana del header.
-- `PredictionsContext.tsx` — picks de quiniela persistidos.
+**Providers** (`src/context/`): `ThemeContext`, `AuthContext` (user + toast), `NotificationsContext`, `PredictionsContext`.
 
----
-
-## 2. Páginas (`src/pages/`)
+### 3.2 Páginas (`src/pages/`)
 
 | Archivo | LOC | Qué hace |
 |---|---:|---|
@@ -63,253 +131,237 @@ Ancho fijo del viewport a 430px (formato móvil enmarcado). Animaciones de trans
 | `LoginPage.tsx` | 136 | Login. |
 | `RegisterPage.tsx` | 145 | Registro. |
 | `SetupPage.tsx` | 249 | Setup post-registro (perfil, posición, club). |
-| `LandingPage.tsx` | 170 | Landing pública (no protegida). |
-| `HomePage.tsx` | **1.381** | Hub principal: stories, partidos, predicciones, weekly digest, eventos, polls, replay, etc. |
+| `LandingPage.tsx` | 170 | Landing pública. |
+| `HomePage.tsx` | **1.381** | Hub: stories, partidos, predicciones, weekly digest, eventos, polls, replay. |
 | `ChatPage.tsx` | 143 | Lista de conversaciones. |
 | `ConversationPage.tsx` | 490 | Chat con smart replies, tono casual/hype/formal por chat. |
-| `CommunityPage.tsx` | 892 | Buscador semántico de equipos, Team Matcher (3 preguntas → top-2). |
-| `LeaguePage.tsx` | 512 | Tabla de liga, fixtures, leaderboard regional. |
-| `ProfilePage.tsx` | 761 | Tarjeta FIFA del jugador, stats, últimos partidos, Coach AI. |
+| `CommunityPage.tsx` | 892 | Buscador semántico de equipos + Team Matcher (3 preguntas → top-2). |
+| `LeaguePage.tsx` | 512 | Tabla, fixtures, leaderboard regional. |
+| `ProfilePage.tsx` | 761 | Tarjeta FIFA, stats, últimos partidos, Coach AI. |
 
 **Total páginas: ~5.400 LOC.**
 
----
+### 3.3 Features modulares (`src/features/`)
 
-## 3. Features modulares (`src/features/`)
-
-Cada carpeta es una unidad funcional autocontenida (componente "sheet" + datos/store si lo necesita). Todas se gatean con feature flags.
+Cada carpeta es una unidad funcional autocontenida (sheet + datos/store si lo necesita). Todas se gatean con feature flags.
 
 | Feature | Archivo principal | Qué hace |
 |---|---|---|
-| **achievements** | `AchievementsSheet.tsx` + `catalog.ts` | Logros con rareza (common/rare/epic/legendary). `evaluateAchievements(stats)` desbloquea. |
-| **coach** | `CoachChatSheet.tsx` | Chat con Coach AI (drills personalizados, feedback de stats). |
+| **achievements** | `AchievementsSheet.tsx` + `catalog.ts` | Logros con rareza (common/rare/epic/legendary). |
+| **coach** | `CoachChatSheet.tsx` | Chat con Coach AI (drills + feedback de stats). |
 | **duels** | `DuelsSheet.tsx` | Retos 1v1 entre jugadores. |
 | **events** | `EventsSheet.tsx` | Eventos del equipo / liga. |
-| **heatmap** | `HeatmapPitch.tsx` | Mapa de calor sobre cancha de un jugador. |
+| **heatmap** | `HeatmapPitch.tsx` | Mapa de calor sobre cancha. |
 | **leaderboard** | `LeaderboardSheet.tsx` | Ranking regional / nacional / amigos. |
 | **market** | `MarketSheet.tsx` | "Mercado" gamificado de jugadores. |
 | **polls** | `PollCard.tsx` | Encuestas de la comunidad. |
-| **replay** | `MatchReplaySheet.tsx` | Replay narrado de un partido (328 LOC, el feature más grande). |
+| **replay** | `MatchReplaySheet.tsx` | Replay narrado de partido (328 LOC, el más grande). |
 | **seasonPass** | `SeasonPassSheet.tsx` | Pase de temporada con recompensas. |
-| **share** | `shareFifaCard.ts` | Exporta la tarjeta FIFA del jugador a imagen (html-to-image). |
-| **stories** | `StoriesStrip.tsx` + `storiesData.ts` | Stories tipo Instagram de la comunidad. Persistencia de "vistas" en localStorage. |
-| **streaks** | `StreakBadge.tsx` + `streaksStore.ts` | Racha de días activos (`pingStreak()`, `getStreak()`, `resetStreak()`). |
+| **share** | `shareFifaCard.ts` | Exporta tarjeta FIFA a imagen (html-to-image). |
+| **stories** | `StoriesStrip.tsx` + `storiesData.ts` | Stories tipo Instagram con persistencia de "vistas". |
+| **streaks** | `StreakBadge.tsx` + `streaksStore.ts` | Racha de días activos. |
 | **tactics** | `TacticsBoardSheet.tsx` | Pizarra táctica interactiva. |
 
-**Feature flags** (`src/lib/featureFlags.ts`): `coach-chat`, `match-replay`, `duels`, `market`, `season-pass`, `stories`, `polls`, `events`, `leaderboard`. Todos `true` por defecto, override con localStorage `fb_feature_flags_v1`. Hook `useFlag(key)` reacciona vía evento custom `fb-flags-changed`.
+**Feature flags** (`src/lib/featureFlags.ts`): `coach-chat`, `match-replay`, `duels`, `market`, `season-pass`, `stories`, `polls`, `events`, `leaderboard`. Override vía localStorage `fb_feature_flags_v1`. Hook `useFlag(key)`.
 
----
+### 3.4 Capa de "AI" (`src/ai/` + `src/lib/aiMocks.ts`)
 
-## 4. Capa de "AI" (`src/ai/` + `src/lib/aiMocks.ts`)
+Filosofía **deterministic-first**: mocks deterministas con contrato estable, listos para enchufar LLM real sin tocar vistas.
 
-Filosofía: **deterministic-first**. Las funciones de IA son mocks deterministas con contrato estable, listos para enchufar un LLM real sin tocar las vistas.
+`src/lib/aiMocks.ts` (1.202 LOC):
 
-### 4.1 `src/lib/aiMocks.ts` (1.202 LOC) — el cerebro mock
+| Función | Salida | Uso |
+|---|---|---|
+| `suggestReplies` | hasta 3 chips | Smart replies de chat (16 reglas regex + tono). |
+| `suggestScore` | marcador + razonamiento | Quiniela Copilot (balanced/optimistic/analytic). |
+| `generateMatchRecap` | headline + body + highlights | Recap auto-narrado (ES/EN, 3 tonos). |
+| `generateMatchPreview` | matchup + fortalezas + xFactor | Preview pre-partido. |
+| `generateCoachFeedback` | nota A+ a C + plan | Coach AI del perfil. |
+| `matchTeams` | top-2 con score 0-99 | Team Matcher de Comunidad. |
+| `generateWeeklyDigest` | título + secciones + outlook | Resumen semanal en Home. |
+| `parseSearchIntent` | filtros NL → estructurados | Buscador semántico de Comunidad. |
+| `suggestMediaTags` | hasta 5 tags | Auto-tagging al postear. |
+| `suggestVideoClips` | clips ordenados | Highlights auto-cut. |
+| `answerAppQuestion` | respuesta + follow-ups | FAQ bot. |
+| `generateLineup` | XI con ratings y x/y | Auto-alineación (4-3-3/4-4-2/3-5-2/4-2-3-1/5-3-2). |
+| `generateRivalReport` | overall + forma + danger player | Scouting report. |
 
-Servicios expuestos:
-
-| Función | Entrada | Salida | Uso |
-|---|---|---|---|
-| `suggestReplies(lastMsg, ctx)` | mensaje + tono casual/hype/formal | hasta 3 chips | Smart replies de chat. 16 reglas regex (confirmar, cancha, hora, gol, derrota, lesión, clima, etc.) + genéricas. |
-| `suggestScore(home, away, mood)` | mood balanced/optimistic/analytic | `{home, away, reason, confidence}` | Quiniela Copilot (predicción de marcador con razonamiento). |
-| `generateMatchRecap(facts, opts)` | resultado, goleador, momento clave | headline + tagline + body + highlights | Recap auto-narrado del partido (ES/EN, 3 tonos). |
-| `generateMatchPreview(input)` | local + visitante + fecha | keyMatchup, fortalezas, xFactor, hype | Preview pre-partido. |
-| `generateCoachFeedback(stats)` | stats jugador | nota A+ a C, fortalezas, mejoras, foco | Coach AI del perfil. |
-| `matchTeams(candidates, answers)` | preferencias usuario | top-2 con score 0-99 + razón | Team Matcher de la Comunidad. |
-| `generateWeeklyDigest(weekStats)` | stats semana | título + highlight + secciones + outlook | Resumen semanal en Home. |
-| `parseSearchIntent(query)` | NL query | intent + filters (día, estilo, nivel, zona, tamaño) | Buscador semántico de Comunidad. |
-| `suggestMediaTags(input)` | caption + meta | hasta 5 tags con confianza | Auto-tagging al postear foto/video. |
-| `suggestVideoClips(meta)` | duración + score + topScorer | clips ordenados por confianza | Highlights auto-cut. |
-| `answerAppQuestion(query)` | NL query | respuesta + follow-ups | FAQ bot del onboarding. |
-| `generateLineup(opp, formation, style)` | rival + 4-3-3/4-4-2/3-5-2/4-2-3-1/5-3-2 | XI con ratings, posiciones x/y, key player | Auto-alineación. |
-| `generateRivalReport(opponent)` | rival | overall, forma últimos 5, fortalezas, debilidades, danger player, threat level | Scouting report del rival. |
-
-### 4.2 `src/ai/agents/`
-
-Estructura tipo Claude Agent SDK pero local y determinista. Tipos en `types.ts` (`Agent<I,O>`, `AgentContext`, `AgentResult<T>` con `ok / data / error`). Helper `defineAgent(...)`.
+`src/ai/agents/`:
 
 | Agente | Hace |
 |---|---|
-| `assistantAgent.ts` | Asistente conversacional in-app (FAQ + capacidades). |
-| `coachAgent.ts` (+ test) | Análisis de rendimiento del jugador y plan de mejora. |
-| `predictionAgent.ts` (+ test) | Predicción de resultado con confianza. |
-| `matchCommentatorAgent.ts` | Comentarios en vivo del partido a partir de eventos (`MatchEvent`, `EventType`). |
-| `orchestrator.ts` | Ejecuta agentes en `runParallel`, `runSequential` o `runPipeline` (output → input). |
+| `assistantAgent` | Asistente conversacional in-app. |
+| `coachAgent` (+ test) | Análisis del jugador y plan. |
+| `predictionAgent` (+ test) | Predicción de resultado con confianza. |
+| `matchCommentatorAgent` | Comentarios en vivo a partir de eventos. |
+| `orchestrator` | `runParallel` / `runSequential` / `runPipeline`. |
 
-### 4.3 `src/ai/rag/`
+`src/ai/rag/`: `knowledgeBase.ts` + `retriever.ts` (`retrieve(query,k)`, `ragAnswer(query,k)`).
 
-| Archivo | Hace |
+`src/ai/services/`: `deterministic.ts` (`mulberry32`, `seedFromString`, `winProbability`, `gradeFromStats`), `drills.ts`, `highlights.ts`, `leaderboard.ts`. Todos con tests Vitest.
+
+### 3.5 Librería UI (`src/components/ui/` — 26 componentes)
+
+- **Layout/nav:** `BottomNav`, `BottomSheet`, `PageTransition`, `RouteFallback`, `ErrorBoundary`.
+- **Efectos:** `EpicStadiumBackground`, `FloatingOrbs`, `FloatingEmojis`, `FloatingChip`, `ParticleBackground`, `PulseRings`, `LikeBurst`, `AIBorder`, `Skeleton`.
+- **Inputs/botones:** `NeonButton`, `NeonInput`, `RippleButton`, `useRipple`, `GlassCard`.
+- **Sheets de partido:** `LineupSheet`, `LiveMatchSheet`, `LiveTicker`, `MatchPredictionSheet`, `RivalScoutSheet`.
+- **Misc:** `CountUp`, `Toast`, `NotificationsPanel`.
+
+### 3.6 Hooks e i18n
+
+`src/hooks/useSimulatedLoad.ts`, `src/hooks/useSpeechRecognition.ts` (Web Speech API), `src/i18n/translations.ts` (ES/EN), `src/i18n/useT.ts`.
+
+### 3.7 Backend mínimo y scripts
+
+- `api/og.ts` — endpoint serverless Vercel para OG images dinámicas.
+- `scripts/gen-icons.ts` — genera iconos PWA desde SVG.
+- `vercel.json`, `vite.config.ts` (PWA), `playwright.config.ts` (+ `e2e/screenshots.spec.ts` que rellena `public/screenshots/`).
+
+### 3.8 Documentos comerciales (`docs/` — solo material de GRADA)
+
+**Producto / showcase:** `GRADA-App-Walkthrough.html`, `GRADA-App-Showcase.html` / `-v2.html`.
+
+**Pitch / inversión / proyección:** `GRADA-Pitch-Inversor.html`, `GRADA-Pitch-Clubes.html`, `GRADA-Proyeccion-5Anos.html` / `-v2-Realista.html` / `-Unificada.html`, `projection-premium.html` (+ variantes Conservador 333k€ / Realista 554k€ / Optimista 988k€ / Comparacion), `projection-visual.html`, `financial-projection.html`.
+
+**Análisis competitivo / mercado:** `GRADA-Analisis-Competitivo.html`, `GRADA-vs-Federaciones.html` / `-v2.html`, `market-study.html` + `market-study.md`, `grada-prospecting-list.html`.
+
+**Por audiencia:** `proyecto-clubes.html`, `proyecto-jugadores.html` + `grada-dossier-comercial.pdf`, `proyecto-padres.html` + `grada-guia-familias.pdf`, `proyecto-ffcv.html`, `proyecto-master.html`.
+
+**Branding / GTM:** `grada-brand-book.html`, `grada-brand-context.html`, `grada-brand-guidelines.pdf`, `grada-gtm-master.html`, `krujens-brand-context.md` (corporativo, transversal a todo el portfolio).
+
+**Scripts Python (regeneran PDFs):** `build_brand_guidelines.py`, `build_client_dossier.py`, `build_family_guide.py`.
+
+**Notas técnicas:** `custom-domain.md`, `lighthouse.md`, `og-images.md`, `sentry.md`.
+
+### 3.9 Assets (`public/`)
+
+`favicon.svg`, `icon-192.png`, `icon-512.png`, `icons.svg`, `ball.png`. `screenshots/` (5 pantallas generadas por Playwright). `pruebas/` (sandbox, no entra al bundle).
+
+---
+
+## 4. Elite 380 (academia de fútbol)
+
+**Sector:** academia de fútbol (formación deportiva).
+
+**Estado:** primer MVP en producción 2025 Q4 — fue la primera vertical Krujens en entrar en producción, antes de GRADA.
+
+**Audiencia:** academia + alumnos + familias.
+
+**Color secundario asignado:** Neon Orange `#FF6B00` (mismo bucket "deporte" que GRADA).
+
+**Relación con GRADA:** sectores hermanos (ambos fútbol base), pero foco distinto — Elite 380 es B2B academia (gestión interna de la academia), GRADA es B2C jugador + B2B2C club. No comparten código.
+
+**Repo:** vive en otra carpeta (`Presentaciones Elite 380/`). **Regla operativa innegociable** del briefing original: nada fuera de este repo se toca. Si te piden trabajar sobre Elite 380, abrir sesión en su repo.
+
+---
+
+## 5. VITAS (análisis deportivo)
+
+**Sector:** análisis deportivo (data + visualización + IA aplicada).
+
+**Estado:** en portfolio, **no lanzado**. Sin código en este repo.
+
+**Color secundario asignado:** Electric Cyan `#00D4FF` (bucket "tech, confianza").
+
+**Posicionamiento previsible:** la "capa analítica" del portfolio — encaja como complemento natural a GRADA y Elite 380 (datos del deporte amateur), aunque el scope final está por definir.
+
+**Próximos pasos previstos en el plan Krujens:** lanzamiento de un 2º vertical en 2027 una vez GRADA genere caja. VITAS es el candidato más alineado por sector.
+
+---
+
+## 5b. SportOS (sistema deportivo transversal)
+
+**Sector:** sistema operativo deportivo transversal *(scope por confirmar con el fundador)*.
+
+**Estado:** vertical nuevo dentro del portfolio. **Sin código en este repo**, sin info pública aún en `docs/krujens-brand-context.md` (documento todavía sin actualizar a la lista vigente de productos — pendiente refresco).
+
+**Hipótesis de posicionamiento (a validar):** capa que unifica datos / operaciones / identidad de jugador a través de los productos deportivos del portfolio (GRADA + Elite 380 + VITAS). Encajaría como "infraestructura interna" más que como app de usuario final, pero esto **hay que confirmarlo** antes de tratarlo como definitivo.
+
+**Pendiente de definir:** audiencia exacta, modelo de monetización, color de marca, fecha de lanzamiento, repositorio.
+
+---
+
+## 5c. Café (vertical de cafeterías / hospitality — nombre por confirmar)
+
+**Sector:** hospitality / café (primera vertical del portfolio fuera del eje deporte–bienestar).
+
+**Estado:** vertical nuevo dentro del portfolio. **Sin código en este repo**, sin entrada aún en el brand context corporativo. Solo se conoce de forma verbal por el fundador a fecha de hoy.
+
+**Encaje con la tesis Krujens:** las cafeterías son un sector clásicamente sub-digitalizado (caja registradora + Excel + WhatsApp del barista) → cumple los tres criterios del playbook Krujens (sector ignorado por software moderno, comunidad activa, dolor real).
+
+**Pendiente de definir:** nombre comercial definitivo, sub-segmento (¿gestión interna de la cafetería?, ¿app de fidelización para el cliente?, ¿marketplace de cafés de especialidad?), audiencia, modelo, paleta de marca, fecha de lanzamiento, repositorio.
+
+---
+
+## 6. Essence Bloom (bienestar / rituales)
+
+**Sector:** bienestar / rituales (B2C wellness).
+
+**Estado:** en portfolio, **no lanzado**. Sin código en este repo.
+
+**Color secundario asignado:** Deep Purple `#B347FF` (bucket "bienestar, premium").
+
+**Diferenciador respecto al resto del portfolio:** primer vertical que sale del eje deportivo. Encaja con la misión Krujens de cubrir "salud, comunidad local" además de deporte.
+
+**Cuándo se lanza:** sin fecha pública. Probablemente después de validar el playbook con GRADA y un segundo vertical.
+
+---
+
+## 7. [Futuro] (próximo vertical sin definir)
+
+**Estado:** placeholder en la arquitectura. Sectores candidatos según la misión Krujens: salud familiar, educación extraescolar, comunidad local, autónomos / pymes locales.
+
+**Criterio de entrada:** se decide tras validar unit economics de GRADA + una segunda vertical (probablemente Elite 380 maduro o VITAS lanzado).
+
+**Objetivo 2030:** que el portfolio activo sea de 3-5 verticales (hoy hay 2 con código en producción: GRADA + Elite 380).
+
+---
+
+## 8. Hitos cronológicos del holding
+
+| Fecha | Hito |
 |---|---|
-| `knowledgeBase.ts` | `KNOWLEDGE_BASE: KbDoc[]` + índice por topic. Datos del producto y reglas de negocio que el assistant puede citar. |
-| `retriever.ts` (+ test) | `retrieve(query, k=3)` recupera top-k docs; `ragAnswer(query, k=2)` devuelve respuesta + fuentes. |
-
-### 4.4 `src/ai/services/`
-
-| Archivo | Funciones clave |
-|---|---|
-| `deterministic.ts` | `mulberry32`, `seedFromString`, `pickDeterministic`, `clamp`, `gradeFromStats`, `winProbability(homeRating, awayRating)`, `deriveMetrics(stats)`. Núcleo de aleatoriedad reproducible. |
-| `drills.ts` | `generateDrills(input)` genera ejercicios para una `Weakness` (`shot`, `pass`, `def`, `phy`, `pace`, `dribble`, `mental`). |
-| `highlights.ts` | `detectHighlights(events, topK=3)` extrae los momentos clave del partido. |
-| `leaderboard.ts` | `simulateLeaderboard(input)` con scope `regional`/`national`/`friends`. |
-
-Todos los servicios tienen tests Vitest (`*.test.ts`).
+| 2025 Q4 | Primer MVP **Elite 380** en producción. |
+| 2026 Q1 | Krujens se registra legalmente como entidad matriz. |
+| 2026 Q2 | Lanzamiento **GRADA** + ronda seed 250k€. |
+| 2026 Q3 | Acuerdo piloto con FFCV (Federación Fútbol Com. Valenciana). |
+| 2027 | Expansión GRADA a 3 CCAA + lanzamiento 2º vertical (probablemente VITAS). |
+| 2030 | 3-5 verticales activas, 150k usuarios, ARR > 1,5M€. |
 
 ---
 
-## 5. Librería UI (`src/components/ui/`)
+## 9. Audiencias cruzadas a todo el portfolio
 
-26 componentes. Categorías:
-
-**Layout & navegación:** `BottomNav`, `BottomSheet`, `PageTransition`, `RouteFallback`, `ErrorBoundary`.
-
-**Efectos visuales:** `EpicStadiumBackground`, `FloatingOrbs`, `FloatingEmojis`, `FloatingChip`, `ParticleBackground`, `PulseRings`, `LikeBurst`, `AIBorder`, `Skeleton`.
-
-**Inputs / botones:** `NeonButton`, `NeonInput`, `RippleButton`, `useRipple`, `GlassCard`.
-
-**Sheets de partido:** `LineupSheet`, `LiveMatchSheet`, `LiveTicker`, `MatchPredictionSheet`, `RivalScoutSheet`.
-
-**Misc:** `CountUp` (contadores animados), `Toast`, `NotificationsPanel`.
-
----
-
-## 6. Hooks e i18n
-
-| Archivo | Hace |
-|---|---|
-| `src/hooks/useSimulatedLoad.ts` | Simula latencia para skeletons. |
-| `src/hooks/useSpeechRecognition.ts` | Wrapper Web Speech API (input por voz en el chat). |
-| `src/i18n/translations.ts` | Diccionario ES/EN. |
-| `src/i18n/useT.ts` | Hook `useT()` para traducir. |
-
----
-
-## 7. Backend mínimo y scripts
-
-- `api/og.ts` (5.7 KB) — endpoint serverless (Vercel) que genera Open Graph images dinámicas.
-- `scripts/gen-icons.ts` — genera iconos PWA desde SVG fuente (`public/favicon.svg` → `icon-192.png`, `icon-512.png`).
-- `vercel.json` — config de despliegue.
-- `vite.config.ts` — Vite + plugin React + plugin PWA con manifest.
-- `playwright.config.ts` + `e2e/` — tests E2E y `screenshots.spec.ts` para generar `public/screenshots/{1-landing,2-home,3-profile,4-league,5-community}.png`.
-- `vitest.config.ts` — tests unitarios.
-
----
-
-## 8. Documentos comerciales y marketing (`docs/`)
-
-### 8.1 Producto / showcase
-
-| Archivo | Tipo | Qué es |
+| # | Audiencia | Mensaje clave Krujens |
 |---|---|---|
-| `GRADA-App-Walkthrough.html` | HTML | "GRADA · La app por dentro" — recorrido pantalla a pantalla. |
-| `GRADA-App-Showcase.html` / `-v2.html` | HTML | Showcase del producto, v1 y v2. |
-
-### 8.2 Pitch / inversión / proyección
-
-| Archivo | Qué es |
-|---|---|
-| `GRADA-Pitch-Inversor.html` | Pitch para inversor + proyección 5 años. |
-| `GRADA-Pitch-Clubes.html` | Pitch para clubes ("el upgrade que tus padres están esperando"). |
-| `GRADA-Proyeccion-5Anos.html` | Proyección a 5 años (2027-2031). |
-| `GRADA-Proyeccion-5Anos-v2-Realista.html` | Versión realista de la proyección. |
-| `GRADA-Proyeccion-Unificada.html` | Proyección unificada. |
-| `projection-premium.html` | Financial Deck Premium. |
-| `projection-premium-conservador.html` | Escenario CONSERVADOR · 333k€ ARR Y5. |
-| `projection-premium-realista.html` | Escenario REALISTA · 554k€ ARR Y5. |
-| `projection-premium-optimista.html` | Escenario OPTIMISTA · 988k€ ARR Y5. |
-| `projection-premium-comparacion.html` | Comparación 3 escenarios + 6 estrategias. |
-| `projection-visual.html` | Versión visual de la proyección. |
-| `financial-projection.html` | Proyección financiera e inversión. |
-
-### 8.3 Análisis competitivo y mercado
-
-| Archivo | Qué es |
-|---|---|
-| `GRADA-Analisis-Competitivo.html` | Análisis competitivo 2026. |
-| `GRADA-vs-Federaciones.html` / `-v2.html` | Comparativa frente a federaciones (FFCV, RFEF). |
-| `market-study.html` / `market-study.md` | Estudio de mercado CV: TAM 126k jugadores, SAM 84k, SOM Y5 21k usuarios, mix planes, OPEX, break-even Y5. |
-| `grada-prospecting-list.html` | Plan de prospección de clubes España + Europa. |
-
-### 8.4 Por audiencia
-
-| Archivo | Audiencia |
-|---|---|
-| `proyecto-clubes.html` | Clubes. |
-| `proyecto-jugadores.html` / `grada-dossier-comercial.pdf` | Jugadores y comercial. |
-| `proyecto-padres.html` / `grada-guia-familias.pdf` | Padres / familias. |
-| `proyecto-ffcv.html` | Federación de fútbol de la Comunidad Valenciana. |
-| `proyecto-master.html` | Vista índice de todas las presentaciones. |
-
-### 8.5 Branding y GTM
-
-| Archivo | Qué es |
-|---|---|
-| `grada-brand-book.html` | Brand Book interactivo. |
-| `grada-brand-context.html` | Brand & Marketing Context — solución Krujens. |
-| `grada-brand-guidelines.pdf` | Guidelines de marca. |
-| `krujens-brand-context.md` | Contexto de marca de la matriz Krujens (portfolio, voz, valores). |
-| `grada-gtm-master.html` | GTM Master Playbook. |
-
-### 8.6 Scripts de generación (Python)
-
-- `build_brand_guidelines.py` — regenera el PDF de guidelines.
-- `build_client_dossier.py` — regenera el dossier comercial.
-- `build_family_guide.py` — regenera la guía para familias.
-
-### 8.7 Notas técnicas
-
-- `custom-domain.md` — pasos para configurar dominio.
-- `lighthouse.md` — notas de auditoría Lighthouse.
-- `og-images.md` — diseño de las OG images (consumidas por `api/og.ts`).
-- `sentry.md` — integración de errores.
+| 1 | **Usuarios finales B2C** (familias, jugadores, pacientes) | *"Por fin una herramienta que entiende tu día a día."* |
+| 2 | **Organizaciones B2B / B2B2C** (clubes, academias, federaciones, clínicas) | *"Software que tus usuarios usan de verdad, no solo tu equipo admin."* |
+| 3 | **Inversores / partners** (BAs, fondos seed, family offices, federaciones) | *"Portfolio de SaaS verticales con unit economics reales y founder que envía producto cada semana."* |
+| 4 | **Talento técnico** (devs, diseñadores, growth) | *"Aquí envías producto en días, no en sprints de 3 meses. Tu código toca a miles de usuarios."* |
 
 ---
 
-## 9. Assets (`public/`)
+## 10. Estado de cada vertical en 1 línea
 
-- `favicon.svg`, `icon-192.png`, `icon-512.png`, `icons.svg`, `ball.png` — iconos PWA y assets visuales.
-- `screenshots/` — `1-landing.png`, `2-home.png`, `3-profile.png`, `4-league.png`, `5-community.png` (generadas por Playwright, usadas en manifest y docs).
-- `pruebas/` — sandbox/prototipo independiente con `index.html`, `app.jsx`, screens y uploads. Es un patio de pruebas, no entra en el bundle.
+- **GRADA** — código completo en este repo, lanzamiento Q2 2026, ronda seed activa.
+- **Elite 380** — MVP en producción desde Q4 2025, repo aparte, no se toca desde aquí.
+- **SportOS** — vertical nuevo, scope por confirmar, sin código aquí, sin entrada en el brand context corporativo todavía.
+- **VITAS** — en portfolio, sin código aquí, candidata a 2º lanzamiento 2027.
+- **Café** *(nombre por confirmar)* — vertical nuevo, primera salida del eje deporte–bienestar, sin código aquí, sin entrada en el brand context corporativo todavía.
+- **Essence Bloom** — en portfolio, sin código aquí, fuera del eje deportivo.
+- **[Futuro]** — placeholder, sin definir, decisión post-validación de los primeros lanzamientos.
 
----
-
-## 10. Contexto del holding: Krujens
-
-GRADA es la primera vertical en ir a mercado del portfolio Krujens. Resto del portfolio (no en este repo, **no tocar**):
-
-```
-              KRUJENS (matriz)
-                    │
-   ┌─────────┬──────┼──────┬──────────────┐
-   ▼         ▼      ▼      ▼              ▼
-GRADA     VITAS  Elite 380  Essence Bloom  [futuro]
-(fútbol   (análisis (academia (bienestar /  (próximo
- base)    deportivo) fútbol)   rituales)    vertical)
-```
-
-Tagline matriz: *Tecnología que entiende tu mundo.* Stack común: React + Vite + Supabase/Firebase + PWA. Filosofía: mobile-first real, IA útil no marketing, precio justo, datos del usuario son del usuario.
-
-> Regla operativa heredada del briefing: nada fuera de este repo se toca. Elite 380 vive en otra carpeta y es un proyecto distinto.
+> **Nota de versión del brand context:** `docs/krujens-brand-context.md` solo lista 4 verticales (GRADA, VITAS, Elite 380, Essence Bloom) + placeholder. **SportOS y Café son verticales nuevos que aún no se han incorporado a ese documento**. Si SportOS / Café se confirman como parte del portfolio oficial, hay que actualizar §2 ("El portfolio de soluciones"), §4 (paleta) y §8 (hitos) de `docs/krujens-brand-context.md` para que sean consistentes.
 
 ---
 
-## 11. Estado del repo y siguientes pasos sugeridos
+## 11. Cómo navegar este documento
 
-- Rama actual: `claude/document-products-developments-UsLid` (este doc).
-- Rebrand FutbolBase → GRADA ya consolidado en código y docs (cero referencias a `futbolbase` esperadas).
-- Pendientes mencionados en el briefing original:
-  - Despliegue Vercel (`vercel.json` + `.vercel/` ya configurado).
-  - Configurar dominio custom (`docs/custom-domain.md`).
-  - Decidir qué de `src/ai/`, `src/features/`, `src/i18n/` queda fijo y qué iterar.
-  - Validar cohortes Y1 contra los supuestos de `docs/market-study.md`.
-
----
-
-## 12. Cómo navegar este documento
-
-- Si buscas **una pantalla**: §2.
-- Si buscas **una funcionalidad gamificada o social**: §3 (features).
-- Si buscas **dónde está la "IA"**: §4. Empieza por `src/lib/aiMocks.ts`.
-- Si buscas **un componente visual**: §5.
-- Si necesitas **un deck o PDF para mandar fuera**: §8.
-- Si te preguntan por **mercado, números, competencia**: `docs/market-study.md` y §8.3.
-- Si te preguntan por **identidad corporativa**: `docs/krujens-brand-context.md` y §10.
+- ¿Solo te importa **GRADA**? → §3 (todo el detalle del repo).
+- ¿Quieres comparar **producto a producto** del portfolio? → §2.
+- ¿Necesitas **identidad visual / paleta** de un vertical? → §1 (color asignado).
+- ¿Te preguntan por **el holding y su tesis**? → §0.
+- ¿Necesitas **un timeline de hitos**? → §8.
+- ¿Te preguntan por **los números de mercado de GRADA**? → `docs/market-study.md`.
+- ¿Te preguntan por **branding o tono Krujens**? → `docs/krujens-brand-context.md`.
