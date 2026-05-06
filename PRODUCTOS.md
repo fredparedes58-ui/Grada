@@ -41,19 +41,25 @@
 ## 1. Arquitectura del portfolio
 
 ```
-                              KRUJENS (matriz)
-                                    │
-   ┌────────┬────────┬─────────┬────┴────┬──────────┬───────────┬─────────┐
-   ▼        ▼        ▼         ▼         ▼          ▼           ▼         ▼
-GRADA   Elite 380  SportOS   VITAS    Café       Essence    [futuro]
-fútbol  academia   sistema   análisis (vertical  Bloom      próximo
-base    fútbol     deportivo deportivo café —    bienestar/ vertical
-                   transversal        nombre     rituales
-                                      por
-                                      confirmar)
+                       KRUJENS (matriz)
+                             │
+   ┌─────────────┬───────────┼───────────┬──────────────┐
+   ▼             ▼           ▼           ▼              ▼
+GRADA         VITAS      Elite 380   Essence Bloom   [futuro]
+fútbol base   análisis    academia    bienestar /    próximo
+              deportivo   fútbol      rituales       vertical
+
+         Fuera del brand Krujens (por ahora)
+   ┌─────────────────────┬─────────────────────┐
+   ▼                     ▼
+Colegio              Café (nombre por
+(desarrollo           recordar — el usuario
+educativo)            está trabajándolo
+                      en Claude Code en
+                      otra sesión / repo)
 ```
 
-Sistema **endorsed brand**: cada vertical tiene marca propia, pero firma "una solución Krujens" en footer / about / legal.
+Sistema **endorsed brand** dentro de Krujens: cada vertical tiene marca propia, pero firma "una solución Krujens" en footer / about / legal. **Colegio y Café NO entran en este sistema por ahora** — son desarrollos paralelos sin paraguas Krujens.
 
 **Color asignado a cada vertical** (paleta corporativa Krujens):
 
@@ -61,25 +67,34 @@ Sistema **endorsed brand**: cada vertical tiene marca propia, pero firma "una so
 |---|---|---|---|
 | GRADA | Neon Orange | `#FF6B00` | acción, deporte |
 | Elite 380 | Neon Orange | `#FF6B00` | acción, deporte (mismo sector) |
-| SportOS | _por asignar_ | _por confirmar_ | sistema deportivo transversal |
 | VITAS | Electric Cyan | `#00D4FF` | tech, confianza |
-| Café (nombre por confirmar) | _por asignar_ | _por confirmar_ | hospitality / café |
 | Essence Bloom | Deep Purple | `#B347FF` | bienestar, premium |
 | Krujens (matriz) | Krujens Green `#00E676` + Obsidian Navy `#0A1628` | — | identidad corporativa |
+| **Colegio** *(fuera de Krujens)* | n/a | n/a | identidad propia, sin paraguas Krujens |
+| **Café** *(fuera de Krujens)* | n/a | n/a | identidad propia, sin paraguas Krujens |
 
 ---
 
 ## 2. Comparativa rápida del portfolio
 
+### Dentro del brand Krujens
+
 | Producto | Sector | Audiencia | Modelo | Estado | Código |
 |---|---|---|---|---|---|
 | **GRADA** | Fútbol amateur federado | Jugador + club + familia + federación | Free + Pro 4,99€/mes + Club 29€/mes/equipo | Lanzamiento 2026 Q2, ronda seed 250k€ | **Este repo** |
 | **Elite 380** | Academia de fútbol | Academia + alumnos + familias | A definir | Primer MVP en producción 2025 Q4 | Repo aparte (no tocar) |
-| **SportOS** | Sistema deportivo transversal *(scope por confirmar)* | A definir | A definir | Vertical nuevo, info pendiente | No en este repo |
 | **VITAS** | Análisis deportivo | A definir (deportistas / clubes) | A definir | En portfolio, no lanzado | No en este repo |
-| **Café** *(nombre por confirmar)* | Hospitality / café | A definir (cafetería / cliente / barista) | A definir | Vertical nuevo, info pendiente | No en este repo |
 | **Essence Bloom** | Bienestar / rituales | Usuario final B2C | A definir | En portfolio, no lanzado | No en este repo |
 | **[Futuro]** | Próximo vertical | A definir | A definir | A definir tras ARR Y2 GRADA | — |
+
+### Fuera del brand Krujens (por ahora)
+
+Desarrollos paralelos del fundador que no se consideran verticales Krujens hoy. Pueden incorporarse en el futuro o quedarse como marcas independientes.
+
+| Producto | Sector | Estado | Código |
+|---|---|---|---|
+| **Colegio** | Educación (centro educativo) | Desarrollo en marcha en otra sesión / repo de Claude Code | No en este repo, no accesible desde esta sesión |
+| **Café** *(nombre por recordar)* | Hospitality / café | Desarrollo en marcha en otra sesión / repo de Claude Code | No en este repo, no accesible desde esta sesión |
 
 ---
 
@@ -270,30 +285,6 @@ Filosofía **deterministic-first**: mocks deterministas con contrato estable, li
 
 ---
 
-## 5b. SportOS (sistema deportivo transversal)
-
-**Sector:** sistema operativo deportivo transversal *(scope por confirmar con el fundador)*.
-
-**Estado:** vertical nuevo dentro del portfolio. **Sin código en este repo**, sin info pública aún en `docs/krujens-brand-context.md` (documento todavía sin actualizar a la lista vigente de productos — pendiente refresco).
-
-**Hipótesis de posicionamiento (a validar):** capa que unifica datos / operaciones / identidad de jugador a través de los productos deportivos del portfolio (GRADA + Elite 380 + VITAS). Encajaría como "infraestructura interna" más que como app de usuario final, pero esto **hay que confirmarlo** antes de tratarlo como definitivo.
-
-**Pendiente de definir:** audiencia exacta, modelo de monetización, color de marca, fecha de lanzamiento, repositorio.
-
----
-
-## 5c. Café (vertical de cafeterías / hospitality — nombre por confirmar)
-
-**Sector:** hospitality / café (primera vertical del portfolio fuera del eje deporte–bienestar).
-
-**Estado:** vertical nuevo dentro del portfolio. **Sin código en este repo**, sin entrada aún en el brand context corporativo. Solo se conoce de forma verbal por el fundador a fecha de hoy.
-
-**Encaje con la tesis Krujens:** las cafeterías son un sector clásicamente sub-digitalizado (caja registradora + Excel + WhatsApp del barista) → cumple los tres criterios del playbook Krujens (sector ignorado por software moderno, comunidad activa, dolor real).
-
-**Pendiente de definir:** nombre comercial definitivo, sub-segmento (¿gestión interna de la cafetería?, ¿app de fidelización para el cliente?, ¿marketplace de cafés de especialidad?), audiencia, modelo, paleta de marca, fecha de lanzamiento, repositorio.
-
----
-
 ## 6. Essence Bloom (bienestar / rituales)
 
 **Sector:** bienestar / rituales (B2C wellness).
@@ -305,6 +296,39 @@ Filosofía **deterministic-first**: mocks deterministas con contrato estable, li
 **Diferenciador respecto al resto del portfolio:** primer vertical que sale del eje deportivo. Encaja con la misión Krujens de cubrir "salud, comunidad local" además de deporte.
 
 **Cuándo se lanza:** sin fecha pública. Probablemente después de validar el playbook con GRADA y un segundo vertical.
+
+---
+
+## 6b. Desarrollos fuera del brand Krujens
+
+Aclaración del fundador: hay dos desarrollos en marcha que **hoy no forman parte del paraguas Krujens** y se trabajan en sesiones / repos separados de Claude Code (no accesibles desde esta sesión, que está restringida al repo `fredparedes58-ui/Grada`).
+
+### 6b.1 Colegio
+
+- **Sector:** educación (centro educativo).
+- **Tipo:** desarrollo paralelo, fuera del brand Krujens por ahora.
+- **Estado:** en construcción en otra sesión / repo. Sin acceso desde aquí.
+- **Pendiente de aportar (cuando el fundador comparta el repo o los datos):**
+  - Nombre comercial definitivo.
+  - Audiencia exacta (¿profesores, dirección, alumnos, familias, todos?).
+  - Modelo de negocio (¿SaaS al colegio?, ¿gratis para familias?, ¿licencia por aula?).
+  - Stack y repositorio.
+  - Estado de avance (idea / MVP / producción).
+  - Decisión sobre si en algún momento se incorpora al brand Krujens o se mantiene independiente.
+
+### 6b.2 Café (nombre por recordar)
+
+- **Sector:** hospitality / café.
+- **Tipo:** desarrollo paralelo, fuera del brand Krujens por ahora.
+- **Estado:** en construcción en otra sesión / repo de Claude Code. **El fundador no recuerda el nombre con el que está nombrado el proyecto** y desde esta sesión no se puede listar el resto de repos para cruzarlo (alcance GitHub limitado a `fredparedes58-ui/Grada`).
+- **Pendiente de aportar:**
+  - Nombre comercial / nombre del repo.
+  - Sub-segmento (¿gestión interna de la cafetería?, ¿fidelización de clientes?, ¿marketplace de café de especialidad?, ¿formación a baristas?).
+  - Audiencia, modelo, stack, repositorio.
+  - Estado de avance.
+  - Decisión sobre si entra en Krujens o se mantiene independiente.
+
+> **Acción concreta para retomar este apartado:** o me pasas las URLs de los repos (o sus nombres en `fredparedes58-ui/...`), o abres el cliente web de Claude Code, copias el nombre del proyecto donde lo trabajaste y me lo dictas. Con eso completo §6b.
 
 ---
 
@@ -344,15 +368,20 @@ Filosofía **deterministic-first**: mocks deterministas con contrato estable, li
 
 ## 10. Estado de cada vertical en 1 línea
 
+**Dentro del brand Krujens:**
+
 - **GRADA** — código completo en este repo, lanzamiento Q2 2026, ronda seed activa.
 - **Elite 380** — MVP en producción desde Q4 2025, repo aparte, no se toca desde aquí.
-- **SportOS** — vertical nuevo, scope por confirmar, sin código aquí, sin entrada en el brand context corporativo todavía.
 - **VITAS** — en portfolio, sin código aquí, candidata a 2º lanzamiento 2027.
-- **Café** *(nombre por confirmar)* — vertical nuevo, primera salida del eje deporte–bienestar, sin código aquí, sin entrada en el brand context corporativo todavía.
 - **Essence Bloom** — en portfolio, sin código aquí, fuera del eje deportivo.
 - **[Futuro]** — placeholder, sin definir, decisión post-validación de los primeros lanzamientos.
 
-> **Nota de versión del brand context:** `docs/krujens-brand-context.md` solo lista 4 verticales (GRADA, VITAS, Elite 380, Essence Bloom) + placeholder. **SportOS y Café son verticales nuevos que aún no se han incorporado a ese documento**. Si SportOS / Café se confirman como parte del portfolio oficial, hay que actualizar §2 ("El portfolio de soluciones"), §4 (paleta) y §8 (hitos) de `docs/krujens-brand-context.md` para que sean consistentes.
+**Fuera del brand Krujens (por ahora):**
+
+- **Colegio** — desarrollo educativo paralelo, en otro repo / sesión, no accesible desde aquí.
+- **Café** *(nombre por recordar)* — desarrollo de hospitality paralelo, en otro repo / sesión, nombre olvidado por el fundador, no localizable desde esta sesión.
+
+> **Nota de consistencia del brand context:** `docs/krujens-brand-context.md` lista 4 verticales Krujens + placeholder y está alineado con §0–§5 de este documento. Colegio y Café no entran ahí porque hoy están **fuera** del brand Krujens; si en el futuro se decide absorberlos, habría que actualizar §2 ("El portfolio de soluciones"), §4 (paleta) y §8 (hitos) de ese brand context.
 
 ---
 
