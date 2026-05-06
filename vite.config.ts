@@ -13,8 +13,8 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
       },
       manifest: {
-        name: 'FutbolBase',
-        short_name: 'FutbolBase',
+        name: 'GRADA',
+        short_name: 'GRADA',
         description: 'La red social del fútbol base',
         theme_color: '#050D1A',
         background_color: '#050D1A',
