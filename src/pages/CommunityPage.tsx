@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
 import { Search, Users, Trophy, MapPin, Calendar, Check, Sparkles, ChevronRight, Wand2, X } from 'lucide-react'
+import TournamentsTab from '../features/tournaments/TournamentsTab'
 import BottomNav from '../components/ui/BottomNav'
 import GlassCard from '../components/ui/GlassCard'
 import BottomSheet from '../components/ui/BottomSheet'
@@ -126,6 +127,7 @@ export default function CommunityPage() {
   }, [query, intent, hasSemanticFilters])
 
   // Matcher
+  const [communityTab, setCommunityTab] = useState<'equipos' | 'torneos'>('equipos')
   const [matcherOpen, setMatcherOpen] = useState(false)
   const [mStep, setMStep] = useState(0)
   const [mAns, setMAns] = useState<Partial<MatcherAnswers>>({})
@@ -181,11 +183,39 @@ export default function CommunityPage() {
               fontSize: 14, color: 'rgba(250, 245, 235, 0.6)',
             }}
           >
-            Descubre clubes y equipos cerca
+            Descubre clubes, equipos y torneos
           </div>
         </div>
 
-        <div style={{ padding: '0 20px 20px' }}>
+        {/* Tabs: Equipos / Torneos */}
+        <div style={{ padding: '0 20px 16px', display: 'flex', gap: 8 }}>
+          {(['equipos', 'torneos'] as const).map(t => (
+            <button
+              key={t}
+              onClick={() => setCommunityTab(t)}
+              style={{
+                flex: 1, padding: '9px', borderRadius: 10,
+                background: communityTab === t ? 'rgba(204,255,0,0.15)' : 'rgba(255,255,255,0.03)',
+                border: `1px solid ${communityTab === t ? '#CCFF00' : 'rgba(255,220,180,0.08)'}`,
+                color: communityTab === t ? '#CCFF00' : 'rgba(250,245,235,0.55)',
+                fontFamily: 'Space Grotesk', fontWeight: 700,
+                fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.05em',
+                cursor: 'pointer',
+                boxShadow: communityTab === t ? '0 0 12px rgba(204,255,0,0.15)' : 'none',
+              }}
+            >
+              {t === 'equipos' ? '👥 Equipos' : '🏆 Torneos'}
+            </button>
+          ))}
+        </div>
+
+        {communityTab === 'torneos' && (
+          <div style={{ padding: '0 20px' }}>
+            <TournamentsTab />
+          </div>
+        )}
+
+        {communityTab === 'equipos' && (<><div style={{ padding: '0 20px 20px' }}>
           <div
             style={{
               display: 'flex', alignItems: 'center', gap: 10,
@@ -478,6 +508,7 @@ export default function CommunityPage() {
             </div>
           ))}
         </div>
+      </>)}
       </div>
 
       <BottomSheet

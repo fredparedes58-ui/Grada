@@ -22,6 +22,7 @@ const ConversationPage = lazy(() => import('./pages/ConversationPage'))
 const CommunityPage    = lazy(() => import('./pages/CommunityPage'))
 const LeaguePage       = lazy(() => import('./pages/LeaguePage'))
 const ProfilePage      = lazy(() => import('./pages/ProfilePage'))
+const RecordMatchPage  = lazy(() => import('./pages/RecordMatchPage'))
 const LandingPage      = lazy(() => import('./pages/LandingPage'))
 
 function ProtectedRoute({ children }: { children: ReactNode }) {
@@ -53,6 +54,7 @@ function AnimatedRoutes() {
         <Route path="/community" element={<PageTransition variant={variant}><ProtectedRoute><Suspense fallback={<RouteFallback />}><CommunityPage /></Suspense></ProtectedRoute></PageTransition>} />
         <Route path="/league"    element={<PageTransition variant={variant}><ProtectedRoute><Suspense fallback={<RouteFallback />}><LeaguePage /></Suspense></ProtectedRoute></PageTransition>} />
         <Route path="/profile"   element={<PageTransition variant={variant}><ProtectedRoute><Suspense fallback={<RouteFallback />}><ProfilePage /></Suspense></ProtectedRoute></PageTransition>} />
+        <Route path="/record"    element={<PageTransition variant="scale"><ProtectedRoute><Suspense fallback={<RouteFallback />}><RecordMatchPage /></Suspense></ProtectedRoute></PageTransition>} />
         <Route path="/landing"   element={<PageTransition variant="fade"><Suspense fallback={<RouteFallback />}><LandingPage /></Suspense></PageTransition>} />
         <Route path="*"          element={<Navigate to="/" replace />} />
       </Routes>

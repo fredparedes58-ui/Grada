@@ -6,14 +6,7 @@ import EpicStadiumBackground from '../components/ui/EpicStadiumBackground'
 import FloatingOrbs from '../components/ui/FloatingOrbs'
 import NeonButton from '../components/ui/NeonButton'
 import NeonInput from '../components/ui/NeonInput'
-
-const POSITIONS = [
-  { id: 'Portero',        emoji: '🧤', desc: 'Bajo los palos' },
-  { id: 'Defensa',        emoji: '🛡️', desc: 'La última línea' },
-  { id: 'Centrocampista', emoji: '⚙️', desc: 'Motor del equipo' },
-  { id: 'Extremo',        emoji: '⚡', desc: 'Bandas y velocidad' },
-  { id: 'Delantero',      emoji: '⚽', desc: 'El gol es el destino' },
-]
+import PitchPositionPicker from '../components/setup/PitchPositionPicker'
 
 const LEVELS = [
   { id: 'Amateur',     emoji: '🌱', desc: 'Empezando a jugar' },
@@ -143,40 +136,7 @@ export default function SetupPage() {
             </div>
 
             {step === 0 && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {POSITIONS.map(p => (
-                  <button key={p.id} onClick={() => setPosition(p.id)} style={{
-                    display: 'flex', alignItems: 'center', gap: 14,
-                    padding: '13px 16px', borderRadius: 14, textAlign: 'left',
-                    background: position === p.id ? 'rgba(204, 255, 0, 0.1)' : 'rgba(255, 255, 255, 0.04)',
-                    border: `1.5px solid ${position === p.id ? 'rgba(204, 255, 0, 0.45)' : 'rgba(255, 220, 180, 0.08)'}`,
-                    cursor: 'pointer', transition: 'all 0.18s',
-                    boxShadow: position === p.id ? '0 0 14px rgba(204, 255, 0, 0.12)' : 'none',
-                  }}>
-                    <span style={{ fontSize: 22, lineHeight: 1 }}>{p.emoji}</span>
-                    <div style={{ flex: 1 }}>
-                      <div style={{
-                        fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 15,
-                        color: position === p.id ? '#CCFF00' : '#FAF5EB',
-                      }}>{p.id}</div>
-                      <div style={{
-                        fontFamily: 'Space Grotesk, sans-serif', fontSize: 12,
-                        color: 'rgba(250, 245, 235, 0.4)',
-                      }}>{p.desc}</div>
-                    </div>
-                    {position === p.id && (
-                      <div style={{
-                        width: 18, height: 18, borderRadius: '50%', background: '#CCFF00',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                      }}>
-                        <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-                          <path d="M1 4l2.5 2.5L9 1" stroke="#0F0D0A" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      </div>
-                    )}
-                  </button>
-                ))}
-              </div>
+              <PitchPositionPicker value={position} onChange={setPosition} />
             )}
 
             {step === 1 && (

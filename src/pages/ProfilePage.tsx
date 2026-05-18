@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef } from 'react'
-import { LogOut, Trophy, Target, Zap, Star, Pencil, Check, X, Sun, Moon, Sparkles, TrendingUp, AlertCircle } from 'lucide-react'
+import { LogOut, Trophy, Target, Zap, Star, Pencil, Check, X, Sun, Moon, Sparkles, TrendingUp, AlertCircle, PlusCircle } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
@@ -36,6 +36,10 @@ const RECENT = [
   { opponent: 'Águilas Doradas', result: 'D 1-1', goals: 1 },
   { opponent: 'Tigres Verdes',   result: 'W 4-0', goals: 1 },
 ]
+
+// Forma reciente — últimos 5 resultados (más reciente a la derecha)
+const FORM: Array<'W' | 'D' | 'L'> = ['W', 'L', 'W', 'D', 'W']
+const FORM_COLOR: Record<'W' | 'D' | 'L', string> = { W: '#CCFF00', D: '#FFB800', L: '#FF5B3A' }
 
 const POSITIONS = ['Portero', 'Defensa', 'Mediocampista', 'Delantero', 'Extremo']
 
@@ -425,6 +429,64 @@ export default function ProfilePage() {
               </button>
             )
           })}
+        </div>
+
+        {/* Registrar partido CTA */}
+        <div style={{ padding: '0 20px 18px' }}>
+          <button
+            onClick={() => nav('/record')}
+            style={{
+              width: '100%',
+              padding: '14px 20px',
+              borderRadius: 16,
+              background: 'linear-gradient(135deg, rgba(204,255,0,0.14), rgba(255,184,0,0.10))',
+              border: '1.5px solid rgba(204,255,0,0.35)',
+              cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              boxShadow: '0 0 18px rgba(204,255,0,0.10)',
+              transition: 'box-shadow 0.18s',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{
+                width: 38, height: 38, borderRadius: 10,
+                background: 'linear-gradient(135deg, #CCFF00, #FFB800)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                flexShrink: 0,
+              }}>
+                <PlusCircle size={18} color="#0F0D0A" />
+              </div>
+              <div style={{ textAlign: 'left' }}>
+                <div style={{
+                  fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 15,
+                  color: '#FAF5EB', letterSpacing: '-0.01em',
+                }}>
+                  Registrar partido
+                </div>
+                <div style={{
+                  fontFamily: 'Space Grotesk, sans-serif', fontSize: 11,
+                  color: 'rgba(250,245,235,0.45)', marginTop: 1,
+                }}>
+                  Anota el resultado · el Coach AI lo analiza
+                </div>
+              </div>
+            </div>
+            {/* Forma reciente */}
+            <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
+              {FORM.map((r, i) => (
+                <div key={i} style={{
+                  width: 22, height: 22, borderRadius: 5,
+                  background: `${FORM_COLOR[r]}22`,
+                  border: `1px solid ${FORM_COLOR[r]}55`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 9,
+                  color: FORM_COLOR[r],
+                }}>
+                  {r}
+                </div>
+              ))}
+            </div>
+          </button>
         </div>
 
         {/* Heatmap */}
