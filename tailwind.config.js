@@ -4,37 +4,44 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Electric Citrus Premium — warm obsidian base
-        obsidian: {
-          DEFAULT: '#0F0D0A',
-          deep: '#0F0D0A',
-          base: '#141009',
-          surface: '#1A1612',
-          surfaceAlt: '#241F18',
+        // GRADA Brand — Krujens Light Fresh
+        fresh: {
+          DEFAULT: '#FAFBFD',
+          base: '#F0F4F8',
+          surface: '#FFFFFF',
+          surfaceAlt: '#F5F7FA',
         },
-        citrus: {
-          DEFAULT: '#CCFF00',
-          lime: '#CCFF00',
-          amber: '#FFB800',
-          coral: '#FF5B3A',
+        ink: {
+          DEFAULT: '#0A1530',
+          muted: 'rgba(10, 21, 48, 0.55)',
+          dim: 'rgba(10, 21, 48, 0.35)',
+          faint: 'rgba(10, 21, 48, 0.10)',
         },
-        warm: {
-          text: '#FAF5EB',
-          border: 'rgba(255, 220, 180, 0.08)',
-          muted: 'rgba(250, 245, 235, 0.6)',
-          dim: 'rgba(250, 245, 235, 0.4)',
+        mint: {
+          DEFAULT: '#10B981',
+          light: '#34D399',
+          sky: '#5DC3FF',
+          soft: '#D1FAE5',
+          faint: 'rgba(16, 185, 129, 0.10)',
+        },
+        brand: {
+          text: '#0A1530',
+          border: 'rgba(10, 21, 48, 0.10)',
+          muted: 'rgba(10, 21, 48, 0.55)',
+          dim: 'rgba(10, 21, 48, 0.35)',
         },
       },
       boxShadow: {
-        'glow-lime': '0 0 20px rgba(204, 255, 0, 0.5), 0 0 40px rgba(204, 255, 0, 0.2)',
-        'glow-lime-sm': '0 0 10px rgba(204, 255, 0, 0.4)',
-        'glow-amber': '0 0 20px rgba(255, 184, 0, 0.5), 0 0 40px rgba(255, 184, 0, 0.2)',
-        'glow-coral': '0 0 20px rgba(255, 91, 58, 0.5), 0 0 40px rgba(255, 91, 58, 0.2)',
+        'glow-mint': '0 0 20px rgba(16, 185, 129, 0.5), 0 0 40px rgba(16, 185, 129, 0.2)',
+        'glow-mint-sm': '0 0 10px rgba(16, 185, 129, 0.4)',
+        'glow-sky': '0 0 20px rgba(93, 195, 255, 0.4)',
       },
       fontFamily: {
-        condensed: ['"Archivo"', '"Barlow Condensed"', 'sans-serif'],
-        sans: ['"Space Grotesk"', 'Inter', 'sans-serif'],
+        display: ['"Fraunces"', 'Georgia', 'serif'],
+        sans: ['"Inter"', '"Space Grotesk"', 'sans-serif'],
+        ui: ['"Space Grotesk"', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'monospace'],
+        narrative: ['"Cormorant Garamond"', 'Georgia', 'serif'],
       },
       animation: {
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
@@ -60,8 +67,8 @@ export default {
           '100%': { transform: 'scale(1.18) translate(-2%, -1%)' },
         },
         'glow-breathe': {
-          '0%, 100%': { filter: 'drop-shadow(0 0 8px #CCFF00) drop-shadow(0 0 16px #CCFF00)' },
-          '50%': { filter: 'drop-shadow(0 0 14px #CCFF00) drop-shadow(0 0 28px #CCFF00)' },
+          '0%, 100%': { filter: 'drop-shadow(0 0 8px #10B981) drop-shadow(0 0 16px #10B981)' },
+          '50%': { filter: 'drop-shadow(0 0 14px #10B981) drop-shadow(0 0 28px #10B981)' },
         },
         twinkle: {
           '0%, 100%': { opacity: '0.3' },

@@ -57,7 +57,7 @@ export default function PollCard({ id, question, options, totalVoters }: Props) 
       </div>
       <div style={{
         fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 15,
-        color: '#FAF5EB', marginBottom: 12, lineHeight: 1.3,
+        color: 'var(--text-primary)', marginBottom: 12, lineHeight: 1.3,
       }}>
         {question}
       </div>
@@ -66,7 +66,7 @@ export default function PollCard({ id, question, options, totalVoters }: Props) 
         {enriched.map(opt => {
           const pct = total > 0 ? (opt.votes / total) * 100 : 0
           const isMine = voted === opt.id
-          const c = opt.color ?? '#CCFF00'
+          const c = opt.color ?? 'var(--accent-primary)'
           return (
             <button
               key={opt.id}
@@ -75,9 +75,9 @@ export default function PollCard({ id, question, options, totalVoters }: Props) 
               style={{
                 position: 'relative',
                 padding: '10px 12px', borderRadius: 10,
-                background: voted ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.05)',
-                border: `1px solid ${isMine ? c : 'rgba(255,220,180,0.1)'}`,
-                color: '#FAF5EB',
+                background: 'var(--bg-surface)',
+                border: `1px solid ${isMine ? c : 'var(--border)'}`,
+                color: 'var(--text-primary)',
                 textAlign: 'left', cursor: voted ? 'default' : 'pointer',
                 overflow: 'hidden',
                 transition: 'background 200ms',
@@ -100,7 +100,7 @@ export default function PollCard({ id, question, options, totalVoters }: Props) 
                 {voted && (
                   <span style={{
                     fontFamily: 'Archivo', fontWeight: 800, fontSize: 12,
-                    color: isMine ? c : 'rgba(250,245,235,0.6)',
+                    color: isMine ? c : 'var(--text-muted)',
                   }}>
                     {pct.toFixed(0)}%
                   </span>
@@ -114,7 +114,7 @@ export default function PollCard({ id, question, options, totalVoters }: Props) 
       {totalVoters !== undefined && (
         <div style={{
           marginTop: 10, fontFamily: 'Space Grotesk', fontSize: 10,
-          color: 'rgba(250,245,235,0.45)', textAlign: 'right',
+          color: 'rgba(10,21,48,0.45)', textAlign: 'right',
         }}>
           {total + (totalVoters - options.reduce((a, o) => a + o.votes, 0))} votos
         </div>

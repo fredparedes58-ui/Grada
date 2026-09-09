@@ -5,11 +5,11 @@ import { useSimulatedLoad } from '../hooks/useSimulatedLoad'
 
 const CHATS = [
   { name: 'Asistente FútbolBase', badge: '🤖', color: '#B347FF', preview: 'Preguntame lo que quieras de la app', time: 'Ahora', unread: 0, active: true, bot: true },
-  { name: 'Los Pumas FC',   badge: 'LP', color: '#CCFF00', preview: 'Reunión el sábado 10am', time: '10:24', unread: 3, active: true },
-  { name: 'Carlos Méndez',  badge: 'CM', color: '#FFB800', preview: '¡Vamos por ese hat-trick! 🔥', time: '09:15', unread: 1, active: true },
+  { name: 'Los Pumas FC',   badge: 'LP', color: '#10B981', preview: 'Reunión el sábado 10am', time: '10:24', unread: 3, active: true },
+  { name: 'Carlos Méndez',  badge: 'CM', color: '#5DC3FF', preview: '¡Vamos por ese hat-trick! 🔥', time: '09:15', unread: 1, active: true },
   { name: 'Entrenadores',   badge: 'EN', color: '#FF5B3A', preview: 'Táctica nueva para el domingo', time: 'Ayer', unread: 0, active: false },
-  { name: 'Liga Regional',  badge: 'LR', color: '#CCFF00', preview: 'Resultados cuartos de final', time: 'Ayer', unread: 5, active: true },
-  { name: 'Ana Torres',     badge: 'AT', color: '#FFB800', preview: 'Videos del partido subidos', time: 'Mar', unread: 0, active: false },
+  { name: 'Liga Regional',  badge: 'LR', color: '#10B981', preview: 'Resultados cuartos de final', time: 'Ayer', unread: 5, active: true },
+  { name: 'Ana Torres',     badge: 'AT', color: '#5DC3FF', preview: 'Videos del partido subidos', time: 'Mar', unread: 0, active: false },
   { name: 'Rayo Urbano',    badge: 'RU', color: '#FF5B3A', preview: 'Amistoso confirmado', time: 'Lun', unread: 2, active: false },
 ]
 
@@ -17,7 +17,7 @@ export default function ChatPage() {
   const nav = useNavigate()
   const loading = useSimulatedLoad(600)
   return (
-    <div style={{ position: 'absolute', inset: 0, background: 'var(--bg-deep, #0F0D0A)', overflow: 'hidden' }}>
+    <div style={{ position: 'absolute', inset: 0, background: 'var(--bg-deep)', overflow: 'hidden' }}>
       <div
         className="screen-scroll"
         style={{ position: 'absolute', inset: 0, overflowY: 'auto', paddingTop: 60, paddingBottom: 90 }}
@@ -26,7 +26,7 @@ export default function ChatPage() {
           <div
             style={{
               fontFamily: 'Archivo, sans-serif', fontWeight: 800,
-              fontSize: 32, color: '#FAF5EB', letterSpacing: '-0.02em',
+              fontSize: 32, color: 'var(--text-primary)', letterSpacing: '-0.02em',
             }}
           >
             Chats
@@ -40,7 +40,7 @@ export default function ChatPage() {
               style={{
                 display: 'flex', alignItems: 'center', gap: 14,
                 padding: '12px 8px',
-                borderBottom: '1px solid rgba(255, 220, 180, 0.06)',
+                borderBottom: '1px solid var(--border)',
               }}
             >
               <SkeletonCircle size={50} />
@@ -60,7 +60,7 @@ export default function ChatPage() {
               style={{
                 display: 'flex', alignItems: 'center', gap: 14,
                 padding: '12px 8px',
-                borderBottom: '1px solid rgba(255, 220, 180, 0.06)',
+                borderBottom: '1px solid var(--border)',
                 cursor: 'pointer',
               }}
             >
@@ -69,7 +69,7 @@ export default function ChatPage() {
                   style={{
                     width: 50, height: 50, borderRadius: '50%',
                     background: `${c.color}22`, color: c.color,
-                    border: `2px solid ${c.active ? c.color : 'rgba(255, 220, 180, 0.15)'}`,
+                    border: `2px solid ${c.active ? c.color : 'var(--border)'}`,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 15,
                     boxShadow: c.active ? `0 0 12px ${c.color}55` : 'none',
@@ -82,7 +82,7 @@ export default function ChatPage() {
                     style={{
                       position: 'absolute', bottom: 0, right: 0,
                       width: 12, height: 12, borderRadius: '50%',
-                      background: '#CCFF00', border: '2px solid #0F0D0A',
+                      background: 'var(--accent-primary)', border: '2px solid var(--bg-deep)',
                     }}
                   />
                 )}
@@ -92,7 +92,7 @@ export default function ChatPage() {
                   <div
                     style={{
                       fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700,
-                      fontSize: 15, color: '#FAF5EB',
+                      fontSize: 15, color: 'var(--text-primary)',
                     }}
                   >
                     {c.name}
@@ -100,7 +100,7 @@ export default function ChatPage() {
                   <div
                     style={{
                       fontFamily: 'Space Grotesk, sans-serif',
-                      fontSize: 11, color: 'rgba(250, 245, 235, 0.4)',
+                      fontSize: 11, color: 'var(--text-dim)',
                     }}
                   >
                     {c.time}
@@ -110,7 +110,7 @@ export default function ChatPage() {
                   <div
                     style={{
                       fontFamily: 'Space Grotesk, sans-serif',
-                      fontSize: 13, color: 'rgba(250, 245, 235, 0.6)',
+                      fontSize: 13, color: 'rgba(10, 21, 48, 0.6)',
                       overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                       maxWidth: 220,
                     }}
@@ -121,10 +121,10 @@ export default function ChatPage() {
                     <div
                       style={{
                         minWidth: 20, height: 20, padding: '0 6px',
-                        borderRadius: 999, background: '#CCFF00', color: '#0F0D0A',
+                        borderRadius: 999, background: 'var(--accent-primary)', color: '#FAFBFD',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         fontFamily: 'Space Grotesk, sans-serif', fontWeight: 800, fontSize: 11,
-                        boxShadow: '0 0 10px rgba(204, 255, 0, 0.5)',
+                        boxShadow: '0 0 10px rgba(16, 185, 129, 0.4)',
                       }}
                     >
                       {c.unread}

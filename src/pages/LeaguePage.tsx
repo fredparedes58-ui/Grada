@@ -12,25 +12,24 @@ interface Scorer   { player: string; team: string; goals: number }
 interface Fixture  { home: string; away: string; date: string; venue: string }
 
 const STANDINGS: Standing[] = [
-  { pos: 1, team: 'Los Pumas FC',    pts: 42, pj: 16, gf: 38, gc: 12 },
-  { pos: 2, team: 'Águilas Doradas', pts: 38, pj: 16, gf: 32, gc: 15 },
-  { pos: 3, team: 'Rayo Urbano',     pts: 34, pj: 16, gf: 28, gc: 18 },
-  { pos: 4, team: 'Tigres Verdes',   pts: 30, pj: 16, gf: 26, gc: 22 },
-  { pos: 5, team: 'Phantom FC',      pts: 24, pj: 16, gf: 20, gc: 24 },
-  { pos: 6, team: 'Cometa SC',       pts: 18, pj: 16, gf: 14, gc: 28 },
+  { pos: 1, team: 'CF Benimàmet',       pts: 12, pj: 5, gf: 14, gc: 5 },
+  { pos: 2, team: 'Valencia BC',        pts: 10, pj: 5, gf: 11, gc: 6 },
+  { pos: 3, team: 'Mestalla CF',        pts: 9,  pj: 5, gf: 9,  gc: 7 },
+  { pos: 4, team: 'CD Borriol',         pts: 7,  pj: 5, gf: 8,  gc: 9 },
+  { pos: 5, team: 'Valencia Mestalla B', pts: 6,  pj: 5, gf: 6,  gc: 10 },
 ]
 
 const SCORERS: Scorer[] = [
-  { player: 'Carlos Méndez',  team: 'Los Pumas FC',    goals: 18 },
-  { player: 'Alex Rivera',    team: 'Águilas Doradas', goals: 14 },
-  { player: 'Diego Santos',   team: 'Rayo Urbano',     goals: 12 },
-  { player: 'Luis Garrido',   team: 'Tigres Verdes',   goals: 10 },
+  { player: 'Carlos Martínez', team: 'Valencia BC',        goals: 6 },
+  { player: 'Pau Ferrer',      team: 'CF Benimàmet',       goals: 5 },
+  { player: 'Adrián Molina',   team: 'Mestalla CF',        goals: 4 },
+  { player: 'Jordi Palau',     team: 'CD Borriol',         goals: 3 },
 ]
 
 const FIXTURES: Fixture[] = [
-  { home: 'Los Pumas FC',   away: 'Rayo Urbano',     date: 'Dom · 10:00', venue: 'Cancha A' },
-  { home: 'Águilas Doradas', away: 'Tigres Verdes',  date: 'Dom · 12:00', venue: 'Cancha B' },
-  { home: 'Phantom FC',     away: 'Cometa SC',        date: 'Sáb · 16:00', venue: 'Cancha C' },
+  { home: 'Valencia BC',   away: 'Mestalla CF',        date: 'Sáb · 11:00', venue: 'Campo El Saler' },
+  { home: 'CF Benimàmet',  away: 'CD Borriol',         date: 'Sáb · 13:00', venue: 'Camp de Benimàmet' },
+  { home: 'Valencia Mestalla B', away: 'CF Benimàmet', date: 'Dom · 10:00', venue: 'Fernán Caballero' },
 ]
 
 type Tab = 'tabla' | 'goleadores' | 'partidos'
@@ -52,12 +51,12 @@ export default function LeaguePage() {
     drawer?.kind === 'fixture'  ? 'Detalle del partido' : undefined
 
   const drawerAccent =
-    drawer?.kind === 'standing' ? '#CCFF00' :
-    drawer?.kind === 'scorer'   ? '#FFB800' :
-    drawer?.kind === 'fixture'  ? '#FF5B3A' : '#CCFF00'
+    drawer?.kind === 'standing' ? 'var(--accent-primary)' :
+    drawer?.kind === 'scorer'   ? 'var(--accent-secondary)' :
+    drawer?.kind === 'fixture'  ? 'var(--accent-warm)' : 'var(--accent-primary)'
 
   return (
-    <div style={{ position: 'absolute', inset: 0, background: 'var(--bg-deep, #0F0D0A)', overflow: 'hidden' }}>
+    <div style={{ position: 'absolute', inset: 0, background: 'var(--bg-deep)', overflow: 'hidden' }}>
       <div
         className="screen-scroll"
         style={{ position: 'absolute', inset: 0, overflowY: 'auto', paddingTop: 60, paddingBottom: 90 }}
@@ -67,9 +66,9 @@ export default function LeaguePage() {
           <div
             style={{
               width: 44, height: 44, borderRadius: 12,
-              background: 'linear-gradient(135deg, #CCFF00, #FFB800)',
+              background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: '#0F0D0A', boxShadow: '0 0 20px rgba(204, 255, 0, 0.35)',
+              color: '#FAFBFD', boxShadow: '0 4px 14px rgba(16, 185, 129, 0.35)',
             }}
           >
             <Trophy size={22} />
@@ -77,19 +76,19 @@ export default function LeaguePage() {
           <div>
             <div
               style={{
-                fontFamily: 'Archivo, sans-serif', fontWeight: 800,
-                fontSize: 24, color: '#FAF5EB', letterSpacing: '-0.02em',
+                fontFamily: 'Fraunces, Georgia, serif', fontWeight: 700,
+                fontSize: 22, color: 'var(--text-primary)', letterSpacing: '-0.02em',
               }}
             >
-              Liga Regional
+              Liga Autonómica Valenciana
             </div>
             <div
               style={{
                 fontFamily: 'Space Grotesk, sans-serif',
-                fontSize: 12, color: 'rgba(250, 245, 235, 0.6)',
+                fontSize: 12, color: 'rgba(10, 21, 48, 0.5)',
               }}
             >
-              Temporada 2026 · Jornada 16
+              Temporada 2026 · J5
             </div>
           </div>
           <button
@@ -97,13 +96,12 @@ export default function LeaguePage() {
             style={{
               marginLeft: 'auto',
               padding: '10px 14px', borderRadius: 12,
-              background: 'linear-gradient(135deg, rgba(255,184,0,0.2), rgba(204,255,0,0.12))',
-              border: '1px solid rgba(255,184,0,0.5)',
-              color: '#FFB800',
+              background: 'rgba(16, 185, 129, 0.08)',
+              border: '1px solid rgba(16, 185, 129, 0.25)',
+              color: 'var(--accent-primary)',
               display: 'flex', alignItems: 'center', gap: 6,
               cursor: 'pointer',
               fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 12,
-              boxShadow: '0 0 14px rgba(255,184,0,0.25)',
             }}
           >
             <Award size={14} /> Ranking
@@ -124,13 +122,13 @@ export default function LeaguePage() {
                 onClick={() => setTab(id)}
                 style={{
                   flex: 1, padding: '10px 0', borderRadius: 10,
-                  background: active ? 'rgba(204, 255, 0, 0.15)' : 'rgba(255, 255, 255, 0.03)',
-                  border: `1px solid ${active ? '#CCFF00' : 'rgba(255, 220, 180, 0.1)'}`,
-                  color: active ? '#CCFF00' : 'rgba(250, 245, 235, 0.6)',
+                  background: active ? 'var(--bg-surface-alt)' : 'rgba(10, 21, 48, 0.04)',
+                  border: `1.5px solid ${active ? 'var(--accent-primary)' : 'var(--border)'}`,
+                  color: active ? 'var(--accent-primary)' : 'rgba(10, 21, 48, 0.5)',
                   fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700,
                   fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.05em',
                   cursor: 'pointer',
-                  boxShadow: active ? '0 0 12px rgba(204, 255, 0, 0.2)' : 'none',
+                  transition: 'all 0.2s',
                 }}
               >
                 {label}
@@ -149,7 +147,7 @@ export default function LeaguePage() {
                   style={{
                     display: 'grid', gridTemplateColumns: '28px 1fr 48px 48px',
                     gap: 10, alignItems: 'center', padding: '14px 14px',
-                    borderBottom: i < 5 ? '1px solid rgba(255, 220, 180, 0.05)' : 'none',
+                    borderBottom: i < 5 ? '1px solid rgba(10, 21, 48, 0.05)' : 'none',
                   }}
                 >
                   <Skeleton width={24} height={24} radius={6} />
@@ -171,17 +169,18 @@ export default function LeaguePage() {
                     gridTemplateColumns: '28px 1fr 48px 48px',
                     gap: 10, alignItems: 'center',
                     padding: '12px 14px',
-                    borderBottom: i < STANDINGS.length - 1 ? '1px solid rgba(255, 220, 180, 0.05)' : 'none',
+                    borderBottom: i < STANDINGS.length - 1 ? '1px solid var(--border)' : 'none',
                     cursor: 'pointer',
+                    transition: 'background 0.15s',
                   }}
                 >
                   <div
                     style={{
                       width: 24, height: 24, borderRadius: 6,
-                      background: s.pos <= 3 ? '#CCFF00' : 'rgba(255, 255, 255, 0.06)',
-                      color: s.pos <= 3 ? '#0F0D0A' : 'rgba(250, 245, 235, 0.7)',
+                      background: s.pos <= 3 ? 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))' : 'var(--border)',
+                      color: s.pos <= 3 ? '#FAFBFD' : 'var(--text-muted)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 11,
+                      fontFamily: 'Fraunces, Georgia, serif', fontWeight: 700, fontSize: 11,
                     }}
                   >
                     {s.pos}
@@ -189,7 +188,7 @@ export default function LeaguePage() {
                   <div
                     style={{
                       fontFamily: 'Space Grotesk, sans-serif', fontWeight: 600,
-                      fontSize: 13, color: '#FAF5EB',
+                      fontSize: 13, color: 'var(--text-primary)',
                     }}
                   >
                     {s.team}
@@ -197,15 +196,15 @@ export default function LeaguePage() {
                   <div
                     style={{
                       fontFamily: 'Space Grotesk, sans-serif',
-                      fontSize: 11, color: 'rgba(250, 245, 235, 0.5)', textAlign: 'center',
+                      fontSize: 11, color: 'rgba(10, 21, 48, 0.45)', textAlign: 'center',
                     }}
                   >
                     {s.gf}:{s.gc}
                   </div>
                   <div
                     style={{
-                      fontFamily: 'Archivo, sans-serif', fontWeight: 800,
-                      fontSize: 14, color: '#CCFF00', textAlign: 'right',
+                      fontFamily: 'Fraunces, Georgia, serif', fontWeight: 700,
+                      fontSize: 14, color: 'var(--accent-primary)', textAlign: 'right',
                     }}
                   >
                     {s.pts}
@@ -224,17 +223,17 @@ export default function LeaguePage() {
                   style={{
                     display: 'flex', alignItems: 'center', gap: 12,
                     padding: '12px 14px',
-                    borderBottom: i < SCORERS.length - 1 ? '1px solid rgba(255, 220, 180, 0.05)' : 'none',
+                    borderBottom: i < SCORERS.length - 1 ? '1px solid var(--border)' : 'none',
                     cursor: 'pointer',
                   }}
                 >
                   <div
                     style={{
                       width: 28, height: 28, borderRadius: '50%',
-                      background: i === 0 ? '#CCFF00' : 'rgba(255, 255, 255, 0.06)',
-                      color: i === 0 ? '#0F0D0A' : 'rgba(250, 245, 235, 0.7)',
+                      background: i === 0 ? 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))' : 'var(--border)',
+                      color: i === 0 ? '#FAFBFD' : 'var(--text-muted)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 12,
+                      fontFamily: 'Fraunces, Georgia, serif', fontWeight: 700, fontSize: 12,
                     }}
                   >
                     {i + 1}
@@ -243,7 +242,7 @@ export default function LeaguePage() {
                     <div
                       style={{
                         fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700,
-                        fontSize: 13, color: '#FAF5EB',
+                        fontSize: 13, color: 'var(--text-primary)',
                       }}
                     >
                       {s.player}
@@ -251,15 +250,15 @@ export default function LeaguePage() {
                     <div
                       style={{
                         fontFamily: 'Space Grotesk, sans-serif',
-                        fontSize: 11, color: 'rgba(250, 245, 235, 0.5)',
+                        fontSize: 11, color: 'rgba(10, 21, 48, 0.45)',
                       }}
                     >
                       {s.team}
                     </div>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 5, color: '#CCFF00' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 5, color: 'var(--accent-primary)' }}>
                     <Target size={14} />
-                    <span style={{ fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 16 }}>
+                    <span style={{ fontFamily: 'Fraunces, Georgia, serif', fontWeight: 700, fontSize: 16 }}>
                       {s.goals}
                     </span>
                   </div>
@@ -276,7 +275,7 @@ export default function LeaguePage() {
                     <div
                       style={{
                         display: 'flex', alignItems: 'center', gap: 8,
-                        marginBottom: 10, color: '#FFB800',
+                        marginBottom: 10, color: 'var(--accent-secondary)',
                       }}
                     >
                       <Calendar size={13} />
@@ -292,7 +291,7 @@ export default function LeaguePage() {
                         style={{
                           marginLeft: 'auto',
                           fontFamily: 'Space Grotesk, sans-serif',
-                          fontSize: 11, color: 'rgba(250, 245, 235, 0.5)',
+                          fontSize: 11, color: 'rgba(10, 21, 48, 0.45)',
                         }}
                       >
                         {f.venue}
@@ -302,8 +301,8 @@ export default function LeaguePage() {
                       <div
                         style={{
                           flex: 1,
-                          fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 16,
-                          color: '#FAF5EB', textAlign: 'right',
+                          fontFamily: 'Fraunces, Georgia, serif', fontWeight: 700, fontSize: 15,
+                          color: 'var(--text-primary)', textAlign: 'right',
                         }}
                       >
                         {f.home}
@@ -311,7 +310,9 @@ export default function LeaguePage() {
                       <div
                         style={{
                           fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700,
-                          fontSize: 12, color: 'rgba(250, 245, 235, 0.5)',
+                          fontSize: 12, color: 'var(--text-dim)',
+                          padding: '4px 10px', background: 'rgba(10, 21, 48, 0.05)',
+                          borderRadius: 6,
                         }}
                       >
                         VS
@@ -319,8 +320,8 @@ export default function LeaguePage() {
                       <div
                         style={{
                           flex: 1,
-                          fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 16,
-                          color: '#FAF5EB',
+                          fontFamily: 'Fraunces, Georgia, serif', fontWeight: 700, fontSize: 15,
+                          color: 'var(--text-primary)',
                         }}
                       >
                         {f.away}
@@ -345,50 +346,50 @@ export default function LeaguePage() {
           <div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 8, marginBottom: 18 }}>
               {[
-                ['POS', `#${drawer.data.pos}`, '#CCFF00'],
-                ['PTS', drawer.data.pts, '#CCFF00'],
-                ['PJ',  drawer.data.pj, '#FAF5EB'],
-                ['DIF', drawer.data.gf - drawer.data.gc, drawer.data.gf >= drawer.data.gc ? '#CCFF00' : '#FF5B3A'],
+                ['POS', `#${drawer.data.pos}`, 'var(--accent-primary)'],
+                ['PTS', drawer.data.pts, 'var(--accent-primary)'],
+                ['PJ',  drawer.data.pj, 'var(--text-primary)'],
+                ['DIF', drawer.data.gf - drawer.data.gc, drawer.data.gf >= drawer.data.gc ? 'var(--accent-primary)' : '#EF4444'],
               ].map(([l, v, c]) => (
                 <div
                   key={l as string}
                   style={{
                     padding: '12px 6px',
-                    background: 'rgba(255,255,255,0.04)',
+                    background: 'rgba(10, 21, 48, 0.04)',
                     borderRadius: 10, textAlign: 'center',
-                    border: '1px solid rgba(255,220,180,0.06)',
+                    border: '1px solid var(--border)',
                   }}
                 >
-                  <div style={{ fontFamily: 'Archivo', fontWeight: 800, fontSize: 20, color: c as string }}>{v}</div>
-                  <div style={{ fontFamily: 'Space Grotesk', fontSize: 10, color: 'rgba(250,245,235,0.5)', letterSpacing: '0.08em' }}>{l}</div>
+                  <div style={{ fontFamily: 'Fraunces, serif', fontWeight: 800, fontSize: 20, color: c as string }}>{v}</div>
+                  <div style={{ fontFamily: 'Space Grotesk', fontSize: 10, color: 'rgba(10, 21, 48, 0.45)', letterSpacing: '0.08em' }}>{l}</div>
                 </div>
               ))}
             </div>
-            <div style={{ fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 12, color: 'rgba(250,245,235,0.6)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>
+            <div style={{ fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 12, color: 'rgba(10, 21, 48, 0.5)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>
               Rendimiento
             </div>
             {[
-              { label: 'Goles a favor', value: drawer.data.gf, color: '#CCFF00', icon: TrendingUp },
-              { label: 'Goles en contra', value: drawer.data.gc, color: '#FF5B3A', icon: Flame },
-              { label: 'Promedio por partido', value: (drawer.data.pts / drawer.data.pj).toFixed(2), color: '#FFB800', icon: Award },
+              { label: 'Goles a favor', value: drawer.data.gf, color: 'var(--accent-primary)', icon: TrendingUp },
+              { label: 'Goles en contra', value: drawer.data.gc, color: 'var(--accent-secondary)', icon: Flame },
+              { label: 'Promedio por partido', value: (drawer.data.pts / drawer.data.pj).toFixed(2), color: 'var(--accent-warm)', icon: Award },
             ].map((r, i) => {
               const I = r.icon
               return (
                 <div key={i} style={{
                   display: 'flex', alignItems: 'center', gap: 12,
                   padding: '10px 12px', marginBottom: 8,
-                  background: 'rgba(255,255,255,0.03)', borderRadius: 10,
-                  border: '1px solid rgba(255,220,180,0.05)',
+                  background: 'rgba(10, 21, 48, 0.03)', borderRadius: 10,
+                  border: '1px solid var(--border)',
                 }}>
                   <div style={{
                     width: 30, height: 30, borderRadius: 8,
-                    background: `${r.color}22`, color: r.color,
+                    background: `${r.color}18`, color: r.color,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}>
                     <I size={14} />
                   </div>
-                  <div style={{ flex: 1, fontFamily: 'Space Grotesk', fontSize: 13, color: '#FAF5EB' }}>{r.label}</div>
-                  <div style={{ fontFamily: 'Archivo', fontWeight: 800, fontSize: 15, color: r.color }}>{r.value}</div>
+                  <div style={{ flex: 1, fontFamily: 'Space Grotesk', fontSize: 13, color: 'var(--text-primary)' }}>{r.label}</div>
+                  <div style={{ fontFamily: 'Fraunces, serif', fontWeight: 800, fontSize: 15, color: r.color }}>{r.value}</div>
                 </div>
               )
             })}
@@ -397,23 +398,23 @@ export default function LeaguePage() {
 
         {drawer?.kind === 'scorer' && (
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '4px 0 18px', borderBottom: '1px solid rgba(255,220,180,0.06)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '4px 0 18px', borderBottom: '1px solid var(--border)' }}>
               <div style={{
                 width: 60, height: 60, borderRadius: '50%',
-                background: 'linear-gradient(135deg, #FFB800, #FF5B3A)',
+                background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontFamily: 'Archivo', fontWeight: 800, fontSize: 22, color: '#0F0D0A',
-                boxShadow: '0 0 20px rgba(255,184,0,0.4)',
+                fontFamily: 'Fraunces, serif', fontWeight: 800, fontSize: 22, color: '#FAFBFD',
+                boxShadow: '0 4px 16px rgba(16, 185, 129, 0.35)',
               }}>
                 #{drawer.rank}
               </div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontFamily: 'Archivo', fontWeight: 800, fontSize: 20, color: '#FAF5EB' }}>{drawer.data.player}</div>
-                <div style={{ fontFamily: 'Space Grotesk', fontSize: 12, color: 'rgba(250,245,235,0.6)' }}>{drawer.data.team}</div>
+                <div style={{ fontFamily: 'Fraunces, serif', fontWeight: 800, fontSize: 20, color: 'var(--text-primary)' }}>{drawer.data.player}</div>
+                <div style={{ fontFamily: 'Space Grotesk', fontSize: 12, color: 'rgba(10, 21, 48, 0.5)' }}>{drawer.data.team}</div>
               </div>
               <div style={{ textAlign: 'right' }}>
-                <div style={{ fontFamily: 'Archivo', fontWeight: 800, fontSize: 28, color: '#CCFF00', textShadow: '0 0 14px rgba(204,255,0,0.5)' }}>{drawer.data.goals}</div>
-                <div style={{ fontFamily: 'Space Grotesk', fontSize: 10, color: 'rgba(250,245,235,0.5)', letterSpacing: '0.08em' }}>GOLES</div>
+                <div style={{ fontFamily: 'Fraunces, serif', fontWeight: 800, fontSize: 28, color: 'var(--accent-primary)' }}>{drawer.data.goals}</div>
+                <div style={{ fontFamily: 'Space Grotesk', fontSize: 10, color: 'rgba(10, 21, 48, 0.45)', letterSpacing: '0.08em' }}>GOLES</div>
               </div>
             </div>
             <div style={{ padding: '16px 0' }}>
@@ -426,10 +427,11 @@ export default function LeaguePage() {
                 <div key={i} style={{
                   display: 'flex', justifyContent: 'space-between',
                   padding: '10px 12px', marginBottom: 6,
-                  background: 'rgba(255,255,255,0.03)', borderRadius: 10,
+                  background: 'rgba(10, 21, 48, 0.03)', borderRadius: 10,
+                  border: '1px solid var(--border)',
                 }}>
-                  <span style={{ fontFamily: 'Space Grotesk', fontSize: 13, color: 'rgba(250,245,235,0.7)' }}>{r.label}</span>
-                  <span style={{ fontFamily: 'Archivo', fontWeight: 800, fontSize: 14, color: '#FAF5EB' }}>{r.value}</span>
+                  <span style={{ fontFamily: 'Space Grotesk', fontSize: 13, color: 'rgba(10, 21, 48, 0.6)' }}>{r.label}</span>
+                  <span style={{ fontFamily: 'Fraunces, serif', fontWeight: 800, fontSize: 14, color: 'var(--text-primary)' }}>{r.value}</span>
                 </div>
               ))}
             </div>
@@ -441,39 +443,39 @@ export default function LeaguePage() {
             <div style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               gap: 18, padding: '8px 0 20px',
-              borderBottom: '1px solid rgba(255,220,180,0.06)',
+              borderBottom: '1px solid var(--border)',
             }}>
               <div style={{ flex: 1, textAlign: 'center' }}>
                 <div style={{
                   width: 56, height: 56, borderRadius: 14, margin: '0 auto 8px',
-                  background: 'rgba(204,255,0,0.15)', color: '#CCFF00',
+                  background: 'var(--bg-surface-alt)', color: 'var(--accent-primary)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontFamily: 'Archivo', fontWeight: 800, fontSize: 18,
-                  border: '2px solid rgba(204,255,0,0.4)',
+                  fontFamily: 'Fraunces, serif', fontWeight: 800, fontSize: 18,
+                  border: '2px solid rgba(16, 185, 129, 0.25)',
                 }}>
                   {drawer.data.home.split(' ').map(w => w[0]).slice(0, 2).join('')}
                 </div>
-                <div style={{ fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 12, color: '#FAF5EB' }}>
+                <div style={{ fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 12, color: 'var(--text-primary)' }}>
                   {drawer.data.home}
                 </div>
               </div>
               <div style={{
-                fontFamily: 'Archivo', fontWeight: 800, fontSize: 24,
-                color: '#FF5B3A', letterSpacing: '-0.02em',
+                fontFamily: 'Fraunces, serif', fontWeight: 800, fontSize: 24,
+                color: 'var(--accent-secondary)', letterSpacing: '-0.02em',
               }}>
                 VS
               </div>
               <div style={{ flex: 1, textAlign: 'center' }}>
                 <div style={{
                   width: 56, height: 56, borderRadius: 14, margin: '0 auto 8px',
-                  background: 'rgba(255,184,0,0.15)', color: '#FFB800',
+                  background: 'rgba(93, 195, 255, 0.10)', color: 'var(--accent-secondary)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontFamily: 'Archivo', fontWeight: 800, fontSize: 18,
-                  border: '2px solid rgba(255,184,0,0.4)',
+                  fontFamily: 'Fraunces, serif', fontWeight: 800, fontSize: 18,
+                  border: '2px solid rgba(93, 195, 255, 0.25)',
                 }}>
                   {drawer.data.away.split(' ').map(w => w[0]).slice(0, 2).join('')}
                 </div>
-                <div style={{ fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 12, color: '#FAF5EB' }}>
+                <div style={{ fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 12, color: 'var(--text-primary)' }}>
                   {drawer.data.away}
                 </div>
               </div>
@@ -481,22 +483,24 @@ export default function LeaguePage() {
             <div style={{ padding: '16px 0', display: 'flex', flexDirection: 'column', gap: 8 }}>
               <div style={{
                 display: 'flex', alignItems: 'center', gap: 10,
-                padding: '12px', background: 'rgba(255,255,255,0.03)', borderRadius: 10,
+                padding: '12px', background: 'rgba(10, 21, 48, 0.03)', borderRadius: 10,
+                border: '1px solid var(--border)',
               }}>
-                <Calendar size={16} color="#FFB800" />
+                <Calendar size={16} color="#5DC3FF" />
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontFamily: 'Space Grotesk', fontSize: 11, color: 'rgba(250,245,235,0.5)' }}>Fecha y hora</div>
-                  <div style={{ fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 13, color: '#FAF5EB' }}>{drawer.data.date}</div>
+                  <div style={{ fontFamily: 'Space Grotesk', fontSize: 11, color: 'rgba(10, 21, 48, 0.45)' }}>Fecha y hora</div>
+                  <div style={{ fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 13, color: 'var(--text-primary)' }}>{drawer.data.date}</div>
                 </div>
               </div>
               <div style={{
                 display: 'flex', alignItems: 'center', gap: 10,
-                padding: '12px', background: 'rgba(255,255,255,0.03)', borderRadius: 10,
+                padding: '12px', background: 'rgba(10, 21, 48, 0.03)', borderRadius: 10,
+                border: '1px solid var(--border)',
               }}>
-                <MapPin size={16} color="#FF5B3A" />
+                <MapPin size={16} color="#10B981" />
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontFamily: 'Space Grotesk', fontSize: 11, color: 'rgba(250,245,235,0.5)' }}>Cancha</div>
-                  <div style={{ fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 13, color: '#FAF5EB' }}>{drawer.data.venue}</div>
+                  <div style={{ fontFamily: 'Space Grotesk', fontSize: 11, color: 'rgba(10, 21, 48, 0.45)' }}>Cancha</div>
+                  <div style={{ fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 13, color: 'var(--text-primary)' }}>{drawer.data.venue}</div>
                 </div>
               </div>
             </div>

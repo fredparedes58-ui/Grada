@@ -37,7 +37,7 @@ export default function ConversationPage() {
   const state = (loc.state ?? {}) as { name?: string; badge?: string; color?: string; active?: boolean; bot?: boolean }
   const name   = state.name   ?? 'Chat'
   const badge  = state.badge  ?? 'CH'
-  const color  = state.color  ?? '#CCFF00'
+  const color  = state.color  ?? '#10B981'
   const active = state.active ?? false
   const isBot  = state.bot    ?? false
 
@@ -163,17 +163,17 @@ export default function ConversationPage() {
   }
 
   return (
-    <div style={{ position: 'absolute', inset: 0, background: 'var(--bg-deep, #0F0D0A)', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ position: 'absolute', inset: 0, background: 'var(--bg-deep)', display: 'flex', flexDirection: 'column' }}>
       {/* Header */}
       <div
         style={{
           flexShrink: 0,
           padding: '14px 16px',
           display: 'flex', alignItems: 'center', gap: 12,
-          background: 'rgba(20, 16, 9, 0.92)',
+          background: 'rgba(250, 251, 253, 0.92)',
           backdropFilter: 'blur(16px)',
           WebkitBackdropFilter: 'blur(16px)',
-          borderBottom: '1px solid rgba(255, 220, 180, 0.08)',
+          borderBottom: '1px solid var(--border)',
           zIndex: 10,
         }}
       >
@@ -181,9 +181,9 @@ export default function ConversationPage() {
           onClick={() => nav(-1)}
           style={{
             width: 36, height: 36, borderRadius: 10,
-            background: 'rgba(255, 255, 255, 0.05)',
-            border: '1px solid rgba(255, 220, 180, 0.08)',
-            color: '#FAF5EB',
+            background: 'var(--bg-surface)',
+            border: '1px solid var(--border)',
+            color: 'var(--text-primary)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             cursor: 'pointer',
           }}
@@ -195,7 +195,7 @@ export default function ConversationPage() {
             style={{
               width: 40, height: 40, borderRadius: '50%',
               background: `${color}22`, color,
-              border: `2px solid ${active ? color : 'rgba(255, 220, 180, 0.15)'}`,
+              border: `2px solid ${active ? color : 'var(--border)'}`,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 13,
               boxShadow: active ? `0 0 10px ${color}66` : 'none',
@@ -207,15 +207,15 @@ export default function ConversationPage() {
             <div style={{
               position: 'absolute', bottom: 0, right: 0,
               width: 10, height: 10, borderRadius: '50%',
-              background: '#CCFF00', border: '2px solid #0F0D0A',
+              background: 'var(--accent-primary)', border: '2px solid var(--bg-deep)',
             }} />
           )}
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 16, color: '#FAF5EB' }}>
+          <div style={{ fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 16, color: 'var(--text-primary)' }}>
             {name}
           </div>
-          <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontSize: 11, color: isBot ? '#B347FF' : (active ? '#CCFF00' : 'rgba(250,245,235,0.5)') }}>
+          <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontSize: 11, color: isBot ? '#B347FF' : (active ? 'var(--accent-primary)' : 'var(--text-muted)') }}>
             {isBot ? 'Asistente AI · Siempre disponible' : (active ? 'En línea' : 'Visto hace 1h')}
           </div>
         </div>
@@ -246,12 +246,12 @@ export default function ConversationPage() {
                 padding: '10px 14px',
                 borderRadius: m.mine ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
                 background: m.mine
-                  ? 'linear-gradient(135deg, #CCFF00, #b8e600)'
-                  : 'rgba(255, 255, 255, 0.06)',
-                color: m.mine ? '#0F0D0A' : '#FAF5EB',
-                border: m.mine ? 'none' : '1px solid rgba(255, 220, 180, 0.08)',
+                  ? 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))'
+                  : 'var(--border)',
+                color: m.mine ? '#FAFBFD' : 'var(--text-primary)',
+                border: m.mine ? 'none' : '1px solid var(--border)',
                 fontFamily: 'Space Grotesk, sans-serif', fontSize: 14, lineHeight: 1.4,
-                boxShadow: m.mine ? '0 4px 14px rgba(204, 255, 0, 0.25)' : 'none',
+                boxShadow: m.mine ? '0 4px 14px rgba(16, 185, 129, 0.25)' : 'none',
                 wordWrap: 'break-word',
               }}
             >
@@ -274,9 +274,9 @@ export default function ConversationPage() {
                   <span style={{
                     fontFamily: 'Space Grotesk, sans-serif', fontSize: 10,
                     padding: '2px 8px', borderRadius: 999,
-                    background: 'rgba(204, 255, 0, 0.08)',
-                    border: '1px solid rgba(204, 255, 0, 0.25)',
-                    color: '#CCFF00',
+                    background: 'rgba(16, 185, 129, 0.08)',
+                    border: '1px solid rgba(16, 185, 129, 0.25)',
+                    color: 'var(--accent-primary)',
                   }}>
                     conf {(m.confidence * 100).toFixed(0)}%
                   </span>
@@ -287,7 +287,7 @@ export default function ConversationPage() {
               style={{
                 marginTop: 3,
                 fontFamily: 'Space Grotesk, sans-serif', fontSize: 10,
-                color: 'rgba(250, 245, 235, 0.4)',
+                color: 'var(--text-dim)',
                 textAlign: m.mine ? 'right' : 'left',
                 padding: '0 4px',
               }}
@@ -302,8 +302,8 @@ export default function ConversationPage() {
               style={{
                 padding: '12px 16px',
                 borderRadius: '16px 16px 16px 4px',
-                background: 'rgba(255, 255, 255, 0.06)',
-                border: '1px solid rgba(255, 220, 180, 0.08)',
+                background: 'var(--bg-surface)',
+                border: '1px solid var(--border)',
                 display: 'flex', gap: 4, alignItems: 'center',
               }}
             >
@@ -327,10 +327,10 @@ export default function ConversationPage() {
         <div style={{ flexShrink: 0, padding: '8px 12px 0' }}>
           {/* Tone switcher (solo en chats reales) */}
           {!isBot && <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
-            <Sparkles size={11} color="#CCFF00" />
+            <Sparkles size={11} color="#10B981" />
             <span style={{
               fontFamily: 'Space Grotesk, sans-serif', fontSize: 10,
-              color: 'rgba(250, 245, 235, 0.5)', letterSpacing: '0.08em',
+              color: 'var(--text-muted)', letterSpacing: '0.08em',
               textTransform: 'uppercase', marginRight: 4,
             }}>
               Tono
@@ -341,9 +341,9 @@ export default function ConversationPage() {
                 onClick={() => setToneAndSave(t)}
                 style={{
                   padding: '3px 9px', borderRadius: 999,
-                  background: tone === t ? 'rgba(204, 255, 0, 0.18)' : 'transparent',
-                  border: tone === t ? '1px solid rgba(204, 255, 0, 0.5)' : '1px solid rgba(255, 220, 180, 0.1)',
-                  color: tone === t ? '#CCFF00' : 'rgba(250, 245, 235, 0.5)',
+                  background: tone === t ? 'rgba(16, 185, 129, 0.12)' : 'transparent',
+                  border: tone === t ? '1px solid rgba(16, 185, 129, 0.5)' : '1px solid var(--border)',
+                  color: tone === t ? 'var(--accent-primary)' : 'var(--text-muted)',
                   fontFamily: 'Space Grotesk, sans-serif', fontSize: 10, fontWeight: 600,
                   textTransform: 'capitalize', cursor: 'pointer',
                 }}
@@ -371,9 +371,9 @@ export default function ConversationPage() {
                 gap: 6,
                 padding: '8px 12px',
                 borderRadius: 999,
-                background: isBot ? 'rgba(179, 71, 255, 0.10)' : 'rgba(204, 255, 0, 0.08)',
-                border: isBot ? '1px solid rgba(179, 71, 255, 0.45)' : '1px solid rgba(204, 255, 0, 0.35)',
-                color: '#FAF5EB',
+                background: isBot ? 'rgba(179, 71, 255, 0.10)' : 'rgba(16, 185, 129, 0.08)',
+                border: isBot ? '1px solid rgba(179, 71, 255, 0.45)' : '1px solid rgba(16, 185, 129, 0.35)',
+                color: 'var(--text-primary)',
                 fontFamily: 'Space Grotesk, sans-serif',
                 fontSize: 13,
                 fontWeight: 500,
@@ -385,7 +385,7 @@ export default function ConversationPage() {
                 animationFillMode: 'backwards',
               }}
             >
-              <Sparkles size={12} color={isBot ? '#B347FF' : '#CCFF00'} />
+              <Sparkles size={12} color={isBot ? '#B347FF' : '#10B981'} />
               {s}
             </button>
           ))}
@@ -398,10 +398,10 @@ export default function ConversationPage() {
         style={{
           flexShrink: 0,
           padding: '10px 12px 14px',
-          background: 'rgba(20, 16, 9, 0.92)',
+          background: 'rgba(250, 251, 253, 0.92)',
           backdropFilter: 'blur(16px)',
           WebkitBackdropFilter: 'blur(16px)',
-          borderTop: '1px solid rgba(255, 220, 180, 0.08)',
+          borderTop: '1px solid var(--border)',
           display: 'flex', alignItems: 'center', gap: 8,
         }}
       >
@@ -416,8 +416,8 @@ export default function ConversationPage() {
                 : 'rgba(255, 255, 255, 0.05)',
               border: speech.listening
                 ? '1px solid rgba(255,91,58,0.55)'
-                : '1px solid rgba(255, 220, 180, 0.08)',
-              color: speech.listening ? '#FF5B3A' : 'rgba(250, 245, 235, 0.6)',
+                : '1px solid var(--border)',
+              color: speech.listening ? '#FF5B3A' : 'rgba(10, 21, 48, 0.6)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               cursor: 'pointer', flexShrink: 0,
               boxShadow: speech.listening ? '0 0 14px rgba(255,91,58,0.45)' : 'none',
@@ -432,8 +432,8 @@ export default function ConversationPage() {
             style={{
               width: 38, height: 38, borderRadius: 12,
               background: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid rgba(255, 220, 180, 0.08)',
-              color: 'rgba(250, 245, 235, 0.6)',
+              border: '1px solid var(--border)',
+              color: 'rgba(10, 21, 48, 0.6)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               cursor: 'pointer', flexShrink: 0,
             }}
@@ -446,8 +446,8 @@ export default function ConversationPage() {
             flex: 1,
             display: 'flex', alignItems: 'center', gap: 8,
             padding: '0 12px',
-            background: 'rgba(255, 255, 255, 0.04)',
-            border: '1px solid rgba(255, 220, 180, 0.1)',
+            background: 'var(--bg-surface)',
+            border: '1px solid var(--border)',
             borderRadius: 20,
           }}
         >
@@ -459,11 +459,11 @@ export default function ConversationPage() {
             style={{
               flex: 1, padding: '10px 0',
               background: 'transparent', border: 'none', outline: 'none',
-              color: '#FAF5EB', fontSize: 14,
+              color: 'var(--text-primary)', fontSize: 14,
               fontFamily: 'Space Grotesk, sans-serif',
             }}
           />
-          <Smile size={18} color="rgba(250, 245, 235, 0.5)" />
+          <Smile size={18} color="rgba(10, 21, 48, 0.5)" />
         </div>
         <button
           onClick={send}
@@ -471,13 +471,13 @@ export default function ConversationPage() {
           style={{
             width: 42, height: 42, borderRadius: '50%',
             background: draft.trim()
-              ? 'linear-gradient(135deg, #CCFF00, #FFB800)'
-              : 'rgba(255, 255, 255, 0.06)',
-            color: draft.trim() ? '#0F0D0A' : 'rgba(250, 245, 235, 0.3)',
+              ? 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))'
+              : 'var(--border)',
+            color: draft.trim() ? '#FAFBFD' : 'var(--text-dim)',
             border: 'none',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             cursor: draft.trim() ? 'pointer' : 'default',
-            boxShadow: draft.trim() ? '0 4px 14px rgba(204, 255, 0, 0.4)' : 'none',
+            boxShadow: draft.trim() ? '0 4px 14px rgba(16, 185, 129, 0.4)' : 'none',
             flexShrink: 0,
             transition: 'all 200ms',
           }}

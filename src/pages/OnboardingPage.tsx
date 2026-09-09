@@ -13,13 +13,13 @@ export default function OnboardingPage() {
   useEffect(() => { setMounted(true) }, [])
 
   const CHIPS = [
-    { label: 'jugadores',    value: '12K+', color: '#CCFF00', delay: 0.2 },
-    { label: 'online ahora', value: '847',  color: '#FFB800', delay: 0.35 },
-    { label: 'goles hoy',    value: '2.3K', color: '#FFB800', delay: 0.5 },
+    { label: 'jugadores',    value: '12K+', color: '#10B981', delay: 0.2 },
+    { label: 'online ahora', value: '847',  color: '#5DC3FF', delay: 0.35 },
+    { label: 'goles hoy',    value: '2.3K', color: '#34D399', delay: 0.5 },
   ]
 
   return (
-    <div style={{ position: 'absolute', inset: 0, background: 'var(--bg-deep, #0F0D0A)', overflow: 'hidden' }}>
+    <div style={{ position: 'absolute', inset: 0, background: '#0A1530', overflow: 'hidden' }}>
       {/* Stadium backgrounds */}
       <div style={{ position: 'absolute', inset: 0, zIndex: 1 }}>
         <EpicStadiumBackground interval={5500} initial={0} showDots />
@@ -30,7 +30,7 @@ export default function OnboardingPage() {
         style={{
           position: 'absolute', inset: 0, zIndex: 2,
           background:
-            'linear-gradient(180deg, rgba(15,13,10,0.3) 0%, rgba(15,13,10,0.5) 40%, rgba(15,13,10,0.92) 75%, rgba(15,13,10,0.98) 100%)',
+            'linear-gradient(180deg, rgba(10,21,48,0.3) 0%, rgba(10,21,48,0.5) 40%, rgba(10,21,48,0.92) 75%, rgba(10,21,48,0.98) 100%)',
         }}
       />
 
@@ -38,9 +38,9 @@ export default function OnboardingPage() {
       <div style={{ position: 'absolute', inset: 0, zIndex: 2 }}>
         <FloatingOrbs
           orbs={[
-            { x: 15, y: 25, size: 200, color: '#CCFF00', opacity: 0.25, dur: 14 },
-            { x: 85, y: 30, size: 160, color: '#FFB800', opacity: 0.22, dur: 18 },
-            { x: 70, y: 85, size: 240, color: '#CCFF00', opacity: 0.18, dur: 22 },
+            { x: 15, y: 25, size: 200, color: '#10B981', opacity: 0.25, dur: 14 },
+            { x: 85, y: 30, size: 160, color: '#5DC3FF', opacity: 0.20, dur: 18 },
+            { x: 70, y: 85, size: 240, color: '#34D399', opacity: 0.16, dur: 22 },
           ]}
         />
       </div>
@@ -62,24 +62,31 @@ export default function OnboardingPage() {
       >
         <div
           style={{
-            width: 32, height: 32, borderRadius: 8, background: '#CCFF00',
+            width: 32, height: 32, borderRadius: 8,
+            background: 'linear-gradient(135deg, #10B981, #5DC3FF)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            boxShadow: '0 0 16px rgba(204, 255, 0, 0.5)',
+            boxShadow: '0 0 16px rgba(16, 185, 129, 0.5)',
             animation: 'pulse-glow 3s ease-in-out infinite',
           }}
         >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="#0F0D0A">
-            <circle cx="12" cy="12" r="9" fill="none" stroke="#0F0D0A" strokeWidth="1.8" />
-            <path d="M12 4l2.5 3.5L12 10l-2.5-2.5zM4 12l3.5 2.5L10 12l-2.5-2.5zM20 12l-3.5 2.5L14 12l2.5-2.5zM12 20l-2.5-3.5L12 14l2.5 2.5z" />
-          </svg>
+          <span style={{ fontFamily: 'Fraunces, Georgia, serif', fontWeight: 900, fontSize: 18, color: '#091A12' }}>G</span>
         </div>
-        <div
-          style={{
-            fontFamily: 'Archivo, sans-serif', fontWeight: 800,
-            fontSize: 17, color: '#FAF5EB', letterSpacing: '0.02em',
-          }}
-        >
-          GRADA
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+          <div
+            style={{
+              fontFamily: 'Fraunces, Georgia, serif', fontWeight: 700,
+              fontSize: 17, color: '#F0F8F4', letterSpacing: '0.02em',
+            }}
+          >
+            GRADA
+          </div>
+          <div style={{
+            fontFamily: 'JetBrains Mono, monospace', fontWeight: 500,
+            fontSize: 9, color: '#34D399', letterSpacing: '0.1em',
+            textTransform: 'uppercase',
+          }}>
+            Grassroots Network
+          </div>
         </div>
       </div>
 
@@ -119,14 +126,14 @@ export default function OnboardingPage() {
 
       {/* Main content block */}
       <div style={{ position: 'absolute', bottom: 130, left: 24, right: 24, zIndex: 5 }}>
-        {/* Tag chip "En vivo" */}
+        {/* Tag chip */}
         <div
           style={{
             display: 'inline-flex', alignItems: 'center', gap: 8,
             padding: '6px 12px 6px 6px', borderRadius: 999,
-            background: 'rgba(204, 255, 0, 0.15)',
-            border: '1px solid rgba(204, 255, 0, 0.4)',
-            fontSize: 11, fontWeight: 700, color: '#CCFF00',
+            background: 'rgba(16, 185, 129, 0.15)',
+            border: '1px solid rgba(16, 185, 129, 0.4)',
+            fontSize: 11, fontWeight: 700, color: '#10B981',
             fontFamily: 'Space Grotesk, sans-serif',
             letterSpacing: '0.05em', textTransform: 'uppercase',
             marginBottom: 18, whiteSpace: 'nowrap',
@@ -139,11 +146,11 @@ export default function OnboardingPage() {
             <div
               style={{
                 position: 'absolute', inset: 0, width: 6, height: 6, borderRadius: '50%',
-                background: '#CCFF00', boxShadow: '0 0 6px #CCFF00', top: 4, left: 4,
+                background: '#10B981', boxShadow: '0 0 6px #10B981', top: 4, left: 4,
               }}
             />
             <div style={{ position: 'absolute', inset: 0 }}>
-              <PulseRings size={14} color="#CCFF00" count={2} />
+              <PulseRings size={14} color="#10B981" count={2} />
             </div>
           </div>
           En vivo · Para el fútbol base
@@ -152,9 +159,9 @@ export default function OnboardingPage() {
         {/* Headline */}
         <div
           style={{
-            fontFamily: 'Archivo, sans-serif', fontWeight: 800,
-            fontSize: 42, lineHeight: 1.02, color: '#FAF5EB',
-            letterSpacing: '-0.02em', marginBottom: 14,
+            fontFamily: 'Fraunces, Georgia, serif', fontWeight: 900,
+            fontSize: 42, lineHeight: 1.02, color: '#F0F8F4',
+            letterSpacing: '-0.022em', marginBottom: 14,
           }}
         >
           {['Tu equipo.', 'Tu comunidad.', 'Tu cancha.'].map((line, i) => (
@@ -165,8 +172,8 @@ export default function OnboardingPage() {
                 opacity: mounted ? 1 : 0,
                 transform: mounted ? 'translateY(0)' : 'translateY(24px)',
                 transition: `all 0.7s cubic-bezier(.2,.8,.2,1) ${0.7 + i * 0.1}s`,
-                color: i === 2 ? '#CCFF00' : '#FAF5EB',
-                textShadow: i === 2 ? '0 0 24px rgba(204, 255, 0, 0.6)' : 'none',
+                color: i === 2 ? '#10B981' : '#F0F8F4',
+                textShadow: i === 2 ? '0 0 24px rgba(16, 185, 129, 0.6)' : 'none',
               }}
             >
               {line}
@@ -177,8 +184,8 @@ export default function OnboardingPage() {
         {/* Subhead */}
         <div
           style={{
-            fontFamily: 'Space Grotesk, sans-serif',
-            fontSize: 15, color: 'rgba(250, 245, 235, 0.78)',
+            fontFamily: 'Inter, sans-serif',
+            fontSize: 15, color: 'rgba(240, 248, 244, 0.75)',
             lineHeight: 1.45, marginBottom: 24, maxWidth: 320,
             opacity: mounted ? 1 : 0,
             transition: 'opacity 0.7s 1.1s',
@@ -193,13 +200,13 @@ export default function OnboardingPage() {
           style={{
             position: 'relative',
             height: 56, width: '100%', borderRadius: 14,
-            background: 'linear-gradient(90deg, #CCFF00, #FFB800, #CCFF00)',
+            background: 'linear-gradient(90deg, #10B981, #5DC3FF, #10B981)',
             backgroundSize: '200% 100%',
             border: 'none', cursor: 'pointer',
             fontFamily: 'Space Grotesk, sans-serif',
-            fontWeight: 700, fontSize: 15, color: '#0F0D0A',
+            fontWeight: 700, fontSize: 15, color: '#091A12',
             boxShadow:
-              '0 8px 24px rgba(204, 255, 0, 0.35), 0 0 40px rgba(204, 255, 0, 0.2), 0 2px 6px rgba(0,0,0,0.3)',
+              '0 8px 24px rgba(16, 185, 129, 0.35), 0 0 40px rgba(16, 185, 129, 0.2), 0 2px 6px rgba(0,0,0,0.3)',
             transition: 'transform 0.15s',
             overflow: 'hidden',
             animation: 'gradient-shift 3s ease-in-out infinite',
@@ -210,7 +217,7 @@ export default function OnboardingPage() {
           <div
             style={{
               position: 'absolute', top: 0, bottom: 0, width: 60,
-              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent)',
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent)',
               animation: 'shimmer 2.5s linear infinite', pointerEvents: 'none',
             }}
           />
@@ -223,7 +230,7 @@ export default function OnboardingPage() {
         style={{
           position: 'absolute', bottom: 40, left: 0, right: 0, zIndex: 5,
           textAlign: 'center',
-          color: 'rgba(250, 245, 235, 0.7)', fontSize: 14,
+          color: 'rgba(240, 248, 244, 0.7)', fontSize: 14,
           fontFamily: 'Space Grotesk, sans-serif',
           opacity: mounted ? 1 : 0,
           transition: 'opacity 0.6s 1.3s',
@@ -234,7 +241,7 @@ export default function OnboardingPage() {
           onClick={() => nav('/login')}
           style={{
             background: 'transparent', border: 'none', cursor: 'pointer',
-            color: '#CCFF00', fontWeight: 700,
+            color: '#10B981', fontWeight: 700,
             fontFamily: 'inherit', fontSize: 14,
           }}
         >
@@ -242,7 +249,6 @@ export default function OnboardingPage() {
         </button>
       </div>
 
-      {/* Local keyframes used in this page */}
       <style>{`
         @keyframes pulse-glow {
           0%, 100% { opacity: 0.7; transform: scale(1); }
