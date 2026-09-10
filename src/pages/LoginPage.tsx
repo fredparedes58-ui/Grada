@@ -2,14 +2,16 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import { acceder } from '../lib/auth'
 
 export default function LoginPage() {
   const nav = useNavigate()
-  const { login } = useAuth()
+  const { setToast } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPwd, setShowPwd] = useState(false)
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({})
+  const [loading, setLoading] = useState(false)
+  const [errors, setErrors] = useState<{ email?: string; password?: string; general?: string }>({})
 
   function validate() {
     const e: typeof errors = {}
@@ -19,10 +21,19 @@ export default function LoginPage() {
     return Object.keys(e).length === 0
   }
 
-  function handleSubmit() {
-    if (!validate()) return
-    login({ name: 'Carlos Martínez', email, position: 'Centrocampista', team: 'Valencia BC' })
-    nav('/home')
+  async function handleSubmit() {
+    if (!validate() || loading) return
+    setLoading(true)
+    setErrors({})
+    try {
+      await acceder({ email, password })
+      setToast('¡Bienvenido de vuelta!')
+      nav('/home')
+    } catch (err: unknown) {
+      setErrors({ general: err instanceof Error ? err.message : 'Error al iniciar sesión' })
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -161,23 +172,30 @@ export default function LoginPage() {
           </div>
         </div>
 
+        {errors.general && (
+          <div style={{ marginBottom: 12, padding: '10px 14px', borderRadius: 10, background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)', color: '#EF4444', fontFamily: 'Inter, sans-serif', fontSize: 13 }}>
+            {errors.general}
+          </div>
+        )}
+
         {/* CTA button */}
         <button
           onClick={handleSubmit}
+          disabled={loading}
           style={{
             height: 54, width: '100%', borderRadius: 14,
-            background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',
-            border: 'none', cursor: 'pointer',
+            background: loading ? 'var(--border)' : 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',
+            border: 'none', cursor: loading ? 'default' : 'pointer',
             fontFamily: 'Space Grotesk, sans-serif',
             fontWeight: 700, fontSize: 15, color: '#FAFBFD',
-            boxShadow: '0 6px 20px rgba(16, 185, 129, 0.3), 0 2px 6px rgba(16, 185, 129, 0.2)',
+            boxShadow: loading ? 'none' : '0 6px 20px rgba(16, 185, 129, 0.3), 0 2px 6px rgba(16, 185, 129, 0.2)',
             transition: 'transform 0.12s, box-shadow 0.12s',
             marginBottom: 20,
           }}
-          onMouseDown={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.98)' }}
+          onMouseDown={e => { if (!loading) (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.98)' }}
           onMouseUp={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)' }}
         >
-          Iniciar sesión
+          {loading ? 'Entrando…' : 'Iniciar sesión'}
         </button>
 
         <div

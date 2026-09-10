@@ -2,15 +2,17 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { User, Mail, Lock, Eye, EyeOff } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import { registrar } from '../lib/auth'
 
 export default function RegisterPage() {
   const nav = useNavigate()
-  const { login } = useAuth()
+  const { setToast } = useAuth()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPwd, setShowPwd] = useState(false)
-  const [errors, setErrors] = useState<{ name?: string; email?: string; password?: string }>({})
+  const [loading, setLoading] = useState(false)
+  const [errors, setErrors] = useState<{ name?: string; email?: string; password?: string; general?: string }>({})
 
   function validate() {
     const e: typeof errors = {}
@@ -21,10 +23,19 @@ export default function RegisterPage() {
     return Object.keys(e).length === 0
   }
 
-  function handleSubmit() {
-    if (!validate()) return
-    login({ name, email, position: 'Centrocampista', team: 'Valencia BC' })
-    nav('/home')
+  async function handleSubmit() {
+    if (!validate() || loading) return
+    setLoading(true)
+    setErrors({})
+    try {
+      await registrar({ email, password, nombre: name.trim() })
+      setToast(`¡Bienvenido, ${name.split(' ')[0]}!`)
+      nav('/home')
+    } catch (err: unknown) {
+      setErrors({ general: err instanceof Error ? err.message : 'Error al registrarse' })
+    } finally {
+      setLoading(false)
+    }
   }
 
   const fields = [
@@ -134,23 +145,30 @@ export default function RegisterPage() {
           })}
         </div>
 
+        {errors.general && (
+          <div style={{ marginBottom: 12, padding: '10px 14px', borderRadius: 10, background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)', color: '#EF4444', fontFamily: 'Inter, sans-serif', fontSize: 13 }}>
+            {errors.general}
+          </div>
+        )}
+
         {/* CTA */}
         <button
           onClick={handleSubmit}
+          disabled={loading}
           style={{
             height: 54, width: '100%', borderRadius: 14,
-            background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',
-            border: 'none', cursor: 'pointer',
+            background: loading ? 'var(--border)' : 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',
+            border: 'none', cursor: loading ? 'default' : 'pointer',
             fontFamily: 'Space Grotesk, sans-serif',
             fontWeight: 700, fontSize: 15, color: '#FAFBFD',
-            boxShadow: '0 6px 20px rgba(16, 185, 129, 0.3)',
+            boxShadow: loading ? 'none' : '0 6px 20px rgba(16, 185, 129, 0.3)',
             transition: 'transform 0.12s',
             marginBottom: 20,
           }}
-          onMouseDown={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.98)' }}
+          onMouseDown={e => { if (!loading) (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.98)' }}
           onMouseUp={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)' }}
         >
-          Crear cuenta
+          {loading ? 'Creando cuenta…' : 'Crear cuenta'}
         </button>
 
         <div style={{ textAlign: 'center', fontFamily: 'Inter, sans-serif', fontSize: 14, color: 'var(--text-muted)' }}>

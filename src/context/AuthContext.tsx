@@ -1,52 +1,56 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
+import { observarSesion, cerrarSesion } from '../lib/auth'
+import type { User as FirebaseUser } from 'firebase/auth'
 
 export interface User {
+  uid: string
   name: string
   email: string
+  avatarUrl?: string
   position?: string
   team?: string
 }
 
 interface AuthCtx {
   user: User | null
-  login: (u: User) => void
-  logout: () => void
+  firebaseUser: FirebaseUser | null
+  loading: boolean
+  logout: () => Promise<void>
   updateUser: (patch: Partial<User>) => void
   toast: string
   setToast: (s: string) => void
 }
 
-const STORAGE_KEY = 'grada_user_v1'
-
 const Ctx = createContext<AuthCtx | null>(null)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY)
-      return raw ? JSON.parse(raw) : null
-    } catch {
-      return null
-    }
-  })
+  const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null)
+  const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
   const [toast, setToast] = useState('')
 
   useEffect(() => {
-    try {
-      if (user) localStorage.setItem(STORAGE_KEY, JSON.stringify(user))
-      else localStorage.removeItem(STORAGE_KEY)
-    } catch {
-      /* ignore */
-    }
-  }, [user])
+    const unsub = observarSesion((fbUser) => {
+      setFirebaseUser(fbUser)
+      if (fbUser) {
+        setUser({
+          uid:       fbUser.uid,
+          name:      fbUser.displayName ?? fbUser.email ?? 'Jugador',
+          email:     fbUser.email ?? '',
+          avatarUrl: fbUser.photoURL ?? '',
+        })
+      } else {
+        setUser(null)
+      }
+      setLoading(false)
+    })
+    return unsub
+  }, [])
 
-  function login(u: User) {
-    setUser(u)
-    setToast(`¡Bienvenido, ${u.name.split(' ')[0]}!`)
-  }
-
-  function logout() {
+  async function logout() {
+    await cerrarSesion()
     setUser(null)
+    setFirebaseUser(null)
     setToast('Sesión cerrada')
   }
 
@@ -55,7 +59,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <Ctx.Provider value={{ user, login, logout, updateUser, toast, setToast }}>
+    <Ctx.Provider value={{ user, firebaseUser, loading, logout, updateUser, toast, setToast }}>
       {children}
     </Ctx.Provider>
   )
