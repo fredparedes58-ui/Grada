@@ -28,7 +28,7 @@ export default function RegisterPage() {
     setLoading(true)
     setErrors({})
     try {
-      await registrar({ email, password, nombre: name.trim() })
+      await registrar({ email, password, nombre: name.trim(), apodo: '', ciudad: '', posicion: '' })
       setToast(`¡Bienvenido, ${name.split(' ')[0]}!`)
       nav('/home')
     } catch (err: unknown) {

@@ -30,7 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [toast, setToast] = useState('')
 
   useEffect(() => {
-    const unsub = observarSesion((fbUser) => {
+    const unsub = observarSesion((fbUser: import('firebase/auth').User | null) => {
       setFirebaseUser(fbUser)
       if (fbUser) {
         setUser({
