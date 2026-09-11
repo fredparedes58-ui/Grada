@@ -1,8 +1,19 @@
 import {
-  collection, doc, query, where, orderBy, limit,
+  collection, collectionGroup, doc, query, where, orderBy, limit,
   getDocs, getDoc, updateDoc, serverTimestamp, writeBatch,
 } from 'firebase/firestore'
 import { db, auth } from './firebase'
+
+// Equipos de los que el usuario actual es MIEMBRO (para mensajería, etc.).
+export async function misEquiposComoMiembro() {
+  const uid = auth.currentUser?.uid
+  if (!uid) return []
+  const snap = await getDocs(query(collectionGroup(db, 'miembros'), where('uid', '==', uid)))
+  return snap.docs.map(d => ({
+    equipoId: d.ref.parent.parent.id,
+    rol: d.data().rol,
+  }))
+}
 
 // Actualiza el escudo del equipo (solo admin, segun las reglas).
 export async function actualizarEscudo(equipoId, url) {
@@ -42,6 +53,7 @@ export async function crearEquipo({ nombre, ciudad, categoria, escudoUrl = '' })
   })
   // El creador como admin va en el mismo batch — las reglas lo exigen
   batch.set(doc(db, 'equipos', equipoRef.id, 'miembros', uid), {
+    uid,
     rol: 'admin',
     dorsal: null,
     desde: serverTimestamp(),

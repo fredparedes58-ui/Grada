@@ -4,6 +4,9 @@ import { ArrowLeft, Send, Smile, Paperclip, Sparkles, Mic, MicOff } from 'lucide
 import { useSpeechRecognition } from '../hooks/useSpeechRecognition'
 import { suggestReplies, type Tone } from '../lib/aiMocks'
 import { assistantAgent } from '../ai/agents/assistantAgent'
+import { useAuth } from '../context/AuthContext'
+import { escucharMensajes, enviarMensaje, marcarLeido } from '../lib/mensajes'
+import { obtenerAutores } from '../lib/muro'
 
 interface Citation { topic: string; source?: string }
 
@@ -12,8 +15,15 @@ interface Message {
   text: string
   mine: boolean
   time: string
+  senderUid?: string
   citations?: Citation[]
   confidence?: number
+}
+
+function fmtTime(ts: unknown): string {
+  const d = (ts as { toDate?: () => Date } | null)?.toDate?.()
+  if (!d) return `${new Date().getHours().toString().padStart(2, '0')}:${new Date().getMinutes().toString().padStart(2, '0')}`
+  return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`
 }
 
 const INITIAL: Record<string, Message[]> = {
@@ -34,18 +44,26 @@ function nowTime() {
 export default function ConversationPage() {
   const nav = useNavigate()
   const loc = useLocation()
-  const state = (loc.state ?? {}) as { name?: string; badge?: string; color?: string; active?: boolean; bot?: boolean }
+  const { user } = useAuth()
+  const myUid = user?.uid
+  const state = (loc.state ?? {}) as { name?: string; badge?: string; color?: string; active?: boolean; bot?: boolean; convId?: string; tipo?: string; participantes?: string[] }
   const name   = state.name   ?? 'Chat'
   const badge  = state.badge  ?? 'CH'
   const color  = state.color  ?? '#10B981'
   const active = state.active ?? false
   const isBot  = state.bot    ?? false
+  const convId = state.convId
+  const tipo   = state.tipo
+  const isReal = !!convId && !isBot
 
-  const [messages, setMessages] = useState<Message[]>(
+  const [localMessages, setLocalMessages] = useState<Message[]>(
     isBot
       ? [{ id: 'b0', text: '¡Hola! 👋 Soy el asistente de FútbolBase. Preguntame lo que quieras: predicciones, equipos, chats, highlights, Coach AI, Weekly Digest, perfil… lo que sea.', mine: false, time: nowTime() }]
       : INITIAL.default,
   )
+  const [fsMessages, setFsMessages] = useState<Message[]>([])
+  const [nombres, setNombres] = useState<Record<string, string>>({})
+  const messages = isReal ? fsMessages : localMessages
   const [botSuggestions, setBotSuggestions] = useState<string[]>(
     isBot ? ['¿Cómo hago una predicción?', '¿Qué es el Coach AI?', '¿Cómo uno a un equipo?'] : [],
   )
@@ -86,6 +104,41 @@ export default function ConversationPage() {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
   }, [messages, typing])
 
+  // Chat real: escucha mensajes en vivo y marca leído.
+  useEffect(() => {
+    if (!isReal || !convId) return
+    marcarLeido(convId).catch(() => {})
+    const unsub = escucharMensajes(convId, (raw: Array<{ id: string }>) => {
+      setFsMessages(raw.map((m: { id: string }) => {
+        const d = m as { texto?: string; senderUid?: string; creadoEn?: unknown }
+        return {
+          id: m.id,
+          text: d.texto ?? '',
+          mine: d.senderUid === myUid,
+          time: fmtTime(d.creadoEn),
+          senderUid: d.senderUid,
+        }
+      }))
+      marcarLeido(convId).catch(() => {})
+    })
+    return unsub
+  }, [isReal, convId, myUid])
+
+  // Nombres de los participantes (para mostrar el autor en chats de grupo).
+  useEffect(() => {
+    if (!isReal || tipo !== 'grupo' || !state.participantes?.length) return
+    obtenerAutores(state.participantes).then(a => {
+      const autores = a as Record<string, { nombre?: string; apodo?: string } | null>
+      const map: Record<string, string> = {}
+      state.participantes!.forEach(uid => {
+        const p = autores[uid]
+        map[uid] = p?.apodo || p?.nombre || 'Jugador'
+      })
+      setNombres(map)
+    }).catch(() => {})
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isReal, tipo])
+
   // Smart-reply chips: se calculan sobre el último mensaje ajeno.
   // Se ocultan cuando el usuario ya está escribiendo o cuando el último mensaje es propio.
   const suggestions = useMemo(() => {
@@ -102,7 +155,7 @@ export default function ConversationPage() {
     if (isBot) {
       // En modo asistente, enviar directamente al tocar el chip.
       const msg: Message = { id: `m${Date.now()}`, text, mine: true, time: nowTime() }
-      setMessages(prev => [...prev, msg])
+      setLocalMessages(prev => [...prev, msg])
       setBotSuggestions([])
       setTimeout(() => setTyping(true), 400)
       void (async () => {
@@ -110,7 +163,7 @@ export default function ConversationPage() {
         setTimeout(() => {
           setTyping(false)
           const d = r.data
-          setMessages(prev => [...prev, {
+          setLocalMessages(prev => [...prev, {
             id: `b${Date.now() + 1}`,
             text: d?.reply ?? '...', mine: false, time: nowTime(),
             citations: d?.citations, confidence: d?.confidence,
@@ -126,8 +179,17 @@ export default function ConversationPage() {
   function send() {
     const text = draft.trim()
     if (!text) return
+
+    // Chat real: envía a Firestore (el listener lo pinta). Solo llega al receptor.
+    if (isReal && convId) {
+      setDraft('')
+      if ('vibrate' in navigator) navigator.vibrate(15)
+      enviarMensaje(convId, text).catch(() => {})
+      return
+    }
+
     const msg: Message = { id: `m${Date.now()}`, text, mine: true, time: nowTime() }
-    setMessages(prev => [...prev, msg])
+    setLocalMessages(prev => [...prev, msg])
     setDraft('')
     if ('vibrate' in navigator) navigator.vibrate(15)
 
@@ -139,7 +201,7 @@ export default function ConversationPage() {
         setTimeout(() => {
           setTyping(false)
           const d = r.data
-          setMessages(prev => [...prev, {
+          setLocalMessages(prev => [...prev, {
             id: `b${Date.now() + 1}`,
             text: d?.reply ?? '...', mine: false, time: nowTime(),
             citations: d?.citations, confidence: d?.confidence,
@@ -154,7 +216,7 @@ export default function ConversationPage() {
     setTimeout(() => setTyping(true), 500)
     setTimeout(() => {
       setTyping(false)
-      setMessages(prev => [...prev, {
+      setLocalMessages(prev => [...prev, {
         id: `m${Date.now() + 1}`,
         text: '¡Genial! Nos vemos en la cancha 👊',
         mine: false, time: nowTime(),
@@ -241,6 +303,11 @@ export default function ConversationPage() {
               animation: 'slide-up-fade 220ms ease-out',
             }}
           >
+            {!m.mine && tipo === 'grupo' && m.senderUid && (
+              <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontSize: 10, color: 'var(--text-dim)', marginBottom: 2, paddingLeft: 4 }}>
+                {nombres[m.senderUid] ?? ''}
+              </div>
+            )}
             <div
               style={{
                 padding: '10px 14px',
