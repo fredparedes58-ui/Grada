@@ -41,8 +41,8 @@ export default function TeamSubscribeSheet({ open, onClose, team, existing, onSa
     width: 44,
     height: 26,
     borderRadius: 13,
-    background: active ? color : 'rgba(255, 255, 255, 0.08)',
-    border: `1.5px solid ${active ? color : 'rgba(255, 220, 180, 0.15)'}`,
+    background: active ? color : 'rgba(10, 21, 48, 0.08)',
+    border: `1.5px solid ${active ? color : 'var(--border)'}`,
     position: 'relative' as const,
     cursor: 'pointer',
     transition: 'all 0.2s',
@@ -57,7 +57,7 @@ export default function TeamSubscribeSheet({ open, onClose, team, existing, onSa
     width: 18,
     height: 18,
     borderRadius: '50%',
-    background: active ? '#0F0D0A' : 'rgba(250, 245, 235, 0.5)',
+    background: active ? '#0F0D0A' : 'rgba(10, 21, 48, 0.35)',
     transition: 'left 0.2s',
   })
 
@@ -85,7 +85,7 @@ export default function TeamSubscribeSheet({ open, onClose, team, existing, onSa
       label: 'Resultado final',
       desc: 'Notificación al pitido final',
       icon: Flag,
-      color: '#CCFF00',
+      color: '#10B981',
       value: finalResult,
       set: setFinalResult,
     },
@@ -96,7 +96,7 @@ export default function TeamSubscribeSheet({ open, onClose, team, existing, onSa
       open={open}
       onClose={onClose}
       title={isEdit ? 'Editar suscripción' : 'Seguir equipo'}
-      accent={team?.color ?? '#CCFF00'}
+      accent={team?.color ?? '#10B981'}
       height="65%"
     >
       {team && (
@@ -105,7 +105,7 @@ export default function TeamSubscribeSheet({ open, onClose, team, existing, onSa
           <div style={{
             display: 'flex', alignItems: 'center', gap: 14,
             padding: '4px 0 20px',
-            borderBottom: '1px solid rgba(255, 220, 180, 0.07)',
+            borderBottom: '1px solid var(--border)',
             marginBottom: 20,
           }}>
             <div style={{
@@ -122,13 +122,13 @@ export default function TeamSubscribeSheet({ open, onClose, team, existing, onSa
             <div>
               <div style={{
                 fontFamily: 'Archivo', fontWeight: 800, fontSize: 18,
-                color: '#FAF5EB', letterSpacing: '-0.01em',
+                color: 'var(--text-primary)', letterSpacing: '-0.01em',
               }}>
                 {team.club_name}
               </div>
               <div style={{
                 fontFamily: 'Space Grotesk', fontSize: 12,
-                color: 'rgba(250, 245, 235, 0.5)', marginTop: 2,
+                color: 'var(--text-muted)', marginTop: 2,
               }}>
                 Datos oficiales FFCV
               </div>
@@ -149,17 +149,17 @@ export default function TeamSubscribeSheet({ open, onClose, team, existing, onSa
                   style={{
                     display: 'flex', alignItems: 'center', gap: 12,
                     padding: '12px 14px', borderRadius: 14,
-                    background: o.value ? `${o.color}0e` : 'rgba(255, 255, 255, 0.03)',
-                    border: `1px solid ${o.value ? o.color + '33' : 'rgba(255, 220, 180, 0.07)'}`,
+                    background: o.value ? `${o.color}0e` : 'rgba(10, 21, 48, 0.03)',
+                    border: `1px solid ${o.value ? o.color + '33' : 'var(--border)'}`,
                     cursor: 'pointer',
                     transition: 'all 0.18s',
                   }}
                 >
                   <div style={{
                     width: 36, height: 36, borderRadius: 10,
-                    background: o.value ? `${o.color}22` : 'rgba(255, 255, 255, 0.06)',
+                    background: o.value ? `${o.color}22` : 'rgba(10, 21, 48, 0.06)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    color: o.value ? o.color : 'rgba(250, 245, 235, 0.4)',
+                    color: o.value ? o.color : 'var(--text-dim)',
                     flexShrink: 0,
                     transition: 'all 0.18s',
                   }}>
@@ -168,13 +168,13 @@ export default function TeamSubscribeSheet({ open, onClose, team, existing, onSa
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{
                       fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 13,
-                      color: o.value ? '#FAF5EB' : 'rgba(250, 245, 235, 0.65)',
+                      color: o.value ? 'var(--text-primary)' : 'var(--text-muted)',
                     }}>
                       {o.label}
                     </div>
                     <div style={{
                       fontFamily: 'Space Grotesk', fontSize: 11,
-                      color: 'rgba(250, 245, 235, 0.4)', marginTop: 2,
+                      color: 'var(--text-dim)', marginTop: 2,
                     }}>
                       {o.desc}
                     </div>
@@ -194,13 +194,13 @@ export default function TeamSubscribeSheet({ open, onClose, team, existing, onSa
             disabled={saving}
             style={{
               width: '100%', padding: '14px', borderRadius: 14,
-              background: saving ? 'rgba(204, 255, 0, 0.4)' : 'linear-gradient(135deg, #CCFF00, #FFB800)',
+              background: saving ? 'rgba(16, 185, 129, 0.4)' : 'linear-gradient(135deg, #10B981, #FFB800)',
               border: 'none', color: '#0F0D0A',
               fontFamily: 'Archivo', fontWeight: 800, fontSize: 13,
               letterSpacing: '0.06em', textTransform: 'uppercase',
               cursor: saving ? 'default' : 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-              boxShadow: saving ? 'none' : '0 6px 20px rgba(204, 255, 0, 0.35)',
+              boxShadow: saving ? 'none' : '0 6px 20px rgba(16, 185, 129, 0.35)',
               transition: 'all 0.2s',
             }}
           >

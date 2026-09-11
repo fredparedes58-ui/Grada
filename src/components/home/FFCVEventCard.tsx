@@ -35,10 +35,10 @@ const SEVERITY_CONFIG = {
     Icon: Zap,
   },
   info: {
-    bg: 'linear-gradient(135deg, rgba(204, 255, 0, 0.12), rgba(204, 255, 0, 0.04))',
-    border: 'rgba(204, 255, 0, 0.30)',
-    color: '#CCFF00',
-    glow: 'rgba(204, 255, 0, 0.15)',
+    bg: 'linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(16, 185, 129, 0.04))',
+    border: 'rgba(16, 185, 129, 0.30)',
+    color: '#10B981',
+    glow: 'rgba(16, 185, 129, 0.15)',
     Icon: CheckCircle2,
   },
 }
@@ -98,10 +98,10 @@ export default function FFCVEventCard({ event, match, onTap }: Props) {
         {/* FFCV badge */}
         <div style={{
           padding: '2px 8px', borderRadius: 999,
-          background: 'rgba(255, 255, 255, 0.05)',
-          border: '1px solid rgba(255, 220, 180, 0.12)',
+          background: 'rgba(10, 21, 48, 0.04)',
+          border: '1px solid var(--border)',
           fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 9,
-          color: 'rgba(250, 245, 235, 0.5)', letterSpacing: '0.08em',
+          color: 'var(--text-muted)', letterSpacing: '0.08em',
         }}>
           FFCV · {event.detected_at}
         </div>
@@ -113,17 +113,17 @@ export default function FFCVEventCard({ event, match, onTap }: Props) {
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, minWidth: 0 }}>
           <div style={{
             width: 32, height: 32, borderRadius: 8, flexShrink: 0,
-            background: homeTeam ? `${homeTeam.color}22` : 'rgba(255,255,255,0.08)',
-            border: `1.5px solid ${homeTeam?.color ?? 'rgba(255,220,180,0.15)'}55`,
+            background: homeTeam ? `${homeTeam.color}22` : 'var(--bg-surface)',
+            border: `1.5px solid ${homeTeam?.color ?? '#0A1530'}55`,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontFamily: 'Archivo', fontWeight: 800, fontSize: 11,
-            color: homeTeam?.color ?? '#FAF5EB',
+            color: homeTeam?.color ?? 'var(--text-primary)',
           }}>
             {homeTeam?.initials ?? '?'}
           </div>
           <span style={{
             fontFamily: 'Space Grotesk', fontWeight: 600, fontSize: 12,
-            color: '#FAF5EB', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+            color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
           }}>
             {homeTeam?.club_name ?? 'Local'}
           </span>
@@ -132,7 +132,7 @@ export default function FFCVEventCard({ event, match, onTap }: Props) {
         {/* Score or VS */}
         <div style={{
           fontFamily: 'Archivo', fontWeight: 900, fontSize: isLive ? 20 : 14,
-          color: isLive ? cfg.color : 'rgba(250, 245, 235, 0.5)',
+          color: isLive ? cfg.color : 'var(--text-muted)',
           letterSpacing: '-0.02em', flexShrink: 0,
           textShadow: isLive ? `0 0 12px ${cfg.color}88` : 'none',
           minWidth: 44, textAlign: 'center',
@@ -147,18 +147,18 @@ export default function FFCVEventCard({ event, match, onTap }: Props) {
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, minWidth: 0, justifyContent: 'flex-end' }}>
           <span style={{
             fontFamily: 'Space Grotesk', fontWeight: 600, fontSize: 12,
-            color: '#FAF5EB', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+            color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
             textAlign: 'right',
           }}>
             {awayTeam?.club_name ?? 'Visitante'}
           </span>
           <div style={{
             width: 32, height: 32, borderRadius: 8, flexShrink: 0,
-            background: awayTeam ? `${awayTeam.color}22` : 'rgba(255,255,255,0.08)',
-            border: `1.5px solid ${awayTeam?.color ?? 'rgba(255,220,180,0.15)'}55`,
+            background: awayTeam ? `${awayTeam.color}22` : 'var(--bg-surface)',
+            border: `1.5px solid ${awayTeam?.color ?? '#0A1530'}55`,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontFamily: 'Archivo', fontWeight: 800, fontSize: 11,
-            color: awayTeam?.color ?? '#FAF5EB',
+            color: awayTeam?.color ?? 'var(--text-primary)',
           }}>
             {awayTeam?.initials ?? '?'}
           </div>
@@ -168,7 +168,7 @@ export default function FFCVEventCard({ event, match, onTap }: Props) {
       {/* Event description */}
       <div style={{
         fontFamily: 'Space Grotesk', fontSize: 12, lineHeight: 1.4,
-        color: 'rgba(250, 245, 235, 0.75)',
+        color: 'var(--text-primary)',
       }}>
         {eventLabel(event.type, match)}
       </div>
@@ -176,7 +176,7 @@ export default function FFCVEventCard({ event, match, onTap }: Props) {
       {/* Competition */}
       <div style={{
         marginTop: 8, fontFamily: 'Space Grotesk', fontSize: 10,
-        color: 'rgba(250, 245, 235, 0.4)', letterSpacing: '0.05em',
+        color: 'var(--text-dim)', letterSpacing: '0.05em',
       }}>
         {event.competition_name}
       </div>

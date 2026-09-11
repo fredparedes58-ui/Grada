@@ -20,7 +20,7 @@ const SQUAD = [
 ]
 
 const RESULTS_COLOR = {
-  W: '#CCFF00',
+  W: '#10B981',
   D: '#FFB800',
   L: '#FF5B3A',
 }
@@ -140,10 +140,10 @@ export default function RecordMatchPage() {
   }
 
   return (
-    <div style={{ position: 'absolute', inset: 0, background: '#0F0D0A', overflow: 'hidden' }}>
+    <div style={{ position: 'absolute', inset: 0, background: 'var(--bg-deep)', overflow: 'hidden' }}>
       <div style={{ position: 'absolute', inset: 0, zIndex: 1 }}>
         <FloatingOrbs orbs={[
-          { x: 85, y: 10, size: 200, color: result === 'W' ? '#CCFF00' : result === 'L' ? '#FF5B3A' : '#FFB800', opacity: 0.15, dur: 18 },
+          { x: 85, y: 10, size: 200, color: result === 'W' ? '#10B981' : result === 'L' ? '#FF5B3A' : '#FFB800', opacity: 0.15, dur: 18 },
           { x: 10, y: 70, size: 240, color: '#B347FF', opacity: 0.10, dur: 24 },
         ]} />
       </div>
@@ -158,9 +158,9 @@ export default function RecordMatchPage() {
             onClick={back}
             style={{
               width: 38, height: 38, borderRadius: 10,
-              background: 'rgba(255,255,255,0.06)',
-              border: '1px solid rgba(255,220,180,0.1)',
-              color: 'rgba(250,245,235,0.8)', cursor: 'pointer',
+              background: 'rgba(10,21,48,0.04)',
+              border: '1px solid var(--border)',
+              color: 'var(--text-primary)', cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               flexShrink: 0,
             }}
@@ -170,7 +170,7 @@ export default function RecordMatchPage() {
           <div style={{ flex: 1 }}>
             <div style={{
               fontFamily: 'Archivo', fontWeight: 800, fontSize: 18,
-              color: '#FAF5EB', letterSpacing: '-0.01em',
+              color: 'var(--text-primary)', letterSpacing: '-0.01em',
             }}>
               Registrar partido
             </div>
@@ -183,16 +183,16 @@ export default function RecordMatchPage() {
             <div key={i} style={{
               height: 3, borderRadius: 2, flex: i === step ? 3 : 1,
               background: i <= step
-                ? (result === 'W' ? '#CCFF00' : result === 'L' ? '#FF5B3A' : '#FFB800')
-                : 'rgba(250,245,235,0.10)',
+                ? (result === 'W' ? '#10B981' : result === 'L' ? '#FF5B3A' : '#FFB800')
+                : 'var(--border)',
               transition: 'all 0.45s cubic-bezier(.2,.8,.2,1)',
-              boxShadow: i === step ? '0 0 8px rgba(204,255,0,0.4)' : 'none',
+              boxShadow: i === step ? '0 0 8px rgba(16,185,129,0.4)' : 'none',
             }} />
           ))}
         </div>
         <div style={{
           fontFamily: 'Space Grotesk', fontSize: 10, fontWeight: 600,
-          color: 'rgba(250,245,235,0.35)', letterSpacing: '0.08em', textTransform: 'uppercase',
+          color: 'var(--text-dim)', letterSpacing: '0.08em', textTransform: 'uppercase',
         }}>
           Paso {step + 1} de 4
         </div>
@@ -217,14 +217,14 @@ export default function RecordMatchPage() {
             <div style={{ marginBottom: 22 }}>
               <div style={{
                 fontFamily: 'Archivo', fontWeight: 800, fontSize: 28,
-                color: '#FAF5EB', letterSpacing: '-0.02em', lineHeight: 1.1,
+                color: 'var(--text-primary)', letterSpacing: '-0.02em', lineHeight: 1.1,
                 marginBottom: 6,
               }}>
                 {STEPS[step].title}
               </div>
               <div style={{
                 fontFamily: 'Space Grotesk', fontSize: 13,
-                color: 'rgba(250,245,235,0.5)',
+                color: 'var(--text-muted)',
               }}>
                 {STEPS[step].sub}
               </div>
@@ -241,7 +241,7 @@ export default function RecordMatchPage() {
                 <div>
                   <div style={{
                     fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 11,
-                    color: 'rgba(250,245,235,0.5)', letterSpacing: '0.08em',
+                    color: 'var(--text-muted)', letterSpacing: '0.08em',
                     textTransform: 'uppercase', marginBottom: 8,
                   }}>
                     Fecha del partido
@@ -252,11 +252,11 @@ export default function RecordMatchPage() {
                     onChange={e => setMatchDate(e.target.value)}
                     style={{
                       width: '100%', height: 46, padding: '0 14px', borderRadius: 12,
-                      background: 'rgba(255,255,255,0.05)',
-                      border: '1px solid rgba(255,220,180,0.12)',
-                      color: '#FAF5EB',
+                      background: 'rgba(10,21,48,0.04)',
+                      border: '1px solid var(--border)',
+                      color: 'var(--text-primary)',
                       fontFamily: 'Space Grotesk', fontSize: 14,
-                      outline: 'none', colorScheme: 'dark',
+                      outline: 'none', colorScheme: 'light',
                     }}
                   />
                 </div>
@@ -275,7 +275,7 @@ export default function RecordMatchPage() {
                   <div style={{ textAlign: 'center' }}>
                     <div style={{
                       fontFamily: 'Space Grotesk', fontSize: 11,
-                      color: 'rgba(250,245,235,0.5)', marginBottom: 8,
+                      color: 'var(--text-muted)', marginBottom: 8,
                     }}>
                       {myTeam}
                     </div>
@@ -291,19 +291,19 @@ export default function RecordMatchPage() {
                   </div>
                   <div style={{
                     fontFamily: 'Archivo', fontWeight: 800, fontSize: 20,
-                    color: 'rgba(250,245,235,0.3)', textAlign: 'center',
+                    color: 'var(--text-dim)', textAlign: 'center',
                   }}>–</div>
                   {/* Opponent */}
                   <div style={{ textAlign: 'center' }}>
                     <div style={{
                       fontFamily: 'Space Grotesk', fontSize: 11,
-                      color: 'rgba(250,245,235,0.5)', marginBottom: 8,
+                      color: 'var(--text-muted)', marginBottom: 8,
                     }}>
                       {opponent}
                     </div>
                     <div style={{
                       fontFamily: 'Archivo', fontStyle: 'italic', fontWeight: 900,
-                      fontSize: 64, color: '#FAF5EB', lineHeight: 1,
+                      fontSize: 64, color: 'var(--text-primary)', lineHeight: 1,
                     }}>
                       {oppGoals}
                     </div>
@@ -316,7 +316,7 @@ export default function RecordMatchPage() {
                   <div>
                     <div style={{
                       fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 10,
-                      color: 'rgba(250,245,235,0.4)', textTransform: 'uppercase',
+                      color: 'var(--text-muted)', textTransform: 'uppercase',
                       letterSpacing: '0.08em', marginBottom: 8, textAlign: 'center',
                     }}>
                       Tus goles
@@ -324,9 +324,9 @@ export default function RecordMatchPage() {
                     <div style={{ display: 'flex', gap: 8, alignItems: 'center', justifyContent: 'center' }}>
                       <button onClick={() => setMyGoals(g => Math.max(0, g - 1))} style={{
                         width: 44, height: 44, borderRadius: 12,
-                        background: 'rgba(255,255,255,0.06)',
-                        border: '1px solid rgba(255,220,180,0.12)',
-                        color: '#FAF5EB', cursor: 'pointer',
+                        background: 'rgba(10,21,48,0.04)',
+                        border: '1px solid var(--border)',
+                        color: 'var(--text-primary)', cursor: 'pointer',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                       }}>
                         <Minus size={18} />
@@ -340,9 +340,9 @@ export default function RecordMatchPage() {
                       </div>
                       <button onClick={() => setMyGoals(g => g + 1)} style={{
                         width: 44, height: 44, borderRadius: 12,
-                        background: 'rgba(204,255,0,0.12)',
-                        border: '1px solid rgba(204,255,0,0.35)',
-                        color: '#CCFF00', cursor: 'pointer',
+                        background: 'rgba(16,185,129,0.12)',
+                        border: '1px solid rgba(16,185,129,0.35)',
+                        color: 'var(--accent-primary)', cursor: 'pointer',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                       }}>
                         <Plus size={18} />
@@ -354,7 +354,7 @@ export default function RecordMatchPage() {
                   <div>
                     <div style={{
                       fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 10,
-                      color: 'rgba(250,245,235,0.4)', textTransform: 'uppercase',
+                      color: 'var(--text-muted)', textTransform: 'uppercase',
                       letterSpacing: '0.08em', marginBottom: 8, textAlign: 'center',
                     }}>
                       Sus goles
@@ -362,16 +362,16 @@ export default function RecordMatchPage() {
                     <div style={{ display: 'flex', gap: 8, alignItems: 'center', justifyContent: 'center' }}>
                       <button onClick={() => setOppGoals(g => Math.max(0, g - 1))} style={{
                         width: 44, height: 44, borderRadius: 12,
-                        background: 'rgba(255,255,255,0.06)',
-                        border: '1px solid rgba(255,220,180,0.12)',
-                        color: '#FAF5EB', cursor: 'pointer',
+                        background: 'rgba(10,21,48,0.04)',
+                        border: '1px solid var(--border)',
+                        color: 'var(--text-primary)', cursor: 'pointer',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                       }}>
                         <Minus size={18} />
                       </button>
                       <div style={{
                         fontFamily: 'Archivo', fontWeight: 800, fontSize: 22,
-                        color: '#FAF5EB', minWidth: 32, textAlign: 'center',
+                        color: 'var(--text-primary)', minWidth: 32, textAlign: 'center',
                       }}>
                         {oppGoals}
                       </div>
@@ -414,7 +414,7 @@ export default function RecordMatchPage() {
                 {myGoals === 0 ? (
                   <div style={{
                     padding: '24px 0', textAlign: 'center',
-                    color: 'rgba(250,245,235,0.45)', fontFamily: 'Space Grotesk', fontSize: 13,
+                    color: 'var(--text-muted)', fontFamily: 'Space Grotesk', fontSize: 13,
                   }}>
                     Sin goles en este partido.<br />
                     <span style={{ fontSize: 11, opacity: 0.7 }}>Toca continuar para generar el recap.</span>
@@ -423,7 +423,7 @@ export default function RecordMatchPage() {
                   <>
                     <div style={{
                       fontFamily: 'Space Grotesk', fontSize: 12,
-                      color: 'rgba(250,245,235,0.45)', marginBottom: 14,
+                      color: 'var(--text-muted)', marginBottom: 14,
                     }}>
                       Selecciona los jugadores que marcaron ({scorers.length}/{myGoals} goles asignados)
                     </div>
@@ -438,31 +438,31 @@ export default function RecordMatchPage() {
                             style={{
                               display: 'flex', alignItems: 'center', gap: 12,
                               padding: '11px 14px', borderRadius: 12,
-                              background: selected ? 'rgba(204,255,0,0.10)' : 'rgba(255,255,255,0.03)',
-                              border: `1px solid ${selected ? 'rgba(204,255,0,0.4)' : 'rgba(255,220,180,0.07)'}`,
+                              background: selected ? 'rgba(16,185,129,0.10)' : 'rgba(10,21,48,0.03)',
+                              border: `1px solid ${selected ? 'rgba(16,185,129,0.4)' : 'var(--border)'}`,
                               cursor: 'pointer', transition: 'all 0.15s',
                             }}
                           >
                             <div style={{
                               width: 32, height: 32, borderRadius: 8,
-                              background: selected ? 'rgba(204,255,0,0.2)' : 'rgba(255,255,255,0.06)',
+                              background: selected ? 'rgba(16,185,129,0.2)' : 'rgba(10,21,48,0.04)',
                               display: 'flex', alignItems: 'center', justifyContent: 'center',
-                              color: selected ? '#CCFF00' : 'rgba(250,245,235,0.4)',
+                              color: selected ? 'var(--accent-primary)' : 'var(--text-muted)',
                             }}>
                               <Target size={14} />
                             </div>
                             <span style={{
                               flex: 1, fontFamily: 'Space Grotesk', fontWeight: 600, fontSize: 13,
-                              color: selected ? '#FAF5EB' : 'rgba(250,245,235,0.65)',
+                              color: selected ? 'var(--text-primary)' : 'var(--text-muted)',
                             }}>
                               {p}
                             </span>
                             {selected && (
                               <div style={{
                                 padding: '2px 10px', borderRadius: 999,
-                                background: 'rgba(204,255,0,0.25)',
+                                background: 'rgba(16,185,129,0.25)',
                                 fontFamily: 'Archivo', fontWeight: 800, fontSize: 11,
-                                color: '#CCFF00',
+                                color: 'var(--accent-primary)',
                               }}>
                                 ⚽ ×{count}
                               </div>
@@ -489,7 +489,7 @@ export default function RecordMatchPage() {
                   marginBottom: 16,
                 }}>
                   <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontFamily: 'Space Grotesk', fontSize: 10, color: 'rgba(250,245,235,0.5)', marginBottom: 4 }}>
+                    <div style={{ fontFamily: 'Space Grotesk', fontSize: 10, color: 'var(--text-muted)', marginBottom: 4 }}>
                       {myTeam}
                     </div>
                     <div style={{
@@ -501,15 +501,15 @@ export default function RecordMatchPage() {
                   </div>
                   <div style={{
                     fontFamily: 'Archivo', fontWeight: 800, fontSize: 18,
-                    color: 'rgba(250,245,235,0.3)',
+                    color: 'var(--text-dim)',
                   }}>–</div>
                   <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontFamily: 'Space Grotesk', fontSize: 10, color: 'rgba(250,245,235,0.5)', marginBottom: 4 }}>
+                    <div style={{ fontFamily: 'Space Grotesk', fontSize: 10, color: 'var(--text-muted)', marginBottom: 4 }}>
                       {opponent}
                     </div>
                     <div style={{
                       fontFamily: 'Archivo', fontStyle: 'italic', fontWeight: 900,
-                      fontSize: 42, color: '#FAF5EB', lineHeight: 1,
+                      fontSize: 42, color: 'var(--text-primary)', lineHeight: 1,
                     }}>
                       {oppGoals}
                     </div>
@@ -524,9 +524,9 @@ export default function RecordMatchPage() {
                     {[...new Set(scorers)].map(s => (
                       <div key={s} style={{
                         padding: '4px 10px', borderRadius: 999,
-                        background: 'rgba(204,255,0,0.10)',
-                        border: '1px solid rgba(204,255,0,0.3)',
-                        fontFamily: 'Space Grotesk', fontSize: 11, color: '#CCFF00',
+                        background: 'rgba(16,185,129,0.10)',
+                        border: '1px solid rgba(16,185,129,0.3)',
+                        fontFamily: 'Space Grotesk', fontSize: 11, color: 'var(--accent-primary)',
                       }}>
                         ⚽ {s}
                       </div>
@@ -537,7 +537,7 @@ export default function RecordMatchPage() {
                 {/* AI Recap */}
                 <div style={{
                   padding: '14px', borderRadius: 14,
-                  background: 'linear-gradient(135deg, rgba(179,71,255,0.14), rgba(204,255,0,0.06))',
+                  background: 'linear-gradient(135deg, rgba(179,71,255,0.14), rgba(16,185,129,0.06))',
                   border: '1px solid rgba(179,71,255,0.35)',
                   marginBottom: 14,
                 }}>
@@ -554,14 +554,14 @@ export default function RecordMatchPage() {
                   {recapLoading ? (
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       <RefreshCw size={14} color="#B347FF" style={{ animation: 'spin 700ms linear infinite' }} />
-                      <span style={{ fontFamily: 'Space Grotesk', fontSize: 13, color: 'rgba(250,245,235,0.6)' }}>
+                      <span style={{ fontFamily: 'Space Grotesk', fontSize: 13, color: 'var(--text-muted)' }}>
                         Analizando el partido…
                       </span>
                     </div>
                   ) : (
                     <div style={{
                       fontFamily: 'Space Grotesk', fontSize: 13, lineHeight: 1.55,
-                      color: 'rgba(250,245,235,0.88)',
+                      color: 'var(--text-primary)',
                     }}>
                       {recap}
                     </div>
@@ -585,10 +585,10 @@ export default function RecordMatchPage() {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                       {highlights.map((hl, i) => {
                         const typeColor: Record<string, string> = {
-                          goal: '#CCFF00', red: '#FF5B3A', save: '#00D4FF',
-                          chance: '#FFB800', halftime: '#B347FF', fulltime: '#CCFF00',
+                          goal: '#10B981', red: '#FF5B3A', save: '#00D4FF',
+                          chance: '#FFB800', halftime: '#B347FF', fulltime: '#10B981',
                         }
-                        const color = typeColor[hl.event.type] ?? '#FAF5EB'
+                        const color = typeColor[hl.event.type] ?? '#0A1530'
                         return (
                           <div key={i} style={{
                             display: 'flex', alignItems: 'flex-start', gap: 10,
@@ -608,7 +608,7 @@ export default function RecordMatchPage() {
                             <div style={{ flex: 1 }}>
                               <div style={{
                                 fontFamily: 'Space Grotesk', fontSize: 12,
-                                color: 'rgba(250,245,235,0.85)', lineHeight: 1.4,
+                                color: 'var(--text-primary)', lineHeight: 1.4,
                               }}>
                                 {hl.event.text}
                               </div>

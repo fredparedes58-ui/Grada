@@ -48,7 +48,7 @@ export default function SetupPage() {
   }
 
   return (
-    <div style={{ position: 'absolute', inset: 0, background: 'var(--bg-deep, #0F0D0A)', overflow: 'hidden' }}>
+    <div style={{ position: 'absolute', inset: 0, background: 'var(--bg-deep, #FAFBFD)', overflow: 'hidden' }}>
       <div style={{ position: 'absolute', inset: 0, zIndex: 1 }}>
         <EpicStadiumBackground interval={7000} initial={2} />
       </div>
@@ -58,7 +58,7 @@ export default function SetupPage() {
       }} />
       <div style={{ position: 'absolute', inset: 0, zIndex: 2 }}>
         <FloatingOrbs orbs={[
-          { x: 15, y: 20, size: 220, color: '#CCFF00', opacity: 0.13, dur: 18 },
+          { x: 15, y: 20, size: 220, color: '#10B981', opacity: 0.13, dur: 18 },
           { x: 82, y: 55, size: 170, color: '#B347FF', opacity: 0.11, dur: 22 },
         ]} />
       </div>
@@ -70,7 +70,7 @@ export default function SetupPage() {
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 24 }}>
           <div style={{
-            width: 28, height: 28, borderRadius: 7, background: '#CCFF00',
+            width: 28, height: 28, borderRadius: 7, background: 'var(--accent-primary)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -78,7 +78,7 @@ export default function SetupPage() {
               <path d="M12 4l2.5 3.5L12 10l-2.5-2.5zM4 12l3.5 2.5L10 12l-2.5-2.5zM20 12l-3.5 2.5L14 12l2.5-2.5zM12 20l-2.5-3.5L12 14l2.5 2.5z" fill="#0F0D0A" />
             </svg>
           </div>
-          <span style={{ fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 16, color: '#FAF5EB' }}>
+          <span style={{ fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 16, color: '#FAFBFD' }}>
             GRADA
           </span>
         </div>
@@ -89,15 +89,15 @@ export default function SetupPage() {
             <div key={i} style={{
               height: 3, borderRadius: 2,
               flex: i === step ? 2 : 1,
-              background: i <= step ? '#CCFF00' : 'rgba(250, 245, 235, 0.12)',
+              background: i <= step ? 'var(--accent-primary)' : 'rgba(250, 251, 253, 0.12)',
               transition: 'all 0.45s cubic-bezier(.2,.8,.2,1)',
-              boxShadow: i === step ? '0 0 8px rgba(204, 255, 0, 0.5)' : 'none',
+              boxShadow: i === step ? '0 0 8px rgba(16, 185, 129, 0.5)' : 'none',
             }} />
           ))}
         </div>
         <div style={{
           fontFamily: 'Space Grotesk, sans-serif', fontSize: 11, fontWeight: 600,
-          color: 'rgba(250, 245, 235, 0.35)',
+          color: 'rgba(250, 251, 253, 0.35)',
           letterSpacing: '0.08em', textTransform: 'uppercase',
         }}>
           Paso {step + 1} de 3
@@ -122,14 +122,14 @@ export default function SetupPage() {
             <div style={{ marginBottom: 24 }}>
               <div style={{
                 fontFamily: 'Archivo, sans-serif', fontWeight: 800,
-                fontSize: 30, color: '#FAF5EB', letterSpacing: '-0.02em',
+                fontSize: 30, color: '#FAFBFD', letterSpacing: '-0.02em',
                 lineHeight: 1.1, marginBottom: 8,
               }}>
                 {STEPS[step].title}
               </div>
               <div style={{
                 fontFamily: 'Space Grotesk, sans-serif',
-                fontSize: 14, color: 'rgba(250, 245, 235, 0.5)',
+                fontSize: 14, color: 'rgba(250, 251, 253, 0.5)',
               }}>
                 {STEPS[step].sub}
               </div>
@@ -149,7 +149,7 @@ export default function SetupPage() {
                 <div style={{
                   marginTop: 10,
                   fontFamily: 'Space Grotesk, sans-serif', fontSize: 12,
-                  color: 'rgba(250, 245, 235, 0.3)',
+                  color: 'rgba(250, 251, 253, 0.3)',
                 }}>
                   Si aún no tienes equipo, déjalo en blanco.
                 </div>
@@ -162,19 +162,19 @@ export default function SetupPage() {
                   <button key={l.id} onClick={() => setLevel(l.id)} style={{
                     display: 'flex', flexDirection: 'column', alignItems: 'center',
                     gap: 6, padding: '18px 10px', borderRadius: 14,
-                    background: level === l.id ? 'rgba(204, 255, 0, 0.1)' : 'rgba(255, 255, 255, 0.04)',
-                    border: `1.5px solid ${level === l.id ? 'rgba(204, 255, 0, 0.45)' : 'rgba(255, 220, 180, 0.08)'}`,
+                    background: level === l.id ? 'rgba(16, 185, 129, 0.1)' : 'rgba(255, 255, 255, 0.04)',
+                    border: `1.5px solid ${level === l.id ? 'rgba(16, 185, 129, 0.45)' : 'rgba(255, 255, 255, 0.08)'}`,
                     cursor: 'pointer', transition: 'all 0.18s',
-                    boxShadow: level === l.id ? '0 0 14px rgba(204, 255, 0, 0.12)' : 'none',
+                    boxShadow: level === l.id ? '0 0 14px rgba(16, 185, 129, 0.12)' : 'none',
                   }}>
                     <span style={{ fontSize: 26 }}>{l.emoji}</span>
                     <div style={{
                       fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 13,
-                      color: level === l.id ? '#CCFF00' : '#FAF5EB', textAlign: 'center',
+                      color: level === l.id ? 'var(--accent-primary)' : '#FAFBFD', textAlign: 'center',
                     }}>{l.id}</div>
                     <div style={{
                       fontFamily: 'Space Grotesk, sans-serif', fontSize: 11,
-                      color: 'rgba(250, 245, 235, 0.38)', textAlign: 'center',
+                      color: 'rgba(250, 251, 253, 0.38)', textAlign: 'center',
                     }}>{l.desc}</div>
                   </button>
                 ))}
@@ -197,7 +197,7 @@ export default function SetupPage() {
           <button onClick={back} style={{
             background: 'transparent', border: 'none', cursor: 'pointer',
             fontFamily: 'Space Grotesk, sans-serif', fontSize: 13,
-            color: 'rgba(250, 245, 235, 0.38)', padding: '10px',
+            color: 'rgba(250, 251, 253, 0.38)', padding: '10px',
             marginTop: 2,
           }}>
             ← Volver
