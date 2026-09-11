@@ -1,6 +1,7 @@
-﻿import { useState, useMemo } from 'react'
-import { Flame, Trophy, Zap, Heart, MessageCircle, Share2, Copy, Link as LinkIcon, Send, Bell, Sparkles, RefreshCw, Newspaper, Film, Play, Scissors } from 'lucide-react'
+﻿import { useState, useMemo, useRef, type ChangeEvent } from 'react'
+import { Flame, Trophy, Zap, Heart, MessageCircle, Share2, Copy, Link as LinkIcon, Send, Bell, Sparkles, RefreshCw, Newspaper, Film, Play, Scissors, ImagePlus, X } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import { useMuro, tiempoRelativo, iniciales, type MuroPost, type MuroComentario } from '../hooks/useMuro'
 import BottomNav from '../components/ui/BottomNav'
 import GlassCard from '../components/ui/GlassCard'
 import FloatingOrbs from '../components/ui/FloatingOrbs'
@@ -8,7 +9,6 @@ import BottomSheet from '../components/ui/BottomSheet'
 import LikeBurst from '../components/ui/LikeBurst'
 import { Skeleton, SkeletonCircle } from '../components/ui/Skeleton'
 import NotificationsPanel from '../components/ui/NotificationsPanel'
-import { useSimulatedLoad } from '../hooks/useSimulatedLoad'
 import { useNotifications } from '../context/NotificationsContext'
 import { generateMatchRecap, suggestMediaTags, generateWeeklyDigest, suggestVideoClips, clipEmoji, formatClipTime, type MatchFact, type MatchRecap, type Tone, type Lang, type VideoClip } from '../lib/aiMocks'
 import LiveTicker from '../components/ui/LiveTicker'
@@ -23,18 +23,6 @@ import EventsSheet from '../features/events/EventsSheet'
 import PollCard from '../features/polls/PollCard'
 import { Calendar as CalendarIcon } from 'lucide-react'
 
-interface Post {
-  id: number
-  team: string
-  action: string
-  time: string
-  likes: number
-  comments: number
-  badge: string
-  color: string
-  image: string
-}
-
 // Hechos reales del partido — en producción vendrían del backend.
 const RECAP_FACTS: MatchFact = {
   home: 'Valencia BC',
@@ -46,52 +34,34 @@ const RECAP_FACTS: MatchFact = {
   attendance: 240,
 }
 
-const INITIAL_POSTS: Post[] = [
-  {
-    id: 1, team: 'Valencia BC', action: 'ganaron 3-1 vs CF Benimàmet',
-    time: 'hace 2 h', likes: 47, comments: 12, badge: 'VB', color: 'var(--accent-primary)',
-    image: 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=800&q=80',
-  },
-  {
-    id: 2, team: 'Carlos Martínez', action: 'marcó 2 goles ante Mestalla CF 🔥',
-    time: 'hace 4 h', likes: 128, comments: 34, badge: 'CM', color: 'var(--accent-secondary)',
-    image: 'https://images.unsplash.com/photo-1459865264687-595d652de67e?w=800&q=80',
-  },
-  {
-    id: 3, team: 'Liga Autonómica Valenciana', action: 'J5 · Valencia BC vs Mestalla CF · Sáb 7 Sep 11:00',
-    time: 'hace 6 h', likes: 89, comments: 21, badge: 'LAV', color: 'var(--accent-warm)',
-    image: 'https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=800&q=80',
-  },
-]
-
-const MOCK_COMMENTS: Record<number, { user: string; text: string; time: string; badge: string; color: string }[]> = {
-  1: [
-    { user: 'Carlos M.',    text: '¡Qué partidazo! 🔥',           time: '1 h',   badge: 'CM', color: 'var(--accent-secondary)' },
-    { user: 'Ana Torres',   text: 'El gol del minuto 80 fue épico', time: '45 m', badge: 'AT', color: 'var(--accent-primary)' },
-    { user: 'Diego S.',     text: 'Vamos Pumas! 💪',                time: '30 m', badge: 'DS', color: 'var(--accent-warm)' },
-  ],
-  2: [
-    { user: 'Los Pumas FC', text: 'Crack total',                    time: '2 h',  badge: 'LP', color: 'var(--accent-primary)' },
-    { user: 'Entrenador R.', text: 'Entrenamiento bien invertido',  time: '1 h',  badge: 'ER', color: 'var(--accent-secondary)' },
-  ],
-  3: [
-    { user: 'Liga Regional', text: 'Nos vemos en las canchas',      time: '3 h',  badge: 'LR', color: 'var(--accent-primary)' },
-  ],
+const ACCENTS = ['var(--accent-primary)', 'var(--accent-secondary)', 'var(--accent-warm)']
+function colorAutor(uid: string): string {
+  let h = 0
+  for (let i = 0; i < uid.length; i++) h = (h * 31 + uid.charCodeAt(i)) >>> 0
+  return ACCENTS[h % ACCENTS.length]
 }
 
 export default function HomePage() {
   const { user, setToast } = useAuth()
-  const [posts, setPosts] = useState(INITIAL_POSTS)
-  const [liked, setLiked] = useState<Record<number, boolean>>({})
-  const [burstId, setBurstId] = useState<number | null>(null)
+  const { posts, loading, error, crear, alternarLike, cargarComentarios, agregarComentario } = useMuro()
+  const [burstId, setBurstId] = useState<string | null>(null)
 
-  const loading = useSimulatedLoad(800)
   const { unread } = useNotifications()
   const [notifOpen, setNotifOpen] = useState(false)
 
-  const [commentsOpen, setCommentsOpen] = useState<Post | null>(null)
-  const [shareOpen, setShareOpen] = useState<Post | null>(null)
+  const [commentsOpen, setCommentsOpen] = useState<MuroPost | null>(null)
+  const [comentarios, setComentarios] = useState<MuroComentario[]>([])
+  const [comentariosLoading, setComentariosLoading] = useState(false)
+  const [shareOpen, setShareOpen] = useState<MuroPost | null>(null)
   const [newComment, setNewComment] = useState('')
+
+  // Compositor de publicación
+  const [composeOpen, setComposeOpen] = useState(false)
+  const [draftText, setDraftText] = useState('')
+  const [draftImage, setDraftImage] = useState<File | null>(null)
+  const [draftPreview, setDraftPreview] = useState<string | null>(null)
+  const [publishing, setPublishing] = useState(false)
+  const composeImgRef = useRef<HTMLInputElement>(null)
 
   // AI Recap (feature 3 del tier 1)
   const [recapTone, setRecapTone] = useState<Tone>('casual')
@@ -173,34 +143,79 @@ export default function HomePage() {
     if ('vibrate' in navigator) navigator.vibrate(8)
   }
 
-  function toggleLike(p: Post) {
-    const isLiked = liked[p.id]
-    setLiked(s => ({ ...s, [p.id]: !isLiked }))
-    setPosts(s =>
-      s.map(x => (x.id === p.id ? { ...x, likes: x.likes + (isLiked ? -1 : 1) } : x))
-    )
-    if (!isLiked) {
+  async function handleLike(p: MuroPost) {
+    if (!p.liked) {
       setBurstId(p.id)
       setTimeout(() => setBurstId(null), 700)
       try { navigator.vibrate?.(30) } catch { /* ignore */ }
     }
+    try {
+      await alternarLike(p)
+    } catch (e) {
+      setToast(e instanceof Error ? e.message : 'No se pudo dar like')
+    }
   }
 
-  function sendComment() {
-    if (!newComment.trim() || !commentsOpen) return
-    // Mock push — adds locally only
-    const list = MOCK_COMMENTS[commentsOpen.id] ?? []
-    list.unshift({
-      user: user?.name ?? 'Tú',
-      text: newComment,
-      time: 'ahora',
-      badge: (user?.name ?? 'T').split(' ').map(n => n[0]).join('').slice(0, 2),
-      color: 'var(--accent-primary)',
-    })
-    MOCK_COMMENTS[commentsOpen.id] = list
-    setPosts(s => s.map(x => (x.id === commentsOpen.id ? { ...x, comments: x.comments + 1 } : x)))
-    setNewComment('')
-    setToast('Comentario enviado')
+  async function openComments(p: MuroPost) {
+    setCommentsOpen(p)
+    setComentarios([])
+    setComentariosLoading(true)
+    try {
+      setComentarios(await cargarComentarios(p.id))
+    } catch {
+      /* ignore */
+    } finally {
+      setComentariosLoading(false)
+    }
+  }
+
+  async function sendComment() {
+    const texto = newComment.trim()
+    if (!texto || !commentsOpen) return
+    try {
+      await agregarComentario(commentsOpen.id, texto)
+      setNewComment('')
+      setComentarios(await cargarComentarios(commentsOpen.id))
+      setToast('Comentario enviado')
+    } catch (e) {
+      setToast(e instanceof Error ? e.message : 'No se pudo comentar')
+    }
+  }
+
+  function pickComposeImage(e: ChangeEvent<HTMLInputElement>) {
+    const f = e.target.files?.[0]
+    e.target.value = ''
+    if (!f) return
+    if (draftPreview) URL.revokeObjectURL(draftPreview)
+    setDraftImage(f)
+    setDraftPreview(URL.createObjectURL(f))
+  }
+
+  function quitarDraftImage() {
+    if (draftPreview) URL.revokeObjectURL(draftPreview)
+    setDraftImage(null)
+    setDraftPreview(null)
+  }
+
+  function closeCompose() {
+    setComposeOpen(false)
+    setDraftText('')
+    quitarDraftImage()
+  }
+
+  async function publishPost() {
+    const texto = draftText.trim()
+    if ((!texto && !draftImage) || publishing) return
+    setPublishing(true)
+    try {
+      await crear({ texto, imagen: draftImage })
+      closeCompose()
+      setToast('Publicado')
+    } catch (e) {
+      setToast(e instanceof Error ? e.message : 'No se pudo publicar')
+    } finally {
+      setPublishing(false)
+    }
   }
 
   function copyLink() {
@@ -540,6 +555,33 @@ export default function HomePage() {
 
         {/* Feed */}
         <div style={{ padding: '0 20px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+          {/* Compositor trigger */}
+          <button
+            onClick={() => setComposeOpen(true)}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 12,
+              padding: '12px 14px', borderRadius: 14,
+              background: 'var(--surface-1)', border: '1px solid var(--border)',
+              boxShadow: '0 1px 4px rgba(10, 21, 48, 0.05)',
+              cursor: 'pointer', textAlign: 'left',
+            }}
+          >
+            <div style={{
+              width: 38, height: 38, borderRadius: '50%', flexShrink: 0, overflow: 'hidden',
+              background: user?.avatarUrl ? 'var(--surface-1)' : 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: '#091A12', fontFamily: 'Fraunces, Georgia, serif', fontWeight: 700, fontSize: 14,
+            }}>
+              {user?.avatarUrl
+                ? <img src={user.avatarUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                : iniciales(user?.name ?? 'T')}
+            </div>
+            <span style={{ flex: 1, fontFamily: 'Space Grotesk, sans-serif', fontSize: 14, color: 'var(--text-muted)' }}>
+              ¿Qué está pasando?
+            </span>
+            <ImagePlus size={20} color="var(--accent-primary)" />
+          </button>
+
           {loading && Array.from({ length: 2 }).map((_, i) => (
             <div
               key={`sk-${i}`}
@@ -654,92 +696,138 @@ export default function HomePage() {
           </AIBorder>
           )}
 
+          {!loading && error && (
+            <div style={{ padding: '30px 20px', textAlign: 'center', fontFamily: 'Space Grotesk, sans-serif', fontSize: 13, color: 'var(--text-muted)' }}>
+              {error}
+            </div>
+          )}
+
+          {!loading && !error && posts.length === 0 && (
+            <div style={{ padding: '40px 20px', textAlign: 'center', fontFamily: 'Space Grotesk, sans-serif', fontSize: 14, color: 'var(--text-muted)' }}>
+              Aún no hay publicaciones. ¡Sé el primero en publicar! ⚽
+            </div>
+          )}
+
           {!loading && posts.map(p => {
-            const isLiked = !!liked[p.id]
+            const color = colorAutor(p.autorUid)
+            const badge = iniciales(p.autorNombre)
             return (
-              <GlassCard key={p.id} accent={p.color} padding={0}>
-                {/* Image */}
-                <div
-                  style={{
-                    height: 180,
-                    backgroundImage: `url(${p.image})`,
-                    backgroundSize: 'cover', backgroundPosition: 'center',
-                    position: 'relative',
-                  }}
-                >
+              <GlassCard key={p.id} accent={color} padding={0}>
+                {p.imagenUrl && (
                   <div
                     style={{
-                      position: 'absolute', inset: 0,
-                      background: 'linear-gradient(180deg, transparent 40%, rgba(15,13,10,0.8) 100%)',
+                      height: 180,
+                      backgroundImage: `url(${p.imagenUrl})`,
+                      backgroundSize: 'cover', backgroundPosition: 'center',
+                      position: 'relative',
                     }}
-                  />
-                  <div style={{ position: 'absolute', bottom: 12, left: 12, display: 'flex', alignItems: 'center', gap: 10 }}>
+                  >
                     <div
                       style={{
-                        width: 36, height: 36, borderRadius: 10,
-                        background: p.color, color: '#091A12',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontFamily: 'Fraunces, Georgia, serif', fontWeight: 700, fontSize: 14,
-                        boxShadow: `0 0 12px ${p.color}66`,
+                        position: 'absolute', inset: 0,
+                        background: 'linear-gradient(180deg, transparent 40%, rgba(15,13,10,0.8) 100%)',
                       }}
-                    >
-                      {p.badge}
-                    </div>
-                    <div>
-                      <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 14, color: '#FAFBFD' }}>
-                        {p.team}
+                    />
+                    <div style={{ position: 'absolute', bottom: 12, left: 12, display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <div
+                        style={{
+                          width: 36, height: 36, borderRadius: 10, overflow: 'hidden',
+                          background: p.autorAvatar ? 'transparent' : color, color: '#091A12',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          fontFamily: 'Fraunces, Georgia, serif', fontWeight: 700, fontSize: 14,
+                          boxShadow: `0 0 12px ${color}66`, flexShrink: 0,
+                        }}
+                      >
+                        {p.autorAvatar
+                          ? <img src={p.autorAvatar} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                          : badge}
                       </div>
-                      <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontSize: 11, color: 'rgba(250, 251, 253, 0.7)' }}>
-                        {p.time}
+                      <div>
+                        <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 14, color: '#FAFBFD' }}>
+                          {p.autorNombre}
+                        </div>
+                        <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontSize: 11, color: 'rgba(250, 251, 253, 0.7)' }}>
+                          {tiempoRelativo(p.creadoEn)}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                )}
 
                 {/* Body */}
                 <div style={{ padding: 14 }}>
-                  <div
-                    style={{
-                      fontFamily: 'Space Grotesk, sans-serif',
-                      fontSize: 14, color: 'var(--text-primary)', lineHeight: 1.4,
-                      marginBottom: 10,
-                    }}
-                  >
-                    {p.action}
-                  </div>
-
-                  {/* AI tags */}
-                  <div style={{
-                    display: 'flex', gap: 5, flexWrap: 'wrap',
-                    alignItems: 'center', marginBottom: 12,
-                  }}>
-                    <Sparkles size={11} color="#B347FF" style={{ opacity: 0.7 }} />
-                    {suggestMediaTags({ caption: p.action, team: p.team }).slice(0, 4).map((t, i) => (
+                  {!p.imagenUrl && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
                       <div
-                        key={`${p.id}-tag-${i}`}
                         style={{
-                          padding: '2px 8px', borderRadius: 999,
-                          background: 'rgba(93, 195, 255, 0.08)',
-                          border: '1px solid rgba(93, 195, 255, 0.25)',
-                          fontFamily: 'Space Grotesk, sans-serif', fontSize: 10,
-                          color: 'rgba(240, 248, 244, 0.75)', fontWeight: 600,
+                          width: 40, height: 40, borderRadius: '50%', overflow: 'hidden',
+                          background: p.autorAvatar ? 'var(--surface-1)' : color, color: '#091A12',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          fontFamily: 'Fraunces, Georgia, serif', fontWeight: 700, fontSize: 14,
+                          flexShrink: 0,
                         }}
                       >
-                        {t.label}
+                        {p.autorAvatar
+                          ? <img src={p.autorAvatar} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                          : badge}
                       </div>
-                    ))}
-                  </div>
+                      <div>
+                        <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 14, color: 'var(--text-primary)' }}>
+                          {p.autorNombre}
+                        </div>
+                        <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontSize: 11, color: 'var(--text-dim)' }}>
+                          {tiempoRelativo(p.creadoEn)}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {p.texto && (
+                    <div
+                      style={{
+                        fontFamily: 'Space Grotesk, sans-serif',
+                        fontSize: 14, color: 'var(--text-primary)', lineHeight: 1.4,
+                        marginBottom: 10, whiteSpace: 'pre-wrap', wordBreak: 'break-word',
+                      }}
+                    >
+                      {p.texto}
+                    </div>
+                  )}
+
+                  {/* AI tags */}
+                  {p.texto && (
+                    <div style={{
+                      display: 'flex', gap: 5, flexWrap: 'wrap',
+                      alignItems: 'center', marginBottom: 12,
+                    }}>
+                      <Sparkles size={11} color="#B347FF" style={{ opacity: 0.7 }} />
+                      {suggestMediaTags({ caption: p.texto, team: p.autorNombre }).slice(0, 4).map((t, i) => (
+                        <div
+                          key={`${p.id}-tag-${i}`}
+                          style={{
+                            padding: '2px 8px', borderRadius: 999,
+                            background: 'rgba(93, 195, 255, 0.08)',
+                            border: '1px solid rgba(93, 195, 255, 0.25)',
+                            fontFamily: 'Space Grotesk, sans-serif', fontSize: 10,
+                            color: 'var(--text-muted)', fontWeight: 600,
+                          }}
+                        >
+                          {t.label}
+                        </div>
+                      ))}
+                    </div>
+                  )}
 
                   {/* Actions bar */}
                   <div style={{ display: 'flex', gap: 18, color: 'var(--text-muted)', alignItems: 'center' }}>
                     {/* Like */}
                     <button
-                      onClick={() => toggleLike(p)}
+                      onClick={() => handleLike(p)}
                       style={{
                         position: 'relative',
                         display: 'flex', alignItems: 'center', gap: 6,
                         background: 'transparent', border: 'none', cursor: 'pointer',
-                        color: isLiked ? '#FF5B3A' : 'var(--text-muted)',
+                        color: p.liked ? '#FF5B3A' : 'var(--text-muted)',
                         fontFamily: 'Space Grotesk, sans-serif', fontSize: 12,
                         transition: 'color 0.15s',
                         padding: 0,
@@ -748,30 +836,30 @@ export default function HomePage() {
                       <div style={{ position: 'relative', width: 15, height: 15 }}>
                         <Heart
                           size={15}
-                          fill={isLiked ? '#FF5B3A' : 'none'}
+                          fill={p.liked ? '#FF5B3A' : 'none'}
                           style={{
                             transition: 'transform 0.2s',
-                            transform: isLiked ? 'scale(1.15)' : 'scale(1)',
-                            filter: isLiked ? 'drop-shadow(0 0 6px rgba(255,91,58,0.6))' : 'none',
+                            transform: p.liked ? 'scale(1.15)' : 'scale(1)',
+                            filter: p.liked ? 'drop-shadow(0 0 6px rgba(255,91,58,0.6))' : 'none',
                           }}
                         />
                         <LikeBurst show={burstId === p.id} />
                       </div>
                       <span
-                        key={`${p.id}-${p.likes}`}
+                        key={`${p.id}-${p.numLikes}`}
                         style={{
                           fontVariantNumeric: 'tabular-nums',
                           display: 'inline-block',
                           animation: burstId === p.id ? 'count-pop 420ms ease-out' : 'none',
                         }}
                       >
-                        {p.likes}
+                        {p.numLikes}
                       </span>
                     </button>
 
                     {/* Comments */}
                     <button
-                      onClick={() => setCommentsOpen(p)}
+                      onClick={() => openComments(p)}
                       style={{
                         display: 'flex', alignItems: 'center', gap: 6,
                         background: 'transparent', border: 'none', cursor: 'pointer',
@@ -780,7 +868,7 @@ export default function HomePage() {
                         padding: 0,
                       }}
                     >
-                      <MessageCircle size={15} /> {p.comments}
+                      <MessageCircle size={15} /> {p.numComentarios}
                     </button>
 
                     {/* Share */}
@@ -810,42 +898,49 @@ export default function HomePage() {
       <BottomSheet
         open={!!commentsOpen}
         onClose={() => setCommentsOpen(null)}
-        title={commentsOpen ? `${commentsOpen.comments} comentarios` : ''}
+        title={commentsOpen ? `${comentarios.length} comentarios` : ''}
         accent="#10B981"
         height="72%"
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14, paddingBottom: 16 }}>
-          {commentsOpen && (MOCK_COMMENTS[commentsOpen.id] ?? []).map((c, i) => (
-            <div key={i} style={{ display: 'flex', gap: 12 }}>
+          {comentariosLoading && (
+            <div style={{ textAlign: 'center', padding: '30px 20px', color: 'var(--text-dim)', fontFamily: 'Space Grotesk, sans-serif', fontSize: 13 }}>
+              Cargando comentarios…
+            </div>
+          )}
+          {!comentariosLoading && comentarios.map(c => (
+            <div key={c.id} style={{ display: 'flex', gap: 12 }}>
               <div
                 style={{
-                  width: 36, height: 36, borderRadius: '50%',
-                  background: `${c.color}22`, color: c.color,
-                  border: `1.5px solid ${c.color}66`,
+                  width: 36, height: 36, borderRadius: '50%', overflow: 'hidden',
+                  background: c.autorAvatar ? 'var(--surface-1)' : 'var(--accent-primary)',
+                  color: '#091A12',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontFamily: 'Fraunces, Georgia, serif', fontWeight: 700, fontSize: 12,
                   flexShrink: 0,
                 }}
               >
-                {c.badge}
+                {c.autorAvatar
+                  ? <img src={c.autorAvatar} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  : iniciales(c.autorNombre)}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
                   <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 13, color: 'var(--text-primary)' }}>
-                    {c.user}
+                    {c.autorNombre}
                   </div>
-                  <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontSize: 11, color: 'rgba(240, 248, 244, 0.4)' }}>
-                    {c.time}
+                  <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontSize: 11, color: 'var(--text-dim)' }}>
+                    {tiempoRelativo(c.creadoEn)}
                   </div>
                 </div>
-                <div style={{ marginTop: 3, fontFamily: 'Space Grotesk, sans-serif', fontSize: 13, color: 'rgba(240, 248, 244, 0.85)', lineHeight: 1.4 }}>
-                  {c.text}
+                <div style={{ marginTop: 3, fontFamily: 'Space Grotesk, sans-serif', fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.4, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                  {c.texto}
                 </div>
               </div>
             </div>
           ))}
-          {commentsOpen && !MOCK_COMMENTS[commentsOpen.id]?.length && (
-            <div style={{ textAlign: 'center', padding: '40px 20px', color: 'rgba(240, 248, 244, 0.4)', fontFamily: 'Space Grotesk, sans-serif', fontSize: 13 }}>
+          {!comentariosLoading && comentarios.length === 0 && (
+            <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-dim)', fontFamily: 'Space Grotesk, sans-serif', fontSize: 13 }}>
               Sé el primero en comentar 💬
             </div>
           )}
@@ -856,7 +951,7 @@ export default function HomePage() {
           style={{
             position: 'sticky', bottom: 0, marginTop: 8,
             padding: '12px 0',
-            background: 'linear-gradient(180deg, transparent, #141009 30%)',
+            background: 'linear-gradient(180deg, transparent, var(--bg-deep) 30%)',
             display: 'flex', gap: 8, alignItems: 'center',
           }}
         >
@@ -954,7 +1049,7 @@ export default function HomePage() {
             Enviar por chat
           </button>
           <button
-            onClick={() => { navigator.clipboard?.writeText(shareOpen?.action ?? ''); setToast('Texto copiado'); setShareOpen(null) }}
+            onClick={() => { navigator.clipboard?.writeText(shareOpen?.texto ?? ''); setToast('Texto copiado'); setShareOpen(null) }}
             style={{
               display: 'flex', alignItems: 'center', gap: 14,
               padding: 14, borderRadius: 14,
@@ -974,6 +1069,84 @@ export default function HomePage() {
       </BottomSheet>
 
       <NotificationsPanel open={notifOpen} onClose={() => setNotifOpen(false)} />
+
+      {/* Compositor de publicación */}
+      <BottomSheet
+        open={composeOpen}
+        onClose={closeCompose}
+        title="Nueva publicación"
+        accent="#10B981"
+        height="70%"
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <textarea
+            value={draftText}
+            onChange={e => setDraftText(e.target.value)}
+            placeholder="¿Qué está pasando?"
+            rows={4}
+            style={{
+              width: '100%', resize: 'none', boxSizing: 'border-box',
+              padding: '12px 14px', borderRadius: 12,
+              background: 'var(--surface-1)', border: '1px solid var(--border)',
+              color: 'var(--text-primary)', outline: 'none',
+              fontFamily: 'Space Grotesk, sans-serif', fontSize: 15, lineHeight: 1.4,
+            }}
+          />
+
+          {draftPreview && (
+            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden' }}>
+              <img src={draftPreview} alt="" style={{ width: '100%', display: 'block', maxHeight: 260, objectFit: 'cover' }} />
+              <button
+                onClick={quitarDraftImage}
+                aria-label="Quitar imagen"
+                style={{
+                  position: 'absolute', top: 8, right: 8,
+                  width: 30, height: 30, borderRadius: '50%',
+                  background: 'rgba(10,21,48,0.6)', border: 'none', color: '#FAFBFD',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+                }}
+              >
+                <X size={16} />
+              </button>
+            </div>
+          )}
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <button
+              onClick={() => composeImgRef.current?.click()}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 8,
+                padding: '10px 14px', borderRadius: 12,
+                background: 'var(--border-warm)', border: '1px solid rgba(16, 185, 129, 0.3)',
+                color: 'var(--accent-primary)', cursor: 'pointer',
+                fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 13,
+              }}
+            >
+              <ImagePlus size={16} /> Foto
+            </button>
+            <input ref={composeImgRef} type="file" accept="image/*" onChange={pickComposeImage} style={{ display: 'none' }} />
+
+            <button
+              onClick={publishPost}
+              disabled={publishing || (!draftText.trim() && !draftImage)}
+              style={{
+                marginLeft: 'auto',
+                display: 'flex', alignItems: 'center', gap: 8,
+                height: 44, padding: '0 20px', borderRadius: 12,
+                background: (publishing || (!draftText.trim() && !draftImage))
+                  ? 'var(--border)'
+                  : 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',
+                color: '#FAFBFD', border: 'none',
+                cursor: (publishing || (!draftText.trim() && !draftImage)) ? 'default' : 'pointer',
+                fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 14,
+                boxShadow: (publishing || (!draftText.trim() && !draftImage)) ? 'none' : '0 6px 20px rgba(16, 185, 129, 0.3)',
+              }}
+            >
+              {publishing ? 'Publicando…' : <><Send size={15} /> Publicar</>}
+            </button>
+          </div>
+        </div>
+      </BottomSheet>
 
       {/* Weekly Digest (Tier 3) */}
       <BottomSheet
