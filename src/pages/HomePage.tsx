@@ -1,7 +1,8 @@
-﻿import { useState, useMemo, useRef, type ChangeEvent } from 'react'
+﻿import { useState, useMemo, useEffect, useRef, type ChangeEvent } from 'react'
 import { Flame, Trophy, Zap, Heart, MessageCircle, Share2, Copy, Link as LinkIcon, Send, Bell, Sparkles, RefreshCw, Newspaper, Film, Play, Scissors, ImagePlus, X } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
-import { useMuro, tiempoRelativo, iniciales, type MuroPost, type MuroComentario } from '../hooks/useMuro'
+import { useMuro, tiempoRelativo, type MuroPost, type MuroComentario } from '../hooks/useMuro'
+import Avatar from '../components/ui/Avatar'
 import BottomNav from '../components/ui/BottomNav'
 import GlassCard from '../components/ui/GlassCard'
 import FloatingOrbs from '../components/ui/FloatingOrbs'
@@ -43,7 +44,7 @@ function colorAutor(uid: string): string {
 
 export default function HomePage() {
   const { user, setToast } = useAuth()
-  const { posts, loading, error, crear, alternarLike, cargarComentarios, agregarComentario } = useMuro()
+  const { posts, loading, error, hayMas, cargandoMas, cargarMas, crear, alternarLike, cargarComentarios, agregarComentario } = useMuro()
   const [burstId, setBurstId] = useState<string | null>(null)
 
   const { unread } = useNotifications()
@@ -54,6 +55,7 @@ export default function HomePage() {
   const [comentariosLoading, setComentariosLoading] = useState(false)
   const [shareOpen, setShareOpen] = useState<MuroPost | null>(null)
   const [newComment, setNewComment] = useState('')
+  const [enviando, setEnviando] = useState(false)
 
   // Compositor de publicación
   const [composeOpen, setComposeOpen] = useState(false)
@@ -62,6 +64,18 @@ export default function HomePage() {
   const [draftPreview, setDraftPreview] = useState<string | null>(null)
   const [publishing, setPublishing] = useState(false)
   const composeImgRef = useRef<HTMLInputElement>(null)
+
+  // Revoca el object URL del preview al desmontar o al cambiar de imagen
+  useEffect(() => () => {
+    if (draftPreview) URL.revokeObjectURL(draftPreview)
+  }, [draftPreview])
+
+  // Tags de IA precomputados por post (evita recalcular en cada render)
+  const tagsByPost = useMemo(() => {
+    const m = new Map<string, ReturnType<typeof suggestMediaTags>>()
+    for (const p of posts) if (p.texto) m.set(p.id, suggestMediaTags({ caption: p.texto, team: p.autorNombre }))
+    return m
+  }, [posts])
 
   // AI Recap (feature 3 del tier 1)
   const [recapTone, setRecapTone] = useState<Tone>('casual')
@@ -171,7 +185,8 @@ export default function HomePage() {
 
   async function sendComment() {
     const texto = newComment.trim()
-    if (!texto || !commentsOpen) return
+    if (!texto || !commentsOpen || enviando) return
+    setEnviando(true)
     try {
       await agregarComentario(commentsOpen.id, texto)
       setNewComment('')
@@ -179,6 +194,8 @@ export default function HomePage() {
       setToast('Comentario enviado')
     } catch (e) {
       setToast(e instanceof Error ? e.message : 'No se pudo comentar')
+    } finally {
+      setEnviando(false)
     }
   }
 
@@ -566,16 +583,12 @@ export default function HomePage() {
               cursor: 'pointer', textAlign: 'left',
             }}
           >
-            <div style={{
-              width: 38, height: 38, borderRadius: '50%', flexShrink: 0, overflow: 'hidden',
-              background: user?.avatarUrl ? 'var(--surface-1)' : 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: '#091A12', fontFamily: 'Fraunces, Georgia, serif', fontWeight: 700, fontSize: 14,
-            }}>
-              {user?.avatarUrl
-                ? <img src={user.avatarUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                : iniciales(user?.name ?? 'T')}
-            </div>
+            <Avatar
+              src={user?.avatarUrl}
+              nombre={user?.name ?? 'T'}
+              size={38}
+              bg="linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))"
+            />
             <span style={{ flex: 1, fontFamily: 'Space Grotesk, sans-serif', fontSize: 14, color: 'var(--text-muted)' }}>
               ¿Qué está pasando?
             </span>
@@ -710,7 +723,6 @@ export default function HomePage() {
 
           {!loading && posts.map(p => {
             const color = colorAutor(p.autorUid)
-            const badge = iniciales(p.autorNombre)
             return (
               <GlassCard key={p.id} accent={color} padding={0}>
                 {p.imagenUrl && (
@@ -729,19 +741,14 @@ export default function HomePage() {
                       }}
                     />
                     <div style={{ position: 'absolute', bottom: 12, left: 12, display: 'flex', alignItems: 'center', gap: 10 }}>
-                      <div
-                        style={{
-                          width: 36, height: 36, borderRadius: 10, overflow: 'hidden',
-                          background: p.autorAvatar ? 'transparent' : color, color: '#091A12',
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          fontFamily: 'Fraunces, Georgia, serif', fontWeight: 700, fontSize: 14,
-                          boxShadow: `0 0 12px ${color}66`, flexShrink: 0,
-                        }}
-                      >
-                        {p.autorAvatar
-                          ? <img src={p.autorAvatar} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                          : badge}
-                      </div>
+                      <Avatar
+                        src={p.autorAvatar}
+                        nombre={p.autorNombre}
+                        size={36}
+                        radius={10}
+                        bg={color}
+                        style={{ boxShadow: `0 0 12px ${color}66` }}
+                      />
                       <div>
                         <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 14, color: '#FAFBFD' }}>
                           {p.autorNombre}
@@ -758,19 +765,7 @@ export default function HomePage() {
                 <div style={{ padding: 14 }}>
                   {!p.imagenUrl && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-                      <div
-                        style={{
-                          width: 40, height: 40, borderRadius: '50%', overflow: 'hidden',
-                          background: p.autorAvatar ? 'var(--surface-1)' : color, color: '#091A12',
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          fontFamily: 'Fraunces, Georgia, serif', fontWeight: 700, fontSize: 14,
-                          flexShrink: 0,
-                        }}
-                      >
-                        {p.autorAvatar
-                          ? <img src={p.autorAvatar} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                          : badge}
-                      </div>
+                      <Avatar src={p.autorAvatar} nombre={p.autorNombre} size={40} bg={color} />
                       <div>
                         <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 14, color: 'var(--text-primary)' }}>
                           {p.autorNombre}
@@ -801,7 +796,7 @@ export default function HomePage() {
                       alignItems: 'center', marginBottom: 12,
                     }}>
                       <Sparkles size={11} color="#B347FF" style={{ opacity: 0.7 }} />
-                      {suggestMediaTags({ caption: p.texto, team: p.autorNombre }).slice(0, 4).map((t, i) => (
+                      {(tagsByPost.get(p.id) ?? []).slice(0, 4).map((t, i) => (
                         <div
                           key={`${p.id}-tag-${i}`}
                           style={{
@@ -823,6 +818,8 @@ export default function HomePage() {
                     {/* Like */}
                     <button
                       onClick={() => handleLike(p)}
+                      aria-label={`Me gusta, ${p.numLikes}`}
+                      aria-pressed={p.liked}
                       style={{
                         position: 'relative',
                         display: 'flex', alignItems: 'center', gap: 6,
@@ -860,6 +857,7 @@ export default function HomePage() {
                     {/* Comments */}
                     <button
                       onClick={() => openComments(p)}
+                      aria-label={`Comentarios, ${p.numComentarios}`}
                       style={{
                         display: 'flex', alignItems: 'center', gap: 6,
                         background: 'transparent', border: 'none', cursor: 'pointer',
@@ -874,6 +872,7 @@ export default function HomePage() {
                     {/* Share */}
                     <button
                       onClick={() => setShareOpen(p)}
+                      aria-label="Compartir publicación"
                       style={{
                         marginLeft: 'auto',
                         display: 'flex', alignItems: 'center', gap: 5,
@@ -889,6 +888,21 @@ export default function HomePage() {
               </GlassCard>
             )
           })}
+
+          {!loading && hayMas && (
+            <button
+              onClick={cargarMas}
+              disabled={cargandoMas}
+              style={{
+                margin: '4px auto 0', padding: '10px 22px', borderRadius: 999,
+                background: 'var(--surface-1)', border: '1px solid var(--border)',
+                color: 'var(--text-muted)', cursor: cargandoMas ? 'default' : 'pointer',
+                fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 13,
+              }}
+            >
+              {cargandoMas ? 'Cargando…' : 'Cargar más'}
+            </button>
+          )}
         </div>
       </div>
 
@@ -910,20 +924,7 @@ export default function HomePage() {
           )}
           {!comentariosLoading && comentarios.map(c => (
             <div key={c.id} style={{ display: 'flex', gap: 12 }}>
-              <div
-                style={{
-                  width: 36, height: 36, borderRadius: '50%', overflow: 'hidden',
-                  background: c.autorAvatar ? 'var(--surface-1)' : 'var(--accent-primary)',
-                  color: '#091A12',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontFamily: 'Fraunces, Georgia, serif', fontWeight: 700, fontSize: 12,
-                  flexShrink: 0,
-                }}
-              >
-                {c.autorAvatar
-                  ? <img src={c.autorAvatar} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  : iniciales(c.autorNombre)}
-              </div>
+              <Avatar src={c.autorAvatar} nombre={c.autorNombre} size={36} fontSize={12} />
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
                   <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 13, color: 'var(--text-primary)' }}>
@@ -958,7 +959,8 @@ export default function HomePage() {
           <input
             value={newComment}
             onChange={e => setNewComment(e.target.value)}
-            onKeyDown={e => { if (e.key === 'Enter') sendComment() }}
+            onKeyDown={e => { if (e.key === 'Enter' && !e.repeat) sendComment() }}
+            disabled={enviando}
             placeholder="Escribe un comentario..."
             style={{
               flex: 1, height: 42, padding: '0 14px', borderRadius: 999,
@@ -971,7 +973,8 @@ export default function HomePage() {
           />
           <button
             onClick={sendComment}
-            disabled={!newComment.trim()}
+            disabled={!newComment.trim() || enviando}
+            aria-label="Enviar comentario"
             style={{
               width: 42, height: 42, borderRadius: '50%',
               background: newComment.trim() ? 'var(--accent-primary)' : 'var(--border)',
@@ -1202,7 +1205,7 @@ export default function HomePage() {
               </div>
               <div style={{
                 fontFamily: 'Space Grotesk', fontSize: 13, lineHeight: 1.45,
-                color: 'rgba(240, 248, 244, 0.88)',
+                color: 'var(--text-primary)',
               }}>
                 {s.text}
               </div>
@@ -1388,7 +1391,7 @@ export default function HomePage() {
               background: 'rgba(93, 195, 255, 0.04)',
               border: '1px dashed rgba(93, 195, 255, 0.25)',
               fontFamily: 'Space Grotesk', fontSize: 12,
-              color: 'rgba(240, 248, 244, 0.55)',
+              color: 'var(--text-muted)',
               textAlign: 'center',
             }}>
               La AI detecta goles, atajadas y jugadas destacadas del video completo.

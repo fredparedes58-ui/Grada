@@ -26,6 +26,7 @@ export async function obtenerMisLikes(postIds) {
   return set
 }
 
+/** @param {any} [ultimaDoc] @param {number} [pagSize] */
 export async function obtenerPublicaciones(ultimaDoc = null, pagSize = 20) {
   let q = query(
     collection(db, 'publicaciones'),

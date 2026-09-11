@@ -113,6 +113,7 @@ service cloud.firestore {
           (request.resource.data.numLikes == resource.data.numLikes + 1 &&
            existsAfter(/databases/$(database)/documents/publicaciones/$(postId)/likes/$(request.auth.uid))) ||
           (request.resource.data.numLikes == resource.data.numLikes - 1 &&
+           resource.data.numLikes > 0 &&
            !existsAfter(/databases/$(database)/documents/publicaciones/$(postId)/likes/$(request.auth.uid)))
         )) ||
         // Comentario: numComentarios +1 con comentario doc en el mismo batch

@@ -1,9 +1,11 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import {
   obtenerPublicaciones, obtenerAutores, obtenerMisLikes,
   publicar, darLike, quitarLike, comentar, obtenerComentarios,
 } from '../lib/muro'
 import { subirImagenPublicacion } from '../lib/almacenamiento'
+
+const PAG_SIZE = 20
 
 export interface MuroPost {
   id: string
@@ -26,11 +28,6 @@ export interface MuroComentario {
   creadoEn: Date | null
 }
 
-function fecha(v: unknown): Date | null {
-  const ts = v as { toDate?: () => Date } | null | undefined
-  return ts && typeof ts.toDate === 'function' ? ts.toDate() : null
-}
-
 type AutorData = { nombre?: string; apodo?: string; avatarUrl?: string } | null
 
 interface RawPost {
@@ -50,8 +47,29 @@ interface RawComentario {
   creadoEn?: unknown
 }
 
+function fecha(v: unknown): Date | null {
+  const ts = v as { toDate?: () => Date } | null | undefined
+  return ts && typeof ts.toDate === 'function' ? ts.toDate() : null
+}
+
 function nombreAutor(a: AutorData): string {
   return a?.apodo || a?.nombre || 'Jugador'
+}
+
+function mapPost(p: RawPost, autores: Record<string, AutorData>, misLikes: Set<string>): MuroPost {
+  const autor = autores[p.autorUid]
+  return {
+    id: p.id,
+    autorUid: p.autorUid,
+    autorNombre: nombreAutor(autor),
+    autorAvatar: autor?.avatarUrl || '',
+    texto: p.texto ?? '',
+    imagenUrl: p.imagenUrl ?? null,
+    creadoEn: fecha(p.creadoEn),
+    numLikes: p.numLikes ?? 0,
+    numComentarios: p.numComentarios ?? 0,
+    liked: misLikes.has(p.id),
+  }
 }
 
 export function iniciales(nombre: string): string {
@@ -67,37 +85,38 @@ export function tiempoRelativo(d: Date | null): string {
   return `hace ${Math.floor(s / 86400)} d`
 }
 
+async function fetchPagina(cursor: unknown) {
+  const { posts: rawPosts, ultimo } = await obtenerPublicaciones(cursor)
+  const raw = rawPosts as RawPost[]
+  const [autoresRes, misLikes] = await Promise.all([
+    obtenerAutores(raw.map(p => p.autorUid)),
+    obtenerMisLikes(raw.map(p => p.id)),
+  ])
+  const autores = autoresRes as Record<string, AutorData>
+  return {
+    posts: raw.map(p => mapPost(p, autores, misLikes)),
+    ultimo,
+    hayMas: raw.length === PAG_SIZE,
+  }
+}
+
 export function useMuro() {
   const [posts, setPosts] = useState<MuroPost[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [hayMas, setHayMas] = useState(false)
+  const [cargandoMas, setCargandoMas] = useState(false)
+  const ultimoRef = useRef<unknown>(null)
+  const likeEnVuelo = useRef<Set<string>>(new Set())
 
   const recargar = useCallback(async () => {
     setLoading(true)
     setError(null)
     try {
-      const { posts: rawPosts } = await obtenerPublicaciones()
-      const raw = rawPosts as RawPost[]
-      const [autoresRes, misLikes] = await Promise.all([
-        obtenerAutores(raw.map(p => p.autorUid)),
-        obtenerMisLikes(raw.map(p => p.id)),
-      ])
-      const autores = autoresRes as Record<string, AutorData>
-      setPosts(raw.map(p => {
-        const autor = autores[p.autorUid]
-        return {
-          id: p.id,
-          autorUid: p.autorUid,
-          autorNombre: nombreAutor(autor),
-          autorAvatar: autor?.avatarUrl || '',
-          texto: p.texto ?? '',
-          imagenUrl: p.imagenUrl ?? null,
-          creadoEn: fecha(p.creadoEn),
-          numLikes: p.numLikes ?? 0,
-          numComentarios: p.numComentarios ?? 0,
-          liked: misLikes.has(p.id),
-        }
-      }))
+      const pagina = await fetchPagina(null)
+      setPosts(pagina.posts)
+      ultimoRef.current = pagina.ultimo
+      setHayMas(pagina.hayMas)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'No se pudo cargar el muro')
     } finally {
@@ -107,6 +126,21 @@ export function useMuro() {
 
   useEffect(() => { recargar() }, [recargar])
 
+  const cargarMas = useCallback(async () => {
+    if (cargandoMas || !hayMas || !ultimoRef.current) return
+    setCargandoMas(true)
+    try {
+      const pagina = await fetchPagina(ultimoRef.current)
+      setPosts(s => [...s, ...pagina.posts])
+      ultimoRef.current = pagina.ultimo
+      setHayMas(pagina.hayMas)
+    } catch {
+      /* silencioso: el usuario puede reintentar */
+    } finally {
+      setCargandoMas(false)
+    }
+  }, [cargandoMas, hayMas])
+
   const crear = useCallback(async ({ texto, imagen }: { texto: string; imagen: File | null }) => {
     let imagenUrl: string | null = null
     if (imagen) imagenUrl = await subirImagenPublicacion(imagen)
@@ -115,10 +149,12 @@ export function useMuro() {
   }, [recargar])
 
   const alternarLike = useCallback(async (post: MuroPost) => {
+    if (likeEnVuelo.current.has(post.id)) return
+    likeEnVuelo.current.add(post.id)
     const nuevoLiked = !post.liked
     setPosts(s => s.map(x =>
       x.id === post.id
-        ? { ...x, liked: nuevoLiked, numLikes: x.numLikes + (nuevoLiked ? 1 : -1) }
+        ? { ...x, liked: nuevoLiked, numLikes: Math.max(0, x.numLikes + (nuevoLiked ? 1 : -1)) }
         : x,
     ))
     try {
@@ -129,6 +165,8 @@ export function useMuro() {
         x.id === post.id ? { ...x, liked: post.liked, numLikes: post.numLikes } : x,
       ))
       throw e
+    } finally {
+      likeEnVuelo.current.delete(post.id)
     }
   }, [])
 
@@ -151,5 +189,8 @@ export function useMuro() {
     ))
   }, [])
 
-  return { posts, loading, error, recargar, crear, alternarLike, cargarComentarios, agregarComentario }
+  return {
+    posts, loading, error, hayMas, cargandoMas,
+    recargar, cargarMas, crear, alternarLike, cargarComentarios, agregarComentario,
+  }
 }
