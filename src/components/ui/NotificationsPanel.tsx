@@ -5,40 +5,40 @@ import { useNotifications, type NotifKind } from '../../context/NotificationsCon
 interface Props { open: boolean; onClose: () => void }
 
 const ICONS: Record<NotifKind, { icon: typeof Target; color: string }> = {
-  goal:                 { icon: Target,         color: '#CCFF00' },
+  goal:                 { icon: Target,         color: '#10B981' },
   match:                { icon: Calendar,       color: '#FFB800' },
-  message:              { icon: MessageCircle,  color: '#CCFF00' },
+  message:              { icon: MessageCircle,  color: '#10B981' },
   team:                 { icon: Users,          color: '#FF5B3A' },
   trophy:               { icon: Trophy,         color: '#FFB800' },
   // FFCV
   ffcv_schedule_change: { icon: Calendar,       color: '#FFB800' },
   ffcv_postponed:       { icon: Calendar,       color: '#FF5B3A' },
   ffcv_live_goal:       { icon: Target,         color: '#FF5B3A' },
-  ffcv_result:          { icon: Trophy,         color: '#CCFF00' },
+  ffcv_result:          { icon: Trophy,         color: '#10B981' },
 }
 
 export default function NotificationsPanel({ open, onClose }: Props) {
   const { items, unread, markAllRead, markRead } = useNotifications()
 
   return (
-    <BottomSheet open={open} onClose={onClose} title="Notificaciones" accent="#CCFF00" height="75%">
+    <BottomSheet open={open} onClose={onClose} title="Notificaciones" accent="#10B981" height="75%">
       {/* Summary bar */}
       <div
         style={{
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           padding: '4px 2px 14px',
-          borderBottom: '1px solid rgba(255, 220, 180, 0.06)',
+          borderBottom: '1px solid var(--border)',
           marginBottom: 12,
         }}
       >
         <div>
-          <div style={{ fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 20, color: '#FAF5EB' }}>
+          <div style={{ fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 20, color: 'var(--text-primary)' }}>
             {unread}{' '}
-            <span style={{ fontFamily: 'Space Grotesk', fontWeight: 500, fontSize: 13, color: 'rgba(250,245,235,0.5)' }}>
+            <span style={{ fontFamily: 'Space Grotesk', fontWeight: 500, fontSize: 13, color: 'var(--text-muted)' }}>
               sin leer
             </span>
           </div>
-          <div style={{ fontFamily: 'Space Grotesk', fontSize: 11, color: 'rgba(250,245,235,0.5)' }}>
+          <div style={{ fontFamily: 'Space Grotesk', fontSize: 11, color: 'var(--text-muted)' }}>
             {items.length} notificaciones totales
           </div>
         </div>
@@ -48,9 +48,9 @@ export default function NotificationsPanel({ open, onClose }: Props) {
             style={{
               display: 'flex', alignItems: 'center', gap: 6,
               padding: '8px 12px', borderRadius: 10,
-              background: 'rgba(204, 255, 0, 0.12)',
-              border: '1px solid rgba(204, 255, 0, 0.3)',
-              color: '#CCFF00',
+              background: 'var(--bg-surface-alt)',
+              border: '1px solid var(--border-warm)',
+              color: 'var(--accent-primary)',
               fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 11,
               cursor: 'pointer',
             }}
@@ -70,9 +70,9 @@ export default function NotificationsPanel({ open, onClose }: Props) {
               onClick={() => markRead(n.id)}
               style={{
                 display: 'flex', gap: 12, padding: '12px',
-                background: n.read ? 'rgba(255,255,255,0.02)' : 'rgba(204, 255, 0, 0.06)',
+                background: n.read ? 'rgba(10,21,48,0.04)' : 'var(--bg-surface)',
                 borderRadius: 12,
-                border: n.read ? '1px solid rgba(255,220,180,0.05)' : `1px solid ${color}44`,
+                border: n.read ? '1px solid var(--border)' : `1px solid ${color}44`,
                 cursor: 'pointer',
                 transition: 'all 200ms',
                 position: 'relative',
@@ -102,7 +102,7 @@ export default function NotificationsPanel({ open, onClose }: Props) {
                 <div
                   style={{
                     fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 13,
-                    color: '#FAF5EB', marginBottom: 2,
+                    color: 'var(--text-primary)', marginBottom: 2,
                   }}
                 >
                   {n.title}
@@ -110,7 +110,7 @@ export default function NotificationsPanel({ open, onClose }: Props) {
                 <div
                   style={{
                     fontFamily: 'Space Grotesk', fontSize: 12,
-                    color: 'rgba(250,245,235,0.6)', lineHeight: 1.3,
+                    color: 'var(--text-muted)', lineHeight: 1.3,
                   }}
                 >
                   {n.body}
@@ -119,7 +119,7 @@ export default function NotificationsPanel({ open, onClose }: Props) {
                   style={{
                     marginTop: 6,
                     fontFamily: 'Space Grotesk', fontSize: 10,
-                    color: 'rgba(250,245,235,0.4)',
+                    color: 'var(--text-dim)',
                     textTransform: 'uppercase', letterSpacing: '0.08em',
                   }}
                 >

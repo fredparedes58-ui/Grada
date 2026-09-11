@@ -42,8 +42,8 @@ export default function HeatmapPitch({ name, width = 280 }: Props) {
         position: 'absolute', inset: 0,
         borderRadius: 14,
         background: 'linear-gradient(180deg, #0B2E1A 0%, #0E3822 50%, #0B2E1A 100%)',
-        border: '2px solid rgba(204,255,0,0.35)',
-        boxShadow: '0 0 20px rgba(204,255,0,0.15), inset 0 0 30px rgba(0,0,0,0.4)',
+        border: '2px solid rgba(16,185,129,0.35)',
+        boxShadow: '0 0 20px rgba(16,185,129,0.15), inset 0 0 30px rgba(0,0,0,0.4)',
       }}>
         {/* Heat cells */}
         {zones.map((z, i) => {
@@ -61,18 +61,18 @@ export default function HeatmapPitch({ name, width = 280 }: Props) {
         })}
         {/* Lines overlay */}
         <g style={{ opacity: 0.6 }}>
-          <rect x="1" y="1" width="98" height="148" fill="none" stroke="#CCFF00" strokeWidth="0.3" />
-          <line x1="0" y1="75" x2="100" y2="75" stroke="#CCFF00" strokeWidth="0.3" />
-          <circle cx="50" cy="75" r="10" fill="none" stroke="#CCFF00" strokeWidth="0.3" />
-          <rect x="25" y="1"   width="50" height="18" fill="none" stroke="#CCFF00" strokeWidth="0.3" />
-          <rect x="25" y="131" width="50" height="18" fill="none" stroke="#CCFF00" strokeWidth="0.3" />
+          <rect x="1" y="1" width="98" height="148" fill="none" stroke="#10B981" strokeWidth="0.3" />
+          <line x1="0" y1="75" x2="100" y2="75" stroke="#10B981" strokeWidth="0.3" />
+          <circle cx="50" cy="75" r="10" fill="none" stroke="#10B981" strokeWidth="0.3" />
+          <rect x="25" y="1"   width="50" height="18" fill="none" stroke="#10B981" strokeWidth="0.3" />
+          <rect x="25" y="131" width="50" height="18" fill="none" stroke="#10B981" strokeWidth="0.3" />
         </g>
       </svg>
       {/* Leyenda */}
       <div style={{
         position: 'absolute', bottom: -26, left: 0, right: 0,
         display: 'flex', gap: 6, alignItems: 'center', justifyContent: 'center',
-        fontFamily: 'Space Grotesk', fontSize: 9, color: 'rgba(250,245,235,0.55)',
+        fontFamily: 'Space Grotesk', fontSize: 9, color: 'var(--text-muted)',
       }}>
         <span>Frío</span>
         <div style={{

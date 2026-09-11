@@ -22,7 +22,7 @@ interface Props {
   away: string
 }
 
-const COLORS = ['#CCFF00', '#FF5B3A', '#00D4FF', '#FFB800']
+const COLORS = ['#10B981', '#FF5B3A', '#00D4FF', '#FFB800']
 
 export default function MatchReplaySheet({ open, onClose, home, away }: Props) {
   const [events, setEvents] = useState<MatchEvent[]>([])
@@ -122,13 +122,13 @@ export default function MatchReplaySheet({ open, onClose, home, away }: Props) {
         background: 'rgba(0,212,255,0.08)',
         border: '1px solid rgba(0,212,255,0.3)',
       }}>
-        <div style={{ fontFamily: 'Archivo', fontWeight: 800, fontSize: 13, color: '#FAF5EB', textAlign: 'right' }}>{home}</div>
+        <div style={{ fontFamily: 'Archivo', fontWeight: 800, fontSize: 13, color: 'var(--text-primary)', textAlign: 'right' }}>{home}</div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontFamily: 'Archivo', fontWeight: 900, fontSize: 22, color: '#CCFF00' }}>{homeGoals}</span>
-          <span style={{ color: 'rgba(250,245,235,0.4)' }}>-</span>
+          <span style={{ fontFamily: 'Archivo', fontWeight: 900, fontSize: 22, color: 'var(--accent-primary)' }}>{homeGoals}</span>
+          <span style={{ color: 'var(--text-dim)' }}>-</span>
           <span style={{ fontFamily: 'Archivo', fontWeight: 900, fontSize: 22, color: '#FFB800' }}>{awayGoals}</span>
         </div>
-        <div style={{ fontFamily: 'Archivo', fontWeight: 800, fontSize: 13, color: '#FAF5EB' }}>{away}</div>
+        <div style={{ fontFamily: 'Archivo', fontWeight: 800, fontSize: 13, color: 'var(--text-primary)' }}>{away}</div>
       </div>
 
       {/* Canvas (pizarra sobre cancha) */}
@@ -150,9 +150,9 @@ export default function MatchReplaySheet({ open, onClose, home, away }: Props) {
         >
           {/* Cancha horizontal */}
           <g style={{ opacity: 0.5 }}>
-            <rect x="1" y="1" width="148" height="98" fill="none" stroke="#CCFF00" strokeWidth="0.3" />
-            <line x1="75" y1="0" x2="75" y2="100" stroke="#CCFF00" strokeWidth="0.3" />
-            <circle cx="75" cy="50" r="10" fill="none" stroke="#CCFF00" strokeWidth="0.3" />
+            <rect x="1" y="1" width="148" height="98" fill="none" stroke="#10B981" strokeWidth="0.3" />
+            <line x1="75" y1="0" x2="75" y2="100" stroke="#10B981" strokeWidth="0.3" />
+            <circle cx="75" cy="50" r="10" fill="none" stroke="#10B981" strokeWidth="0.3" />
           </g>
           {/* Strokes */}
           {strokes.map(s => {
@@ -196,20 +196,20 @@ export default function MatchReplaySheet({ open, onClose, home, away }: Props) {
         ] as const).map(([k, Icon, label]) => (
           <button key={k} onClick={() => setTool(k)} aria-label={label} style={{
             padding: '8px 10px', borderRadius: 10,
-            background: tool === k ? 'rgba(0,212,255,0.18)' : 'rgba(255,255,255,0.04)',
-            border: `1px solid ${tool === k ? 'rgba(0,212,255,0.5)' : 'rgba(255,220,180,0.1)'}`,
-            color: tool === k ? '#00D4FF' : 'rgba(250,245,235,0.7)',
+            background: tool === k ? 'rgba(0,212,255,0.18)' : 'rgba(10,21,48,0.04)',
+            border: `1px solid ${tool === k ? 'rgba(0,212,255,0.5)' : 'var(--border)'}`,
+            color: tool === k ? '#00D4FF' : 'var(--text-muted)',
             cursor: 'pointer',
           }}>
             <Icon size={14} />
           </button>
         ))}
-        <div style={{ width: 1, height: 20, background: 'rgba(255,220,180,0.15)', margin: '0 4px' }} />
+        <div style={{ width: 1, height: 20, background: 'var(--border)', margin: '0 4px' }} />
         {COLORS.map(c => (
           <button key={c} onClick={() => setColor(c)} aria-label={`color ${c}`} style={{
             width: 26, height: 26, borderRadius: '50%',
             background: c,
-            border: color === c ? '2px solid #FAF5EB' : '2px solid transparent',
+            border: color === c ? '2px solid var(--text-primary)' : '2px solid transparent',
             boxShadow: color === c ? `0 0 10px ${c}` : 'none',
             cursor: 'pointer',
           }} />
@@ -250,7 +250,7 @@ export default function MatchReplaySheet({ open, onClose, home, away }: Props) {
         </div>
         <div style={{
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          fontFamily: 'Space Grotesk', fontSize: 10, color: 'rgba(250,245,235,0.5)',
+          fontFamily: 'Space Grotesk', fontSize: 10, color: 'var(--text-muted)',
         }}>
           <span>0&apos;</span>
           <span>{current ? `${current.minute}'` : '—'}</span>
@@ -264,7 +264,7 @@ export default function MatchReplaySheet({ open, onClose, home, away }: Props) {
           onClick={() => setPlaying(p => !p)}
           style={{
             padding: '10px 14px', borderRadius: 10,
-            background: 'linear-gradient(135deg, rgba(0,212,255,0.22), rgba(204,255,0,0.1))',
+            background: 'linear-gradient(135deg, rgba(0,212,255,0.22), rgba(16,185,129,0.1))',
             border: '1px solid rgba(0,212,255,0.55)',
             color: '#00D4FF', cursor: 'pointer',
             fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 12,
@@ -274,8 +274,8 @@ export default function MatchReplaySheet({ open, onClose, home, away }: Props) {
           {playing ? <Pause size={14} /> : <Play size={14} />}
           {playing ? 'Pausar' : 'Reproducir'}
         </button>
-        <div style={{ flex: 1, height: 4, borderRadius: 999, background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
-          <div style={{ width: `${progress}%`, height: '100%', background: 'linear-gradient(90deg, #00D4FF, #CCFF00)' }} />
+        <div style={{ flex: 1, height: 4, borderRadius: 999, background: 'rgba(10,21,48,0.06)', overflow: 'hidden' }}>
+          <div style={{ width: `${progress}%`, height: '100%', background: 'linear-gradient(90deg, #00D4FF, #10B981)' }} />
         </div>
       </div>
 
@@ -283,9 +283,9 @@ export default function MatchReplaySheet({ open, onClose, home, away }: Props) {
       {current && (
         <div style={{
           padding: '10px 12px', borderRadius: 10,
-          background: 'rgba(255,255,255,0.04)',
-          border: '1px solid rgba(255,220,180,0.08)',
-          fontFamily: 'Space Grotesk', fontSize: 12, color: '#FAF5EB', lineHeight: 1.4,
+          background: 'var(--bg-surface)',
+          border: '1px solid var(--border)',
+          fontFamily: 'Space Grotesk', fontSize: 12, color: 'var(--text-primary)', lineHeight: 1.4,
         }}>
           <strong style={{ color: '#00D4FF' }}>{current.minute}&apos;</strong> &middot; {current.text}
           {highlightFrames.has(idx) && (
@@ -299,7 +299,7 @@ export default function MatchReplaySheet({ open, onClose, home, away }: Props) {
       {/* Highlights directos */}
       {highlights.length > 0 && (
         <div style={{ marginTop: 14 }}>
-          <div style={{ fontFamily: 'Space Grotesk', fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(250,245,235,0.5)', marginBottom: 6 }}>
+          <div style={{ fontFamily: 'Space Grotesk', fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)', marginBottom: 6 }}>
             Saltar a highlights
           </div>
           <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
@@ -317,7 +317,7 @@ export default function MatchReplaySheet({ open, onClose, home, away }: Props) {
                 </button>
               )
             })}
-            <span style={{ marginLeft: 'auto', fontFamily: 'Space Grotesk', fontSize: 10, color: 'rgba(250,245,235,0.45)', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+            <span style={{ marginLeft: 'auto', fontFamily: 'Space Grotesk', fontSize: 10, color: 'var(--text-muted)', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
               <Trash2 size={10} /> Anotaciones por frame
             </span>
           </div>

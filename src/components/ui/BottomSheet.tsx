@@ -11,7 +11,7 @@ interface BottomSheetProps {
 }
 
 export default function BottomSheet({
-  open, onClose, title, children, height = '75%', accent = '#CCFF00',
+  open, onClose, title, children, height = '75%', accent = '#10B981',
 }: BottomSheetProps) {
   // Block body scroll while open
   useEffect(() => {
@@ -59,12 +59,12 @@ export default function BottomSheet({
           maxWidth: 430,
           margin: '0 auto',
           height,
-          background: 'var(--bg-base, #141009)',
+          background: 'var(--surface-1, #FFFFFF)',
           borderTopLeftRadius: 22,
           borderTopRightRadius: 22,
-          border: '1px solid rgba(255, 220, 180, 0.1)',
+          border: '1px solid var(--border, rgba(10, 21, 48, 0.10))',
           borderBottom: 'none',
-          boxShadow: `0 -20px 60px rgba(0,0,0,0.6), 0 0 32px ${accent}22`,
+          boxShadow: `0 -20px 60px rgba(10,21,48,0.18), 0 0 32px ${accent}22`,
           transform: open ? 'translateY(0)' : 'translateY(100%)',
           transition: 'transform 340ms cubic-bezier(.2,.8,.2,1)',
           zIndex: 90,
@@ -87,7 +87,7 @@ export default function BottomSheet({
               width: 40,
               height: 4,
               borderRadius: 2,
-              background: 'rgba(250, 245, 235, 0.25)',
+              background: 'var(--text-dim, rgba(10, 21, 48, 0.35))',
             }}
           />
         </div>
@@ -100,7 +100,7 @@ export default function BottomSheet({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              borderBottom: '1px solid rgba(255, 220, 180, 0.06)',
+              borderBottom: '1px solid var(--border, rgba(10, 21, 48, 0.10))',
               flexShrink: 0,
             }}
           >
@@ -109,7 +109,7 @@ export default function BottomSheet({
                 fontFamily: 'Archivo, sans-serif',
                 fontWeight: 800,
                 fontSize: 18,
-                color: '#FAF5EB',
+                color: 'var(--text-primary, #0A1530)',
                 letterSpacing: '-0.01em',
               }}
             >
@@ -121,9 +121,9 @@ export default function BottomSheet({
                 width: 32,
                 height: 32,
                 borderRadius: 10,
-                background: 'rgba(255, 255, 255, 0.06)',
-                border: '1px solid rgba(255, 220, 180, 0.08)',
-                color: 'rgba(250, 245, 235, 0.7)',
+                background: 'var(--bg-surface, rgba(10, 21, 48, 0.04))',
+                border: '1px solid var(--border, rgba(10, 21, 48, 0.10))',
+                color: 'var(--text-muted, rgba(10, 21, 48, 0.55))',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',

@@ -88,8 +88,8 @@ export default function StoriesStrip() {
                 width: 64, height: 64, borderRadius: '50%',
                 padding: 2,
                 background: isViewed
-                  ? 'rgba(250,245,235,0.15)'
-                  : `conic-gradient(from 0deg, ${s.ring}, #FAF5EB, ${s.ring})`,
+                  ? 'rgba(10,21,48,0.15)'
+                  : `conic-gradient(from 0deg, ${s.ring}, #FAFBFD, ${s.ring})`,
                 boxShadow: isViewed ? 'none' : `0 0 14px ${s.ring}55`,
               }}>
                 <div style={{
@@ -97,14 +97,14 @@ export default function StoriesStrip() {
                   background: s.bg,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: 26,
-                  border: '2px solid #0F0D0A',
+                  border: '2px solid var(--surface-1)',
                 }}>
                   {s.emoji}
                 </div>
               </div>
               <div style={{
                 fontFamily: 'Space Grotesk', fontSize: 10, fontWeight: 600,
-                color: isViewed ? 'rgba(250,245,235,0.5)' : '#FAF5EB',
+                color: isViewed ? 'var(--text-muted)' : 'var(--text-primary)',
                 maxWidth: 70, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
               }}>
                 {s.title}
@@ -186,10 +186,10 @@ function StoryViewer({
           {story.authorBadge}
         </div>
         <div style={{ flex: 1 }}>
-          <div style={{ fontFamily: 'Archivo', fontWeight: 800, fontSize: 14, color: '#FAF5EB' }}>
+          <div style={{ fontFamily: 'Archivo', fontWeight: 800, fontSize: 14, color: '#FAFBFD' }}>
             {story.title}
           </div>
-          <div style={{ fontFamily: 'Space Grotesk', fontSize: 11, color: 'rgba(250,245,235,0.65)' }}>
+          <div style={{ fontFamily: 'Space Grotesk', fontSize: 11, color: 'rgba(250,251,253,0.65)' }}>
             {story.timeAgo}
           </div>
         </div>
@@ -198,7 +198,7 @@ function StoryViewer({
           style={{
             width: 34, height: 34, borderRadius: 10,
             background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.15)',
-            color: '#FAF5EB',
+            color: '#FAFBFD',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             cursor: 'pointer',
           }}
@@ -235,14 +235,14 @@ function StoryViewer({
           </div>
           <div style={{
             fontFamily: 'Archivo, sans-serif', fontWeight: 900, fontSize: 26,
-            color: '#FAF5EB', textAlign: 'center', marginBottom: 10,
+            color: '#FAFBFD', textAlign: 'center', marginBottom: 10,
             textShadow: '0 4px 18px rgba(0,0,0,0.6)',
           }}>
             {story.subtitle}
           </div>
           <div style={{
             fontFamily: 'Space Grotesk', fontSize: 14,
-            color: 'rgba(250,245,235,0.85)', textAlign: 'center',
+            color: 'rgba(250,251,253,0.85)', textAlign: 'center',
             maxWidth: 320, lineHeight: 1.4,
             textShadow: '0 2px 10px rgba(0,0,0,0.6)',
           }}>

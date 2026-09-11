@@ -16,7 +16,7 @@ export function Skeleton({ width = '100%', height = 14, radius = 8, style }: Ske
         height,
         borderRadius: radius,
         background:
-          'linear-gradient(90deg, rgba(255, 220, 180, 0.04) 0%, rgba(255, 220, 180, 0.12) 50%, rgba(255, 220, 180, 0.04) 100%)',
+          'linear-gradient(90deg, rgba(10, 21, 48, 0.04) 0%, rgba(10, 21, 48, 0.10) 50%, rgba(10, 21, 48, 0.04) 100%)',
         backgroundSize: '200% 100%',
         animation: 'skeleton-shimmer 1.4s ease-in-out infinite',
         ...style,
@@ -44,8 +44,8 @@ export function SkeletonCard({
         padding: 14,
         minHeight: height,
         borderRadius: 14,
-        background: 'rgba(255, 255, 255, 0.03)',
-        border: '1px solid rgba(255, 220, 180, 0.06)',
+        background: 'var(--bg-surface)',
+        border: '1px solid var(--border)',
         backdropFilter: 'blur(12px) saturate(140%)',
         WebkitBackdropFilter: 'blur(12px) saturate(140%)',
       }}

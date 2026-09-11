@@ -35,9 +35,9 @@ export default function LiveTicker({ items = DEFAULT_ITEMS, speed = 38 }: LiveTi
         position: 'relative',
         height: 30,
         overflow: 'hidden',
-        background: 'linear-gradient(90deg, rgba(15,13,10,0.95), rgba(26,22,18,0.75), rgba(15,13,10,0.95))',
-        borderBottom: '1px solid rgba(204, 255, 0, 0.12)',
-        borderTop: '1px solid rgba(255, 220, 180, 0.05)',
+        background: 'linear-gradient(90deg, rgba(245,247,250,0.95), rgba(255,255,255,0.75), rgba(245,247,250,0.95))',
+        borderBottom: '1px solid rgba(16, 185, 129, 0.12)',
+        borderTop: '1px solid var(--border)',
       }}
     >
       {/* Fade lateral izquierdo */}
@@ -71,10 +71,10 @@ export default function LiveTicker({ items = DEFAULT_ITEMS, speed = 38 }: LiveTi
               alignItems: 'center',
               gap: 8,
               padding: '0 18px',
-              borderRight: '1px solid rgba(255, 220, 180, 0.06)',
+              borderRight: '1px solid var(--border)',
               fontFamily: 'Space Grotesk, sans-serif',
               fontSize: 11,
-              color: 'rgba(250, 245, 235, 0.85)',
+              color: 'var(--text-primary)',
               fontWeight: 600,
               letterSpacing: '0.02em',
             }}
@@ -95,9 +95,9 @@ export default function LiveTicker({ items = DEFAULT_ITEMS, speed = 38 }: LiveTi
               style={{
                 fontFamily: 'Archivo, sans-serif',
                 fontWeight: 800,
-                color: '#CCFF00',
+                color: 'var(--accent-primary)',
                 padding: '1px 6px',
-                background: 'rgba(204, 255, 0, 0.08)',
+                background: 'rgba(16, 185, 129, 0.08)',
                 borderRadius: 4,
                 fontSize: 11,
                 letterSpacing: '0.04em',
@@ -112,7 +112,7 @@ export default function LiveTicker({ items = DEFAULT_ITEMS, speed = 38 }: LiveTi
                 style={{
                   fontFamily: 'JetBrains Mono, monospace',
                   fontSize: 9,
-                  color: it.live ? '#FF5B3A' : 'rgba(250, 245, 235, 0.45)',
+                  color: it.live ? '#FF5B3A' : 'var(--text-muted)',
                   letterSpacing: '0.06em',
                   textTransform: 'uppercase',
                 }}

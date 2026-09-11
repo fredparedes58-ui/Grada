@@ -12,7 +12,7 @@ interface RivalScoutSheetProps {
 
 const THREAT_COLOR: Record<string, string> = {
   bajo:    '#00D4FF',
-  medio:   '#CCFF00',
+  medio:   '#10B981',
   alto:    '#FFB800',
   extremo: '#FF5B3A',
 }
@@ -28,7 +28,7 @@ export default function RivalScoutSheet({ open, onClose, opponent }: RivalScoutS
         <div
           style={{
             padding: 16,
-            background: 'linear-gradient(135deg, rgba(26,22,18,0.9), rgba(15,13,10,0.95))',
+            background: 'linear-gradient(135deg, var(--surface-1), var(--surface-2))',
             display: 'flex', alignItems: 'center', gap: 14,
           }}
         >
@@ -49,13 +49,13 @@ export default function RivalScoutSheet({ open, onClose, opponent }: RivalScoutS
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{
               fontFamily: 'Archivo', fontWeight: 900, fontSize: 18,
-              color: '#FAF5EB', lineHeight: 1.1,
+              color: 'var(--text-primary)', lineHeight: 1.1,
             }}>
               {report.opponent}
             </div>
             <div style={{
               fontFamily: 'Space Grotesk', fontSize: 11,
-              color: 'rgba(250,245,235,0.55)', marginTop: 4,
+              color: 'var(--text-muted)', marginTop: 4,
               textTransform: 'capitalize',
             }}>
               {report.preferredStyle} · {report.preferredFormation}
@@ -81,14 +81,14 @@ export default function RivalScoutSheet({ open, onClose, opponent }: RivalScoutS
       <div style={{
         marginBottom: 14,
         padding: '10px 12px', borderRadius: 10,
-        background: 'rgba(255,255,255,0.03)',
-        border: '1px solid rgba(255,220,180,0.08)',
+        background: 'var(--bg-surface)',
+        border: '1px solid var(--border)',
         display: 'flex', alignItems: 'center', gap: 12,
       }}>
-        <Activity size={14} color="rgba(250,245,235,0.55)" />
+        <Activity size={14} color="rgba(10,21,48,0.55)" />
         <div style={{
           fontFamily: 'Space Grotesk', fontSize: 10,
-          color: 'rgba(250,245,235,0.5)',
+          color: 'var(--text-muted)',
           letterSpacing: '0.1em', textTransform: 'uppercase',
         }}>
           Forma
@@ -99,9 +99,9 @@ export default function RivalScoutSheet({ open, onClose, opponent }: RivalScoutS
               key={i}
               style={{
                 width: 22, height: 22, borderRadius: 6,
-                background: f === 'W' ? 'rgba(204,255,0,0.2)' : f === 'D' ? 'rgba(255,184,0,0.2)' : 'rgba(255,91,58,0.2)',
-                border: `1px solid ${f === 'W' ? '#CCFF00' : f === 'D' ? '#FFB800' : '#FF5B3A'}88`,
-                color: f === 'W' ? '#CCFF00' : f === 'D' ? '#FFB800' : '#FF5B3A',
+                background: f === 'W' ? 'rgba(16,185,129,0.2)' : f === 'D' ? 'rgba(255,184,0,0.2)' : 'rgba(255,91,58,0.2)',
+                border: `1px solid ${f === 'W' ? '#10B981' : f === 'D' ? '#FFB800' : '#FF5B3A'}88`,
+                color: f === 'W' ? '#10B981' : f === 'D' ? '#FFB800' : '#FF5B3A',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontFamily: 'Archivo', fontWeight: 900, fontSize: 10,
               }}
@@ -140,13 +140,13 @@ export default function RivalScoutSheet({ open, onClose, opponent }: RivalScoutS
           </div>
           <div style={{
             fontFamily: 'Archivo', fontWeight: 800, fontSize: 14,
-            color: '#FAF5EB', marginTop: 2,
+            color: 'var(--text-primary)', marginTop: 2,
           }}>
             {report.dangerPlayer.name}
           </div>
           <div style={{
             fontFamily: 'Space Grotesk', fontSize: 11,
-            color: 'rgba(250,245,235,0.65)', marginTop: 2,
+            color: 'var(--text-muted)', marginTop: 2,
           }}>
             {report.dangerPlayer.note}
           </div>
@@ -172,7 +172,7 @@ export default function RivalScoutSheet({ open, onClose, opponent }: RivalScoutS
             {report.strengths.map((s, i) => (
               <li key={i} style={{
                 fontFamily: 'Space Grotesk', fontSize: 11,
-                color: 'rgba(250,245,235,0.8)', lineHeight: 1.35,
+                color: 'var(--text-primary)', lineHeight: 1.35,
                 paddingLeft: 10, position: 'relative',
               }}>
                 <span style={{
@@ -187,13 +187,13 @@ export default function RivalScoutSheet({ open, onClose, opponent }: RivalScoutS
 
         <div style={{
           padding: 12, borderRadius: 12,
-          background: 'rgba(204,255,0,0.06)',
-          border: '1px solid rgba(204,255,0,0.3)',
+          background: 'rgba(16,185,129,0.06)',
+          border: '1px solid rgba(16,185,129,0.3)',
         }}>
           <div style={{
             display: 'flex', alignItems: 'center', gap: 5, marginBottom: 8,
             fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 10,
-            color: '#CCFF00', letterSpacing: '0.1em', textTransform: 'uppercase',
+            color: 'var(--accent-primary)', letterSpacing: '0.1em', textTransform: 'uppercase',
           }}>
             <ShieldOff size={11} />
             Debilidades
@@ -202,12 +202,12 @@ export default function RivalScoutSheet({ open, onClose, opponent }: RivalScoutS
             {report.weaknesses.map((s, i) => (
               <li key={i} style={{
                 fontFamily: 'Space Grotesk', fontSize: 11,
-                color: 'rgba(250,245,235,0.8)', lineHeight: 1.35,
+                color: 'var(--text-primary)', lineHeight: 1.35,
                 paddingLeft: 10, position: 'relative',
               }}>
                 <span style={{
                   position: 'absolute', left: 0, top: 5,
-                  width: 4, height: 4, borderRadius: '50%', background: '#CCFF00',
+                  width: 4, height: 4, borderRadius: '50%', background: 'var(--accent-primary)',
                 }} />
                 {s}
               </li>
@@ -235,7 +235,7 @@ export default function RivalScoutSheet({ open, onClose, opponent }: RivalScoutS
                 background: 'rgba(179,71,255,0.06)',
                 border: '1px solid rgba(179,71,255,0.28)',
                 fontFamily: 'Space Grotesk', fontSize: 12,
-                color: 'rgba(250,245,235,0.85)',
+                color: 'var(--text-primary)',
                 lineHeight: 1.45,
                 display: 'flex', gap: 8, alignItems: 'flex-start',
               }}
@@ -255,7 +255,7 @@ export default function RivalScoutSheet({ open, onClose, opponent }: RivalScoutS
 
       <div style={{
         fontFamily: 'Space Grotesk', fontSize: 9,
-        color: 'rgba(250,245,235,0.35)',
+        color: 'var(--text-dim)',
         textAlign: 'center',
         letterSpacing: '0.08em',
         textTransform: 'uppercase',

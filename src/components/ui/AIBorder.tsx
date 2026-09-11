@@ -21,7 +21,7 @@ interface AIBorderProps {
  */
 export default function AIBorder({
   children,
-  colors = ['#B347FF', '#00D4FF', '#CCFF00', '#B347FF'],
+  colors = ['#B347FF', '#00D4FF', '#10B981', '#B347FF'],
   thickness = 1,
   radius = 16,
   speed = 7,

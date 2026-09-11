@@ -20,15 +20,15 @@ export default function AchievementsSheet({ open, onClose, stats }: Props) {
       {/* Header resumen */}
       <div style={{
         padding: 14, borderRadius: 14, marginBottom: 14,
-        background: 'linear-gradient(135deg, rgba(255,184,0,0.14), rgba(204,255,0,0.06))',
+        background: 'linear-gradient(135deg, rgba(255,184,0,0.14), rgba(16,185,129,0.06))',
         border: '1px solid rgba(255,184,0,0.35)',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       }}>
         <div>
-          <div style={{ fontFamily: 'Space Grotesk', fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(250,245,235,0.5)' }}>
+          <div style={{ fontFamily: 'Space Grotesk', fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)' }}>
             Progreso total
           </div>
-          <div style={{ fontFamily: 'Archivo, sans-serif', fontWeight: 900, fontSize: 22, color: '#FAF5EB' }}>
+          <div style={{ fontFamily: 'Archivo, sans-serif', fontWeight: 900, fontSize: 22, color: 'var(--text-primary)' }}>
             {unlockedCount} / {items.length}
           </div>
         </div>
@@ -44,8 +44,8 @@ export default function AchievementsSheet({ open, onClose, stats }: Props) {
               key={a.id}
               style={{
                 padding: 12, borderRadius: 14,
-                background: unlocked ? st.bg : 'rgba(255,255,255,0.03)',
-                border: `1px solid ${unlocked ? st.color + '66' : 'rgba(255,220,180,0.07)'}`,
+                background: unlocked ? st.bg : 'rgba(10,21,48,0.04)',
+                border: `1px solid ${unlocked ? st.color + '66' : 'var(--border)'}`,
                 opacity: unlocked ? 1 : 0.7,
                 position: 'relative', overflow: 'hidden',
                 boxShadow: unlocked ? `0 0 18px ${st.color}22` : 'none',
@@ -71,25 +71,25 @@ export default function AchievementsSheet({ open, onClose, stats }: Props) {
               </div>
               <div style={{
                 fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 13,
-                color: '#FAF5EB', marginBottom: 3,
+                color: 'var(--text-primary)', marginBottom: 3,
               }}>
                 {a.title}
               </div>
               <div style={{
                 fontFamily: 'Space Grotesk', fontSize: 11,
-                color: 'rgba(250,245,235,0.55)', lineHeight: 1.35, minHeight: 28,
+                color: 'var(--text-muted)', lineHeight: 1.35, minHeight: 28,
               }}>
                 {a.description}
               </div>
               {/* Progress bar */}
               <div style={{
                 marginTop: 8, height: 4, borderRadius: 999,
-                background: 'rgba(255,255,255,0.06)', overflow: 'hidden',
+                background: 'rgba(10,21,48,0.06)', overflow: 'hidden',
               }}>
                 <div style={{
                   height: '100%', width: `${Math.round(progress * 100)}%`,
                   background: unlocked
-                    ? `linear-gradient(90deg, ${st.color}, #FAF5EB)`
+                    ? `linear-gradient(90deg, ${st.color}, #FAFBFD)`
                     : `linear-gradient(90deg, ${st.color}66, ${st.color}33)`,
                   transition: 'width 600ms ease-out',
                 }} />
