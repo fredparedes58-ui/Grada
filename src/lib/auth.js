@@ -6,7 +6,7 @@ import {
   onAuthStateChanged,
   updateProfile,
 } from 'firebase/auth'
-import { doc, writeBatch, serverTimestamp } from 'firebase/firestore'
+import { doc, writeBatch, updateDoc, serverTimestamp } from 'firebase/firestore'
 import { auth, db } from './firebase'
 
 const ERRORES = {
@@ -50,6 +50,13 @@ export async function registrar({ email, password, nombre, apodo, ciudad, posici
   })
   await batch.commit()
   return cred.user
+}
+
+export async function actualizarFotoPerfil(url) {
+  const usuario = auth.currentUser
+  if (!usuario) throw new Error('No hay sesión')
+  await updateProfile(usuario, { photoURL: url })
+  await updateDoc(doc(db, 'usuarios', usuario.uid), { avatarUrl: url })
 }
 
 export async function acceder({ email, password }) {

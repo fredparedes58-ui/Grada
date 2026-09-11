@@ -1,7 +1,9 @@
-import { useState, useMemo, useRef } from 'react'
-import { LogOut, Trophy, Target, Zap, Star, Pencil, Check, X, Sparkles, TrendingUp, AlertCircle } from 'lucide-react'
+import { useState, useMemo, useRef, type ChangeEvent } from 'react'
+import { LogOut, Trophy, Target, Zap, Star, Pencil, Check, X, Sparkles, TrendingUp, AlertCircle, Camera, Loader2 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { subirAvatar } from '../lib/almacenamiento'
+import { actualizarFotoPerfil } from '../lib/auth'
 import BottomNav from '../components/ui/BottomNav'
 import GlassCard from '../components/ui/GlassCard'
 import AIBorder from '../components/ui/AIBorder'
@@ -47,6 +49,28 @@ export default function ProfilePage() {
   const position = user?.position ?? 'Centrocampista'
   const team = user?.team ?? 'Valencia BC'
   const overall = Math.round(RATINGS.reduce((a, [, v]) => a + v, 0) / RATINGS.length)
+  const avatarUrl = user?.avatarUrl
+
+  const [avatarBusy, setAvatarBusy] = useState(false)
+  const avatarInputRef = useRef<HTMLInputElement>(null)
+
+  async function handleAvatarPick(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    setAvatarBusy(true)
+    try {
+      const url = await subirAvatar(file)
+      await actualizarFotoPerfil(url)
+      updateUser({ avatarUrl: url })
+      setToast('Foto actualizada')
+      if ('vibrate' in navigator) navigator.vibrate(25)
+    } catch (err) {
+      setToast(err instanceof Error ? err.message : 'No se pudo subir la foto')
+    } finally {
+      setAvatarBusy(false)
+    }
+  }
 
   const coach = useMemo(() => generateCoachFeedback({
     name, position,
@@ -221,20 +245,51 @@ export default function ProfilePage() {
               }}
             >
               {/* Avatar */}
-              <div
+              <button
+                type="button"
+                onClick={() => avatarInputRef.current?.click()}
+                disabled={avatarBusy}
+                title="Cambiar foto"
                 style={{
-                  width: 96, height: 96, borderRadius: '50%',
-                  background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',
+                  position: 'relative',
+                  width: 96, height: 96, borderRadius: '50%', padding: 0,
+                  background: avatarUrl
+                    ? 'var(--surface-1)'
+                    : 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontFamily: 'Fraunces, Georgia, serif', fontWeight: 700, fontSize: 34,
                   color: '#091A12',
                   boxShadow: '0 0 24px rgba(16, 185, 129, 0.4)',
                   border: '3px solid var(--accent-primary)',
-                  flexShrink: 0,
+                  flexShrink: 0, overflow: 'hidden',
+                  cursor: avatarBusy ? 'default' : 'pointer',
                 }}
               >
-                {(editing ? draftName : name).split(' ').map(n => n[0]).join('').slice(0, 2)}
-              </div>
+                {avatarUrl ? (
+                  <img src={avatarUrl} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  (editing ? draftName : name).split(' ').map(n => n[0]).join('').slice(0, 2)
+                )}
+                <span
+                  style={{
+                    position: 'absolute', right: -2, bottom: -2,
+                    width: 30, height: 30, borderRadius: '50%',
+                    background: 'var(--accent-primary)', border: '2px solid var(--surface-1)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#091A12',
+                  }}
+                >
+                  {avatarBusy
+                    ? <Loader2 size={14} style={{ animation: 'spin-slow 0.8s linear infinite' }} />
+                    : <Camera size={14} />}
+                </span>
+              </button>
+              <input
+                ref={avatarInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleAvatarPick}
+                style={{ display: 'none' }}
+              />
 
               {/* Info */}
               <div style={{ flex: 1, minWidth: 0 }}>
