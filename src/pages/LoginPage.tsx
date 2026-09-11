@@ -1,11 +1,13 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { acceder } from '../lib/auth'
 
 export default function LoginPage() {
   const nav = useNavigate()
+  const location = useLocation()
+  const from = (location.state as { from?: string } | null)?.from ?? '/home'
   const { setToast } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -28,7 +30,7 @@ export default function LoginPage() {
     try {
       await acceder({ email, password })
       setToast('¡Bienvenido de vuelta!')
-      nav('/home')
+      nav(from, { replace: true })
     } catch (err: unknown) {
       setErrors({ general: err instanceof Error ? err.message : 'Error al iniciar sesión' })
     } finally {

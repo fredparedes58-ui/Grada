@@ -9,6 +9,7 @@ import Toast from './components/ui/Toast'
 import PageTransition from './components/ui/PageTransition'
 import RouteFallback from './components/ui/RouteFallback'
 import ErrorBoundary from './components/ui/ErrorBoundary'
+import RequireAuth from './components/RequireAuth'
 
 // Keep onboarding/login eager (first paint), lazy-load the rest
 import OnboardingPage from './pages/OnboardingPage'
@@ -39,12 +40,12 @@ function AnimatedRoutes() {
         <Route path="/"          element={<PageTransition variant={variant}><OnboardingPage /></PageTransition>} />
         <Route path="/login"     element={<PageTransition variant={variant}><LoginPage /></PageTransition>} />
         <Route path="/register"  element={<PageTransition variant={variant}><RegisterPage /></PageTransition>} />
-        <Route path="/home"      element={<PageTransition variant={variant}><Suspense fallback={<RouteFallback />}><HomePage /></Suspense></PageTransition>} />
-        <Route path="/chat"      element={<PageTransition variant={variant}><Suspense fallback={<RouteFallback />}><ChatPage /></Suspense></PageTransition>} />
-        <Route path="/chat/conversation" element={<PageTransition variant={variant}><Suspense fallback={<RouteFallback />}><ConversationPage /></Suspense></PageTransition>} />
-        <Route path="/community" element={<PageTransition variant={variant}><Suspense fallback={<RouteFallback />}><CommunityPage /></Suspense></PageTransition>} />
-        <Route path="/league"    element={<PageTransition variant={variant}><Suspense fallback={<RouteFallback />}><LeaguePage /></Suspense></PageTransition>} />
-        <Route path="/profile"   element={<PageTransition variant={variant}><Suspense fallback={<RouteFallback />}><ProfilePage /></Suspense></PageTransition>} />
+        <Route path="/home"      element={<RequireAuth><PageTransition variant={variant}><Suspense fallback={<RouteFallback />}><HomePage /></Suspense></PageTransition></RequireAuth>} />
+        <Route path="/chat"      element={<RequireAuth><PageTransition variant={variant}><Suspense fallback={<RouteFallback />}><ChatPage /></Suspense></PageTransition></RequireAuth>} />
+        <Route path="/chat/conversation" element={<RequireAuth><PageTransition variant={variant}><Suspense fallback={<RouteFallback />}><ConversationPage /></Suspense></PageTransition></RequireAuth>} />
+        <Route path="/community" element={<RequireAuth><PageTransition variant={variant}><Suspense fallback={<RouteFallback />}><CommunityPage /></Suspense></PageTransition></RequireAuth>} />
+        <Route path="/league"    element={<RequireAuth><PageTransition variant={variant}><Suspense fallback={<RouteFallback />}><LeaguePage /></Suspense></PageTransition></RequireAuth>} />
+        <Route path="/profile"   element={<RequireAuth><PageTransition variant={variant}><Suspense fallback={<RouteFallback />}><ProfilePage /></Suspense></PageTransition></RequireAuth>} />
         <Route path="/landing"   element={<PageTransition variant="fade"><Suspense fallback={<RouteFallback />}><LandingPage /></Suspense></PageTransition>} />
         <Route path="*"          element={<Navigate to="/" replace />} />
       </Routes>
