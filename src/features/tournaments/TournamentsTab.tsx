@@ -40,7 +40,7 @@ const MOCK_TOURNAMENTS: Tournament[] = [
     status: 'open',
     prize: 'Medallas + Feature en app',
     date: 'Jun 15, 2026',
-    color: '#CCFF00',
+    color: '#10B981',
     rounds: [
       [
         { id: 'qf1', home: 'Los Pumas FC',    away: 'Rayo Urbano',     homeScore: null, awayScore: null, status: 'pending' },
@@ -114,9 +114,9 @@ const MOCK_TOURNAMENTS: Tournament[] = [
 const ROUND_NAMES = ['Cuartos', 'Semifinales', 'Final']
 
 const STATUS_STYLE = {
-  open:        { label: 'Inscripciones abiertas', color: '#CCFF00', bg: 'rgba(204,255,0,0.12)' },
+  open:        { label: 'Inscripciones abiertas', color: '#10B981', bg: 'rgba(16,185,129,0.12)' },
   in_progress: { label: 'En curso',               color: '#FF5B3A', bg: 'rgba(255,91,58,0.12)' },
-  finished:    { label: 'Finalizado',              color: 'rgba(250,245,235,0.4)', bg: 'rgba(255,255,255,0.06)' },
+  finished:    { label: 'Finalizado',              color: 'rgba(10,21,48,0.45)', bg: 'rgba(10,21,48,0.06)' },
 }
 
 // Mini bracket component for a single match
@@ -131,8 +131,8 @@ function MatchNode({ m, accent }: { m: TournamentMatch; accent: string }) {
   return (
     <div style={{
       borderRadius: 10,
-      background: isLive ? 'rgba(255,91,58,0.10)' : 'rgba(255,255,255,0.04)',
-      border: `1px solid ${isLive ? 'rgba(255,91,58,0.4)' : 'rgba(255,220,180,0.07)'}`,
+      background: isLive ? 'rgba(255,91,58,0.10)' : 'var(--surface-2)',
+      border: `1px solid ${isLive ? 'rgba(255,91,58,0.4)' : 'var(--border)'}`,
       overflow: 'hidden',
       minWidth: 130,
     }}>
@@ -140,12 +140,12 @@ function MatchNode({ m, accent }: { m: TournamentMatch; accent: string }) {
       <div style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: '7px 10px',
-        borderBottom: '1px solid rgba(255,220,180,0.06)',
+        borderBottom: '1px solid var(--border)',
         background: homeWon ? `${accent}0e` : 'transparent',
       }}>
         <span style={{
           fontFamily: 'Space Grotesk', fontWeight: homeWon ? 700 : 500, fontSize: 11,
-          color: homeWon ? '#FAF5EB' : isPending ? 'rgba(250,245,235,0.4)' : 'rgba(250,245,235,0.75)',
+          color: homeWon ? 'var(--text-primary)' : isPending ? 'var(--text-dim)' : 'var(--text-primary)',
           maxWidth: 88, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
         }}>
           {m.home}
@@ -153,7 +153,7 @@ function MatchNode({ m, accent }: { m: TournamentMatch; accent: string }) {
         {!isPending && (
           <span style={{
             fontFamily: 'Archivo', fontWeight: 800, fontSize: 13,
-            color: homeWon ? accent : 'rgba(250,245,235,0.6)',
+            color: homeWon ? accent : 'var(--text-muted)',
             marginLeft: 6, flexShrink: 0,
           }}>
             {m.homeScore}
@@ -169,7 +169,7 @@ function MatchNode({ m, accent }: { m: TournamentMatch; accent: string }) {
       }}>
         <span style={{
           fontFamily: 'Space Grotesk', fontWeight: awayWon ? 700 : 500, fontSize: 11,
-          color: awayWon ? '#FAF5EB' : isPending ? 'rgba(250,245,235,0.4)' : 'rgba(250,245,235,0.75)',
+          color: awayWon ? 'var(--text-primary)' : isPending ? 'var(--text-dim)' : 'var(--text-primary)',
           maxWidth: 88, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
         }}>
           {m.away}
@@ -177,7 +177,7 @@ function MatchNode({ m, accent }: { m: TournamentMatch; accent: string }) {
         {!isPending && (
           <span style={{
             fontFamily: 'Archivo', fontWeight: 800, fontSize: 13,
-            color: awayWon ? accent : 'rgba(250,245,235,0.6)',
+            color: awayWon ? accent : 'var(--text-muted)',
             marginLeft: 6, flexShrink: 0,
           }}>
             {m.awayScore}
@@ -217,30 +217,30 @@ export default function TournamentsTab() {
           onClick={() => setCreateOpen(true)}
           style={{
             width: '100%', padding: '13px 16px', borderRadius: 14,
-            background: 'linear-gradient(135deg, rgba(204,255,0,0.14), rgba(255,184,0,0.08))',
-            border: '1px solid rgba(204,255,0,0.35)',
-            color: '#FAF5EB', cursor: 'pointer',
+            background: 'linear-gradient(135deg, rgba(16,185,129,0.14), rgba(255,184,0,0.08))',
+            border: '1px solid rgba(16,185,129,0.35)',
+            color: 'var(--text-primary)', cursor: 'pointer',
             display: 'flex', alignItems: 'center', gap: 12,
-            boxShadow: '0 0 16px rgba(204,255,0,0.10)',
+            boxShadow: '0 0 16px rgba(16,185,129,0.10)',
           }}
         >
           <div style={{
             width: 38, height: 38, borderRadius: 10,
-            background: 'rgba(204,255,0,0.18)',
+            background: 'rgba(16,185,129,0.18)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: '#CCFF00', flexShrink: 0,
+            color: 'var(--accent-primary)', flexShrink: 0,
           }}>
             <Plus size={18} />
           </div>
           <div style={{ textAlign: 'left' }}>
-            <div style={{ fontFamily: 'Archivo', fontWeight: 800, fontSize: 14, color: '#FAF5EB' }}>
+            <div style={{ fontFamily: 'Archivo', fontWeight: 800, fontSize: 14, color: 'var(--text-primary)' }}>
               Crear torneo
             </div>
-            <div style={{ fontFamily: 'Space Grotesk', fontSize: 11, color: 'rgba(250,245,235,0.5)' }}>
+            <div style={{ fontFamily: 'Space Grotesk', fontSize: 11, color: 'var(--text-muted)' }}>
               Organiza un bracket para tu liga
             </div>
           </div>
-          <ChevronRight size={16} color="rgba(250,245,235,0.4)" style={{ marginLeft: 'auto' }} />
+          <ChevronRight size={16} color="var(--text-dim)" style={{ marginLeft: 'auto' }} />
         </button>
       </div>
 
@@ -271,13 +271,13 @@ export default function TournamentsTab() {
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{
                     fontFamily: 'Archivo', fontWeight: 800, fontSize: 15,
-                    color: '#FAF5EB', letterSpacing: '-0.01em', marginBottom: 3,
+                    color: 'var(--text-primary)', letterSpacing: '-0.01em', marginBottom: 3,
                   }}>
                     {t.name}
                   </div>
                   <div style={{
                     fontFamily: 'Space Grotesk', fontSize: 11,
-                    color: 'rgba(250,245,235,0.5)', marginBottom: 8,
+                    color: 'var(--text-muted)', marginBottom: 8,
                   }}>
                     Por {t.organizer}
                   </div>
@@ -294,20 +294,20 @@ export default function TournamentsTab() {
                     </div>
                     <div style={{
                       padding: '2px 8px', borderRadius: 999,
-                      background: 'rgba(255,255,255,0.05)',
-                      border: '1px solid rgba(255,220,180,0.08)',
+                      background: 'var(--bg-surface)',
+                      border: '1px solid var(--border)',
                       fontFamily: 'Space Grotesk', fontSize: 9,
-                      color: 'rgba(250,245,235,0.5)',
+                      color: 'var(--text-muted)',
                       display: 'flex', alignItems: 'center', gap: 3,
                     }}>
                       <Users size={8} /> {t.teams}/{t.maxTeams}
                     </div>
                     <div style={{
                       padding: '2px 8px', borderRadius: 999,
-                      background: 'rgba(255,255,255,0.05)',
-                      border: '1px solid rgba(255,220,180,0.08)',
+                      background: 'var(--bg-surface)',
+                      border: '1px solid var(--border)',
                       fontFamily: 'Space Grotesk', fontSize: 9,
-                      color: 'rgba(250,245,235,0.5)',
+                      color: 'var(--text-muted)',
                       display: 'flex', alignItems: 'center', gap: 3,
                     }}>
                       <Calendar size={8} /> {t.date}
@@ -320,11 +320,11 @@ export default function TournamentsTab() {
               <div style={{
                 display: 'flex', alignItems: 'center', gap: 6,
                 padding: '8px 10px', marginTop: 10, borderRadius: 8,
-                background: 'rgba(255,255,255,0.03)',
-                border: '1px solid rgba(255,220,180,0.05)',
+                background: 'var(--bg-surface)',
+                border: '1px solid var(--border)',
               }}>
                 <Flame size={11} color="#FFB800" />
-                <span style={{ fontFamily: 'Space Grotesk', fontSize: 11, color: 'rgba(250,245,235,0.6)' }}>
+                <span style={{ fontFamily: 'Space Grotesk', fontSize: 11, color: 'var(--text-muted)' }}>
                   {t.prize}
                 </span>
               </div>
@@ -335,9 +335,9 @@ export default function TournamentsTab() {
                   onClick={() => setSelected(t)}
                   style={{
                     flex: 1, padding: '9px', borderRadius: 10,
-                    background: 'rgba(255,255,255,0.05)',
-                    border: '1px solid rgba(255,220,180,0.10)',
-                    color: 'rgba(250,245,235,0.8)',
+                    background: 'var(--surface-2)',
+                    border: '1px solid var(--border)',
+                    color: 'var(--text-primary)',
                     fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 12,
                     cursor: 'pointer',
                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
@@ -352,12 +352,12 @@ export default function TournamentsTab() {
                     style={{
                       flex: 1, padding: '9px', borderRadius: 10,
                       background: isJoined
-                        ? 'rgba(204,255,0,0.12)'
+                        ? 'rgba(16,185,129,0.12)'
                         : isFull
-                        ? 'rgba(255,255,255,0.04)'
+                        ? 'var(--surface-2)'
                         : `${t.color}22`,
-                      border: `1px solid ${isJoined ? 'rgba(204,255,0,0.4)' : isFull ? 'rgba(255,220,180,0.08)' : t.color + '44'}`,
-                      color: isJoined ? '#CCFF00' : isFull ? 'rgba(250,245,235,0.3)' : t.color,
+                      border: `1px solid ${isJoined ? 'rgba(16,185,129,0.4)' : isFull ? 'var(--border)' : t.color + '44'}`,
+                      color: isJoined ? 'var(--accent-primary)' : isFull ? 'var(--text-dim)' : t.color,
                       fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 12,
                       cursor: isFull || isJoined ? 'default' : 'pointer',
                       display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
@@ -377,7 +377,7 @@ export default function TournamentsTab() {
         open={!!selected}
         onClose={() => setSelected(null)}
         title={selected?.name ?? ''}
-        accent={selected?.color ?? '#CCFF00'}
+        accent={selected?.color ?? '#10B981'}
         height="80%"
       >
         {selected && (
@@ -386,7 +386,7 @@ export default function TournamentsTab() {
               <div key={ri} style={{ marginBottom: 20 }}>
                 <div style={{
                   fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 10,
-                  color: 'rgba(250,245,235,0.45)', letterSpacing: '0.1em',
+                  color: 'var(--text-muted)', letterSpacing: '0.1em',
                   textTransform: 'uppercase', marginBottom: 10,
                   display: 'flex', alignItems: 'center', gap: 6,
                 }}>
@@ -433,14 +433,14 @@ export default function TournamentsTab() {
         open={createOpen}
         onClose={() => setCreateOpen(false)}
         title="Nuevo torneo"
-        accent="#CCFF00"
+        accent="#10B981"
         height="55%"
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           <div>
             <div style={{
               fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 11,
-              color: 'rgba(250,245,235,0.5)', letterSpacing: '0.08em',
+              color: 'var(--text-muted)', letterSpacing: '0.08em',
               textTransform: 'uppercase', marginBottom: 8,
             }}>
               Nombre del torneo
@@ -451,9 +451,9 @@ export default function TournamentsTab() {
               placeholder="Ej: Copa Verano 2026"
               style={{
                 width: '100%', height: 46, padding: '0 14px', borderRadius: 12,
-                background: 'rgba(255,255,255,0.05)',
-                border: '1px solid rgba(255,220,180,0.12)',
-                color: '#FAF5EB',
+                background: 'var(--surface-2)',
+                border: '1px solid var(--border)',
+                color: 'var(--text-primary)',
                 fontFamily: 'Space Grotesk', fontSize: 14,
                 outline: 'none',
               }}
@@ -463,7 +463,7 @@ export default function TournamentsTab() {
           <div>
             <div style={{
               fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 11,
-              color: 'rgba(250,245,235,0.5)', letterSpacing: '0.08em',
+              color: 'var(--text-muted)', letterSpacing: '0.08em',
               textTransform: 'uppercase', marginBottom: 8,
             }}>
               Número de equipos
@@ -475,9 +475,9 @@ export default function TournamentsTab() {
                   onClick={() => setNewMaxTeams(n)}
                   style={{
                     flex: 1, padding: '11px', borderRadius: 10,
-                    background: newMaxTeams === n ? 'rgba(204,255,0,0.15)' : 'rgba(255,255,255,0.04)',
-                    border: `1px solid ${newMaxTeams === n ? 'rgba(204,255,0,0.45)' : 'rgba(255,220,180,0.08)'}`,
-                    color: newMaxTeams === n ? '#CCFF00' : 'rgba(250,245,235,0.6)',
+                    background: newMaxTeams === n ? 'rgba(16,185,129,0.15)' : 'var(--surface-2)',
+                    border: `1px solid ${newMaxTeams === n ? 'rgba(16,185,129,0.45)' : 'var(--border)'}`,
+                    color: newMaxTeams === n ? 'var(--accent-primary)' : 'var(--text-muted)',
                     fontFamily: 'Archivo', fontWeight: 800, fontSize: 16,
                     cursor: 'pointer',
                   }}
@@ -494,13 +494,13 @@ export default function TournamentsTab() {
             style={{
               width: '100%', padding: '13px', borderRadius: 12, marginTop: 4,
               background: newName.trim()
-                ? 'linear-gradient(135deg, #CCFF00, #FFB800)'
-                : 'rgba(255,255,255,0.06)',
+                ? 'linear-gradient(135deg, #10B981, #FFB800)'
+                : 'var(--surface-2)',
               border: 'none',
-              color: newName.trim() ? '#0F0D0A' : 'rgba(250,245,235,0.3)',
+              color: newName.trim() ? '#0F0D0A' : 'var(--text-dim)',
               fontFamily: 'Archivo', fontWeight: 800, fontSize: 13,
               cursor: newName.trim() ? 'pointer' : 'default',
-              boxShadow: newName.trim() ? '0 6px 20px rgba(204,255,0,0.3)' : 'none',
+              boxShadow: newName.trim() ? '0 6px 20px rgba(16,185,129,0.3)' : 'none',
               letterSpacing: '0.06em', textTransform: 'uppercase',
             }}
           >

@@ -141,9 +141,9 @@ export default function TacticsBoardSheet({ open, onClose }: Props) {
             onClick={() => changeFormation(f)}
             style={{
               padding: '7px 12px', borderRadius: 999,
-              background: formation === f ? 'rgba(0,212,255,0.18)' : 'rgba(255,255,255,0.04)',
-              border: `1px solid ${formation === f ? 'rgba(0,212,255,0.55)' : 'rgba(255,220,180,0.1)'}`,
-              color: formation === f ? '#00D4FF' : 'rgba(250,245,235,0.7)',
+              background: formation === f ? 'rgba(0,212,255,0.18)' : 'rgba(10,21,48,0.04)',
+              border: `1px solid ${formation === f ? 'rgba(0,212,255,0.55)' : 'var(--border)'}`,
+              color: formation === f ? '#00D4FF' : 'var(--text-muted)',
               fontFamily: 'Space Grotesk', fontSize: 12, fontWeight: 700,
               cursor: 'pointer',
             }}
@@ -170,9 +170,9 @@ export default function TacticsBoardSheet({ open, onClose }: Props) {
           onClick={persist}
           style={{
             padding: '7px 12px', borderRadius: 999,
-            background: 'rgba(204,255,0,0.15)',
-            border: '1px solid rgba(204,255,0,0.5)',
-            color: '#CCFF00',
+            background: 'rgba(16,185,129,0.15)',
+            border: '1px solid rgba(16,185,129,0.5)',
+            color: 'var(--accent-primary)',
             fontFamily: 'Space Grotesk', fontSize: 12, fontWeight: 700,
             cursor: 'pointer',
             display: 'inline-flex', alignItems: 'center', gap: 4,
@@ -195,23 +195,23 @@ export default function TacticsBoardSheet({ open, onClose }: Props) {
           borderRadius: 16,
           background:
             'linear-gradient(180deg, #0B2E1A 0%, #0E3822 50%, #0B2E1A 100%)',
-          border: '2px solid rgba(204,255,0,0.35)',
-          boxShadow: '0 0 28px rgba(204,255,0,0.18), inset 0 0 40px rgba(0,0,0,0.4)',
+          border: '2px solid rgba(16,185,129,0.35)',
+          boxShadow: '0 0 28px rgba(16,185,129,0.18), inset 0 0 40px rgba(0,0,0,0.4)',
           overflow: 'hidden',
           touchAction: 'none',
         }}
       >
         {/* Pitch lines */}
         <svg viewBox="0 0 100 150" preserveAspectRatio="none" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.55 }}>
-          <rect x="1" y="1" width="98" height="148" fill="none" stroke="#CCFF00" strokeWidth="0.3" />
-          <line x1="0" y1="75" x2="100" y2="75" stroke="#CCFF00" strokeWidth="0.3" />
-          <circle cx="50" cy="75" r="10" fill="none" stroke="#CCFF00" strokeWidth="0.3" />
-          <circle cx="50" cy="75" r="0.8" fill="#CCFF00" />
+          <rect x="1" y="1" width="98" height="148" fill="none" stroke="#10B981" strokeWidth="0.3" />
+          <line x1="0" y1="75" x2="100" y2="75" stroke="#10B981" strokeWidth="0.3" />
+          <circle cx="50" cy="75" r="10" fill="none" stroke="#10B981" strokeWidth="0.3" />
+          <circle cx="50" cy="75" r="0.8" fill="#10B981" />
           {/* Áreas */}
-          <rect x="25" y="1"   width="50" height="18" fill="none" stroke="#CCFF00" strokeWidth="0.3" />
-          <rect x="37" y="1"   width="26" height="7"  fill="none" stroke="#CCFF00" strokeWidth="0.3" />
-          <rect x="25" y="131" width="50" height="18" fill="none" stroke="#CCFF00" strokeWidth="0.3" />
-          <rect x="37" y="142" width="26" height="7"  fill="none" stroke="#CCFF00" strokeWidth="0.3" />
+          <rect x="25" y="1"   width="50" height="18" fill="none" stroke="#10B981" strokeWidth="0.3" />
+          <rect x="37" y="1"   width="26" height="7"  fill="none" stroke="#10B981" strokeWidth="0.3" />
+          <rect x="25" y="131" width="50" height="18" fill="none" stroke="#10B981" strokeWidth="0.3" />
+          <rect x="37" y="142" width="26" height="7"  fill="none" stroke="#10B981" strokeWidth="0.3" />
         </svg>
 
         {/* Players */}
@@ -228,14 +228,14 @@ export default function TacticsBoardSheet({ open, onClose }: Props) {
                 transform: `translate(-50%, -50%) scale(${dragging ? 1.18 : 1})`,
                 width: 44, height: 44, borderRadius: '50%',
                 background: dragging
-                  ? 'linear-gradient(135deg, #00D4FF, #CCFF00)'
-                  : 'linear-gradient(135deg, #CCFF00, #FFB800)',
-                color: '#0F0D0A',
+                  ? 'linear-gradient(135deg, #00D4FF, #10B981)'
+                  : 'linear-gradient(135deg, #10B981, #FFB800)',
+                color: 'var(--text-primary)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontFamily: 'Archivo', fontWeight: 900, fontSize: 10,
                 boxShadow: dragging
                   ? '0 0 22px rgba(0,212,255,0.7), 0 6px 16px rgba(0,0,0,0.5)'
-                  : '0 0 14px rgba(204,255,0,0.45), 0 4px 10px rgba(0,0,0,0.4)',
+                  : '0 0 14px rgba(16,185,129,0.45), 0 4px 10px rgba(0,0,0,0.4)',
                 cursor: dragging ? 'grabbing' : 'grab',
                 transition: dragging ? 'none' : 'transform 140ms ease-out, box-shadow 140ms',
                 userSelect: 'none', touchAction: 'none',
@@ -251,7 +251,7 @@ export default function TacticsBoardSheet({ open, onClose }: Props) {
       <div style={{
         marginTop: 10,
         fontFamily: 'Space Grotesk', fontSize: 11,
-        color: 'rgba(250,245,235,0.5)', textAlign: 'center',
+        color: 'var(--text-muted)', textAlign: 'center',
       }}>
         Arrastrá a cada jugador para ajustar la táctica. Se guarda automáticamente.
       </div>

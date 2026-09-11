@@ -22,7 +22,7 @@ const INTENSITY_LABEL: Record<Drill['intensity'], string> = {
 }
 
 const INTENSITY_COLOR: Record<Drill['intensity'], string> = {
-  low:  '#CCFF00',
+  low:  '#10B981',
   mid:  '#FFB800',
   high: '#FF5B3A',
 }
@@ -47,33 +47,33 @@ export default function DrillsSheet({ open, onClose, name = 'Alex Rivera', weakn
   const bars = [
     { k: 'high' as const, label: 'Intenso',   color: '#FF5B3A' },
     { k: 'mid'  as const, label: 'Moderado',  color: '#FFB800' },
-    { k: 'low'  as const, label: 'Suave',     color: '#CCFF00' },
+    { k: 'low'  as const, label: 'Suave',     color: 'var(--accent-primary)' },
   ]
 
   return (
-    <BottomSheet open={open} onClose={onClose} title="Plan de entrenos" height="92%" accent="#CCFF00">
+    <BottomSheet open={open} onClose={onClose} title="Plan de entrenos" height="92%" accent="#10B981">
       {/* Header summary */}
       <div style={{
         padding: '12px 14px 14px',
         borderRadius: 14,
-        background: 'linear-gradient(135deg, rgba(204,255,0,0.12), rgba(255,184,0,0.08))',
-        border: '1px solid rgba(204,255,0,0.25)',
+        background: 'linear-gradient(135deg, rgba(16,185,129,0.12), rgba(255,184,0,0.08))',
+        border: '1px solid rgba(16,185,129,0.25)',
         marginBottom: 16,
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
           <div style={{
             width: 38, height: 38, borderRadius: 10,
-            background: 'rgba(204,255,0,0.18)',
+            background: 'rgba(16,185,129,0.18)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: '#CCFF00',
+            color: 'var(--accent-primary)',
           }}>
             <Dumbbell size={18} />
           </div>
           <div>
-            <div style={{ fontFamily: 'Archivo', fontWeight: 800, fontSize: 15, color: '#FAF5EB' }}>
+            <div style={{ fontFamily: 'Archivo', fontWeight: 800, fontSize: 15, color: 'var(--text-primary)' }}>
               Semana personalizada
             </div>
-            <div style={{ fontFamily: 'Space Grotesk', fontSize: 11, color: 'rgba(250,245,235,0.55)', marginTop: 1 }}>
+            <div style={{ fontFamily: 'Space Grotesk', fontSize: 11, color: 'var(--text-muted)', marginTop: 1 }}>
               {result.drills.length} sesiones · {result.totalMinutes} min totales
             </div>
           </div>
@@ -95,7 +95,7 @@ export default function DrillsSheet({ open, onClose, name = 'Alex Rivera', weakn
           {bars.filter(b => intensityMix[b.k] > 0).map(b => (
             <div key={b.k} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
               <div style={{ width: 8, height: 8, borderRadius: 2, background: b.color }} />
-              <span style={{ fontFamily: 'Space Grotesk', fontSize: 10, color: 'rgba(250,245,235,0.6)' }}>
+              <span style={{ fontFamily: 'Space Grotesk', fontSize: 10, color: 'var(--text-muted)' }}>
                 {b.label} ×{intensityMix[b.k]}
               </span>
             </div>
@@ -107,7 +107,7 @@ export default function DrillsSheet({ open, onClose, name = 'Alex Rivera', weakn
       <div style={{ marginBottom: 16 }}>
         <div style={{
           fontFamily: 'Space Grotesk', fontSize: 10, fontWeight: 700,
-          color: 'rgba(250,245,235,0.5)', textTransform: 'uppercase',
+          color: 'var(--text-muted)', textTransform: 'uppercase',
           letterSpacing: '0.1em', marginBottom: 8,
         }}>
           Áreas de mejora detectadas
@@ -134,7 +134,7 @@ export default function DrillsSheet({ open, onClose, name = 'Alex Rivera', weakn
           return (
             <div key={i} style={{
               padding: '14px', borderRadius: 14,
-              background: `linear-gradient(135deg, ${color}10, rgba(255,255,255,0.02))`,
+              background: `linear-gradient(135deg, ${color}10, rgba(10,21,48,0.04))`,
               border: `1px solid ${color}33`,
             }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
@@ -149,7 +149,7 @@ export default function DrillsSheet({ open, onClose, name = 'Alex Rivera', weakn
                   <span style={{ fontFamily: 'Archivo', fontWeight: 900, fontSize: 10, color, lineHeight: 1 }}>
                     {DAYS[i]}
                   </span>
-                  <span style={{ fontFamily: 'Space Grotesk', fontSize: 8, color: 'rgba(250,245,235,0.5)', marginTop: 1 }}>
+                  <span style={{ fontFamily: 'Space Grotesk', fontSize: 8, color: 'var(--text-muted)', marginTop: 1 }}>
                     {i + 1}
                   </span>
                 </div>
@@ -164,20 +164,20 @@ export default function DrillsSheet({ open, onClose, name = 'Alex Rivera', weakn
                     </span>
                     <span style={{
                       fontFamily: 'Space Grotesk', fontSize: 9,
-                      color: 'rgba(250,245,235,0.35)',
+                      color: 'var(--text-dim)',
                     }}>
                       · {INTENSITY_LABEL[drill.intensity]}
                     </span>
                   </div>
                   <div style={{
                     fontFamily: 'Archivo', fontWeight: 800, fontSize: 14,
-                    color: '#FAF5EB', marginBottom: 4,
+                    color: 'var(--text-primary)', marginBottom: 4,
                   }}>
                     {drill.title}
                   </div>
                   <div style={{
                     fontFamily: 'Space Grotesk', fontSize: 12,
-                    color: 'rgba(250,245,235,0.65)', lineHeight: 1.4,
+                    color: 'var(--text-muted)', lineHeight: 1.4,
                     marginBottom: 8,
                   }}>
                     {drill.description}
@@ -185,15 +185,15 @@ export default function DrillsSheet({ open, onClose, name = 'Alex Rivera', weakn
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                      <Clock size={11} color="rgba(250,245,235,0.45)" />
-                      <span style={{ fontFamily: 'Space Grotesk', fontSize: 11, color: 'rgba(250,245,235,0.55)' }}>
+                      <Clock size={11} color="var(--text-muted)" />
+                      <span style={{ fontFamily: 'Space Grotesk', fontSize: 11, color: 'var(--text-muted)' }}>
                         {drill.durationMin} min
                       </span>
                     </div>
                     {drill.equipment.length > 0 && (
                       <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                        <Zap size={10} color="rgba(250,245,235,0.35)" />
-                        <span style={{ fontFamily: 'Space Grotesk', fontSize: 10, color: 'rgba(250,245,235,0.45)' }}>
+                        <Zap size={10} color="var(--text-dim)" />
+                        <span style={{ fontFamily: 'Space Grotesk', fontSize: 10, color: 'var(--text-muted)' }}>
                           {drill.equipment.join(' · ')}
                         </span>
                       </div>
@@ -201,7 +201,7 @@ export default function DrillsSheet({ open, onClose, name = 'Alex Rivera', weakn
                   </div>
                 </div>
 
-                <ChevronRight size={14} color="rgba(250,245,235,0.25)" style={{ flexShrink: 0, marginTop: 10 }} />
+                <ChevronRight size={14} color="var(--text-dim)" style={{ flexShrink: 0, marginTop: 10 }} />
               </div>
             </div>
           )
@@ -210,10 +210,10 @@ export default function DrillsSheet({ open, onClose, name = 'Alex Rivera', weakn
 
       <div style={{
         marginTop: 16, padding: '10px 12px', borderRadius: 10,
-        background: 'rgba(255,255,255,0.03)',
-        border: '1px solid rgba(255,220,180,0.07)',
+        background: 'var(--bg-surface)',
+        border: '1px solid var(--border)',
         fontFamily: 'Space Grotesk', fontSize: 11,
-        color: 'rgba(250,245,235,0.45)', textAlign: 'center',
+        color: 'var(--text-muted)', textAlign: 'center',
       }}>
         Plan generado por AI · se renueva cada semana
       </div>

@@ -22,7 +22,7 @@ const POSITIONS: Position[] = [
 
 // Zonas coloreadas del campo
 const ZONE_COLORS: Record<string, string> = {
-  att:  '#CCFF00',
+  att:  '#10B981',
   wing: '#FFB800',
   mid:  '#00D4FF',
   def:  '#B347FF',
@@ -193,7 +193,7 @@ export default function PitchPositionPicker({ value, onChange }: Props) {
               >
                 <div style={{
                   fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 11,
-                  color: isSelected ? color : 'rgba(250,245,235,0.55)',
+                  color: isSelected ? color : 'var(--text-muted)',
                   whiteSpace: 'nowrap',
                 }}>
                   {p.id}
@@ -224,7 +224,7 @@ export default function PitchPositionPicker({ value, onChange }: Props) {
             </div>
             <div style={{
               fontFamily: 'Space Grotesk', fontSize: 12,
-              color: 'rgba(250,245,235,0.5)',
+              color: 'var(--text-muted)',
             }}>
               {selected.desc}
             </div>

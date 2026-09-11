@@ -39,9 +39,9 @@ export default function LeaderboardSheet({ open, onClose, me = 'Alex Rivera' }: 
       {/* Scope switcher */}
       <div style={{
         display: 'flex', gap: 6, padding: 4,
-        background: 'rgba(255,255,255,0.04)',
+        background: 'rgba(10,21,48,0.04)',
         borderRadius: 12, marginBottom: 16,
-        border: '1px solid rgba(255,220,180,0.07)',
+        border: '1px solid var(--border)',
       }}>
         {(Object.keys(SCOPE_LABEL) as LeaderboardScope[]).map(s => (
           <button
@@ -49,9 +49,9 @@ export default function LeaderboardSheet({ open, onClose, me = 'Alex Rivera' }: 
             onClick={() => setScope(s)}
             style={{
               flex: 1, padding: '8px 10px', borderRadius: 8,
-              background: scope === s ? 'linear-gradient(135deg, rgba(255,184,0,0.2), rgba(204,255,0,0.1))' : 'transparent',
+              background: scope === s ? 'linear-gradient(135deg, rgba(255,184,0,0.2), rgba(16,185,129,0.1))' : 'transparent',
               border: scope === s ? '1px solid rgba(255,184,0,0.45)' : '1px solid transparent',
-              color: scope === s ? '#FFB800' : 'rgba(250,245,235,0.55)',
+              color: scope === s ? '#FFB800' : 'var(--text-muted)',
               fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 12,
               cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.06em',
             }}
@@ -95,10 +95,10 @@ export default function LeaderboardSheet({ open, onClose, me = 'Alex Rivera' }: 
                     }} />
                   )}
                 </div>
-                <div style={{ fontFamily: 'Archivo', fontWeight: 800, fontSize: 11, color: '#FAF5EB', textAlign: 'center' }}>
+                <div style={{ fontFamily: 'Archivo', fontWeight: 800, fontSize: 11, color: 'var(--text-primary)', textAlign: 'center' }}>
                   {e.name.split(' ')[0]}
                 </div>
-                <div style={{ fontFamily: 'Space Grotesk', fontSize: 9, color: 'rgba(250,245,235,0.55)' }}>
+                <div style={{ fontFamily: 'Space Grotesk', fontSize: 9, color: 'var(--text-muted)' }}>
                   {e.score} pts
                 </div>
                 <div style={{
@@ -127,7 +127,7 @@ export default function LeaderboardSheet({ open, onClose, me = 'Alex Rivera' }: 
         <div style={{ marginTop: 14 }}>
           <div style={{
             fontFamily: 'Space Grotesk', fontSize: 10,
-            color: 'rgba(250,245,235,0.5)', textTransform: 'uppercase',
+            color: 'var(--text-muted)', textTransform: 'uppercase',
             letterSpacing: '0.1em', marginBottom: 6,
           }}>
             Tu posición
@@ -141,20 +141,20 @@ export default function LeaderboardSheet({ open, onClose, me = 'Alex Rivera' }: 
 
 function Row({ entry, isMe, highlight }: { entry: LeaderboardEntry; isMe?: boolean; highlight?: boolean }) {
   const DeltaIcon = entry.delta > 0 ? ChevronUp : entry.delta < 0 ? ChevronDown : Minus
-  const deltaColor = entry.delta > 0 ? '#CCFF00' : entry.delta < 0 ? '#FF5B3A' : 'rgba(250,245,235,0.4)'
+  const deltaColor = entry.delta > 0 ? 'var(--accent-primary)' : entry.delta < 0 ? '#FF5B3A' : 'var(--text-dim)'
   return (
     <div style={{
       display: 'grid', gridTemplateColumns: '30px 34px 1fr auto auto', alignItems: 'center', gap: 10,
       padding: '10px 12px', borderRadius: 12,
       background: isMe
-        ? (highlight ? 'linear-gradient(135deg, rgba(204,255,0,0.14), rgba(0,212,255,0.08))' : 'rgba(204,255,0,0.06)')
-        : 'rgba(255,255,255,0.03)',
-      border: `1px solid ${isMe ? 'rgba(204,255,0,0.4)' : 'rgba(255,220,180,0.07)'}`,
-      boxShadow: isMe && highlight ? '0 0 16px rgba(204,255,0,0.25)' : 'none',
+        ? (highlight ? 'linear-gradient(135deg, rgba(16,185,129,0.14), rgba(0,212,255,0.08))' : 'rgba(16,185,129,0.06)')
+        : 'rgba(10,21,48,0.03)',
+      border: `1px solid ${isMe ? 'rgba(16,185,129,0.4)' : 'var(--border)'}`,
+      boxShadow: isMe && highlight ? '0 0 16px rgba(16,185,129,0.25)' : 'none',
     }}>
       <div style={{
         fontFamily: 'Archivo', fontWeight: 900, fontSize: 14,
-        color: isMe ? '#CCFF00' : 'rgba(250,245,235,0.7)',
+        color: isMe ? 'var(--accent-primary)' : 'var(--text-muted)',
         textAlign: 'center',
       }}>
         {entry.rank}
@@ -170,12 +170,12 @@ function Row({ entry, isMe, highlight }: { entry: LeaderboardEntry; isMe?: boole
       </div>
       <div style={{ minWidth: 0 }}>
         <div style={{
-          fontFamily: 'Archivo', fontWeight: 700, fontSize: 13, color: '#FAF5EB',
+          fontFamily: 'Archivo', fontWeight: 700, fontSize: 13, color: 'var(--text-primary)',
           overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
         }}>
           {entry.name}
         </div>
-        <div style={{ fontFamily: 'Space Grotesk', fontSize: 10, color: 'rgba(250,245,235,0.5)' }}>
+        <div style={{ fontFamily: 'Space Grotesk', fontSize: 10, color: 'var(--text-muted)' }}>
           {entry.team} · {entry.grade}
         </div>
       </div>
