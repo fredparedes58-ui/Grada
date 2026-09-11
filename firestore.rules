@@ -20,6 +20,19 @@ service cloud.firestore {
         exists(/databases/$(database)/documents/config/roles) &&
         request.auth.uid in get(/databases/$(database)/documents/config/roles).data.admins;
     }
+    // Cuenta aprobada (o admin).
+    function aprobado() {
+      return autenticado() && (
+        esAdminApp() ||
+        (exists(/databases/$(database)/documents/usuarios/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.estado == 'aprobado')
+      );
+    }
+    // ¿El usuario actual es participante de la conversación?
+    function esParticipante(convId) {
+      return autenticado() &&
+        request.auth.uid in get(/databases/$(database)/documents/conversaciones/$(convId)).data.participantes;
+    }
 
     // ── Config (roles de admin) ──────────────────────────────────────────────
     match /config/{docId} {
@@ -181,6 +194,36 @@ service cloud.firestore {
       match /clasificacion/{uid} {
         allow read:  if autenticado();
         allow write: if false; // solo backend
+      }
+    }
+
+    // ── Conversaciones (mensajería, dentro del equipo) ───────────────────────
+    match /conversaciones/{convId} {
+      // Solo los participantes leen la conversación.
+      allow read: if autenticado() && request.auth.uid in resource.data.participantes;
+      // Crear: cuenta aprobada, el creador es participante y miembro del equipo.
+      allow create: if aprobado() &&
+        request.resource.data.creadorUid == request.auth.uid &&
+        request.auth.uid in request.resource.data.participantes &&
+        exists(/databases/$(database)/documents/equipos/$(request.resource.data.equipoId)/miembros/$(request.auth.uid));
+      // Actualizar: solo participantes, solo preview/orden (no cambia participantes).
+      allow update: if autenticado() &&
+        request.auth.uid in resource.data.participantes &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['actualizadoEn','ultimoMensaje']) &&
+        request.resource.data.participantes == resource.data.participantes;
+      allow delete: if false;
+
+      match /mensajes/{msgId} {
+        allow read:   if esParticipante(convId);
+        allow create: if esParticipante(convId) &&
+          request.resource.data.senderUid == request.auth.uid &&
+          request.resource.data.creadoEn == request.time;
+        allow update, delete: if false;
+      }
+      // Marca de lectura por-participante (base del cálculo de no-leídos).
+      match /lecturas/{uid} {
+        allow read:  if esParticipante(convId);
+        allow write: if esPropio(uid) && esParticipante(convId);
       }
     }
 

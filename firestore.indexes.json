@@ -23,7 +23,23 @@
         { "fieldPath": "equipoId",  "order": "ASCENDING" },
         { "fieldPath": "cierraEn", "order": "ASCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "conversaciones",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "participantes", "arrayConfig": "CONTAINS" },
+        { "fieldPath": "actualizadoEn", "order": "DESCENDING" }
+      ]
     }
   ],
-  "fieldOverrides": []
+  "fieldOverrides": [
+    {
+      "collectionGroup": "miembros",
+      "fieldPath": "uid",
+      "indexes": [
+        { "queryScope": "COLLECTION_GROUP", "order": "ASCENDING" }
+      ]
+    }
+  ]
 }
