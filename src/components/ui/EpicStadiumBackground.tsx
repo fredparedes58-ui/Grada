@@ -59,7 +59,7 @@ export default function EpicStadiumBackground({ interval = 5500, initial = 0, sh
                 width: i === idx ? 20 : 6,
                 height: 6,
                 borderRadius: 3,
-                background: i === idx ? '#CCFF00' : 'rgba(255,255,255,0.35)',
+                background: i === idx ? '#10B981' : 'rgba(255,255,255,0.35)',
                 transition: 'all 0.4s',
               }}
             />

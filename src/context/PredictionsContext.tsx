@@ -45,7 +45,7 @@ const MATCHES: PredictionMatch[] = [
   {
     id: 'm1',
     home: 'Los Pumas FC', away: 'Rayo Urbano',
-    homeColor: '#CCFF00', awayColor: '#FF5B3A',
+    homeColor: '#10B981', awayColor: '#FF5B3A',
     homeBadge: 'LP', awayBadge: 'RU',
     date: 'Dom · 10:00', venue: 'Cancha A',
   },
@@ -59,14 +59,14 @@ const MATCHES: PredictionMatch[] = [
   {
     id: 'm3',
     home: 'Phantom FC', away: 'Cometa SC',
-    homeColor: '#CCFF00', awayColor: '#FF5B3A',
+    homeColor: '#10B981', awayColor: '#FF5B3A',
     homeBadge: 'PF', awayBadge: 'CS',
     date: 'Sáb · 16:00', venue: 'Cancha C',
   },
   {
     id: 'm4',
     home: 'Tigres Verdes', away: 'Los Pumas FC',
-    homeColor: '#FFB800', awayColor: '#CCFF00',
+    homeColor: '#FFB800', awayColor: '#10B981',
     homeBadge: 'TV', awayBadge: 'LP',
     date: 'Sáb · 18:30', venue: 'Cancha A',
   },
@@ -76,7 +76,7 @@ const MATCHES: PredictionMatch[] = [
 const SEED: Record<string, Prediction[]> = {
   m1: [
     { userName: 'Carlos Méndez', badge: 'CM', color: '#FFB800', home: 2, away: 1, at: Date.now() - 3600_000 },
-    { userName: 'Ana Torres',    badge: 'AT', color: '#CCFF00', home: 3, away: 0, at: Date.now() - 1800_000 },
+    { userName: 'Ana Torres',    badge: 'AT', color: '#10B981', home: 3, away: 0, at: Date.now() - 1800_000 },
     { userName: 'Diego S.',      badge: 'DS', color: '#FF5B3A', home: 1, away: 1, at: Date.now() - 600_000 },
   ],
   m2: [
@@ -84,7 +84,7 @@ const SEED: Record<string, Prediction[]> = {
   ],
   m3: [],
   m4: [
-    { userName: 'Ana Torres', badge: 'AT', color: '#CCFF00', home: 1, away: 3, at: Date.now() - 500_000 },
+    { userName: 'Ana Torres', badge: 'AT', color: '#10B981', home: 1, away: 3, at: Date.now() - 500_000 },
     { userName: 'Emi Quiroga', badge: 'EQ', color: '#FF5B3A', home: 0, away: 2, at: Date.now() - 300_000 },
   ],
 }

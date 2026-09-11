@@ -145,7 +145,7 @@ export default function LineupSheet({ open, onClose, opponent }: LineupSheetProp
                 background: p.name === lineup.keyPlayer
                   ? `linear-gradient(135deg, ${styleColor}, #FFB800)`
                   : `${styleColor}dd`,
-                color: '#0F0D0A',
+                color: '#091A12',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontFamily: 'Archivo, sans-serif', fontWeight: 900, fontSize: 12,
                 border: p.name === lineup.keyPlayer ? `2px solid #FFB800` : `1.5px solid ${styleColor}`,
@@ -233,7 +233,7 @@ export default function LineupSheet({ open, onClose, opponent }: LineupSheetProp
           width: '100%', padding: '12px 14px', borderRadius: 12,
           background: 'linear-gradient(135deg, #10B981, #FFB800)',
           border: 'none',
-          color: '#0F0D0A',
+          color: '#091A12',
           fontFamily: 'Archivo', fontWeight: 800, fontSize: 12,
           letterSpacing: '0.06em', textTransform: 'uppercase',
           cursor: 'pointer',

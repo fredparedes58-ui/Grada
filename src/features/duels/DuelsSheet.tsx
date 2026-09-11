@@ -142,7 +142,7 @@ export default function DuelsSheet({ open, onClose, me = 'Alex Rivera' }: Props)
                   </div>
                   <div style={{
                     fontFamily: 'Space Grotesk', fontSize: 10, fontWeight: 700,
-                    color: 'rgba(250,245,235,0.5)', textTransform: 'uppercase', textAlign: 'center',
+                    color: 'var(--text-dim)', textTransform: 'uppercase', textAlign: 'center',
                   }}>
                     {k}
                   </div>

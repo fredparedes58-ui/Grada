@@ -13,8 +13,8 @@ export async function initNative() {
   ])
 
   await Promise.all([
-    StatusBar.setStyle({ style: Style.Dark }),
-    StatusBar.setBackgroundColor({ color: '#0F0D0A' }),
+    StatusBar.setStyle({ style: Style.Light }),
+    StatusBar.setBackgroundColor({ color: '#FAFBFD' }),
   ])
 
   await SplashScreen.hide({ fadeOutDuration: 400 })

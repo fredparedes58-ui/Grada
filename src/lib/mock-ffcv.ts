@@ -120,18 +120,18 @@ export const TEAMS_EXTERNAL: TeamExternal[] = [
   { id: 'te-2',  ffcv_external_id: 'team_cf_burjassot',          club_name: 'CF Burjassot',            competition_id: 'comp-1', initials: 'BU', color: '#FF5B3A' },
   { id: 'te-3',  ffcv_external_id: 'team_cd_castellon_b',        club_name: 'CD Castellón B',          competition_id: 'comp-1', initials: 'CS', color: '#FF8C00' },
   { id: 'te-4',  ffcv_external_id: 'team_levante_ud_b',          club_name: 'Levante UD B',            competition_id: 'comp-1', initials: 'LE', color: '#00D4FF' },
-  { id: 'te-5',  ffcv_external_id: 'team_cd_benidorm',           club_name: 'CD Benidorm',             competition_id: 'comp-1', initials: 'BD', color: '#CCFF00' },
+  { id: 'te-5',  ffcv_external_id: 'team_cd_benidorm',           club_name: 'CD Benidorm',             competition_id: 'comp-1', initials: 'BD', color: '#10B981' },
   { id: 'te-6',  ffcv_external_id: 'team_cf_gandia',             club_name: 'CF Gandía',               competition_id: 'comp-1', initials: 'GD', color: '#B347FF' },
   { id: 'te-7',  ffcv_external_id: 'team_cd_torrevieja',         club_name: 'CD Torrevieja',           competition_id: 'comp-1', initials: 'TV', color: '#FFB800' },
   { id: 'te-8',  ffcv_external_id: 'team_ud_alcoy',              club_name: 'UD Alcoy',                competition_id: 'comp-1', initials: 'AL', color: '#FF5B3A' },
   // Primera Regional Cadete A
   { id: 'te-9',  ffcv_external_id: 'team_valencia_cf_cadete',    club_name: 'Valencia CF Cadete A',    competition_id: 'comp-2', initials: 'VC', color: '#FF8C00' },
   { id: 'te-10', ffcv_external_id: 'team_atletico_sagunt',       club_name: 'Atlético Sagunto',        competition_id: 'comp-2', initials: 'AS', color: '#00D4FF' },
-  { id: 'te-11', ffcv_external_id: 'team_cd_paiporta',          club_name: 'CD Paiporta',             competition_id: 'comp-2', initials: 'PP', color: '#CCFF00' },
+  { id: 'te-11', ffcv_external_id: 'team_cd_paiporta',          club_name: 'CD Paiporta',             competition_id: 'comp-2', initials: 'PP', color: '#10B981' },
   { id: 'te-12', ffcv_external_id: 'team_cf_paterna',            club_name: 'CF Paterna',              competition_id: 'comp-2', initials: 'PT', color: '#FFD700' },
   // Segunda Regional Infantil
   { id: 'te-13', ffcv_external_id: 'team_cd_xativa_inf',         club_name: 'CD Xàtiva Infantil',      competition_id: 'comp-3', initials: 'XT', color: '#B347FF' },
-  { id: 'te-14', ffcv_external_id: 'team_cf_elda_inf',           club_name: 'CF Elda Infantil',        competition_id: 'comp-3', initials: 'EL', color: '#CCFF00' },
+  { id: 'te-14', ffcv_external_id: 'team_cf_elda_inf',           club_name: 'CF Elda Infantil',        competition_id: 'comp-3', initials: 'EL', color: '#10B981' },
 ]
 
 // Fixture completo para comp-1 (Preferente Grupo B) — mezcla de estados

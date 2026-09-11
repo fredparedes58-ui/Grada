@@ -9,7 +9,7 @@ export async function shareFifaCard(node: HTMLElement, filename = 'fifa-card.png
     const dataUrl = await toPng(node, {
       cacheBust: true,
       pixelRatio: 2,
-      backgroundColor: '#0F0D0A',
+      backgroundColor: '#FAFBFD',
     })
     const blob = await (await fetch(dataUrl)).blob()
     const file = new File([blob], filename, { type: 'image/png' })

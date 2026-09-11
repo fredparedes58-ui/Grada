@@ -618,7 +618,7 @@ export function generateWeeklyDigest(w: WeekStats): WeeklyDigest {
     {
       label: 'Partidos',
       text: `${w.matchesPlayed} partido${w.matchesPlayed === 1 ? '' : 's'} disputado${w.matchesPlayed === 1 ? '' : 's'} · récord ${recordStr}.`,
-      color: '#CCFF00',
+      color: '#10B981',
     },
     {
       label: 'Ofensiva',

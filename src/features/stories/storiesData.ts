@@ -20,9 +20,9 @@ export const STORIES: StoryItem[] = [
   {
     id: 's1', title: 'Pumas FC', subtitle: 'Gol de tiro libre', emoji: '⚽',
     bg: 'radial-gradient(circle at 30% 20%, rgba(204,255,0,0.4), rgba(15,13,10,0.95))',
-    ring: '#CCFF00', durationMs: 5000,
+    ring: '#10B981', durationMs: 5000,
     caption: '¡Qué golazo de tiro libre en el 88\'!',
-    authorBadge: 'PF', authorColor: '#CCFF00', timeAgo: 'hace 2h',
+    authorBadge: 'PF', authorColor: '#10B981', timeAgo: 'hace 2h',
   },
   {
     id: 's2', title: 'Carlos Méndez', subtitle: 'Hat-trick brutal', emoji: '🔥',

@@ -18,11 +18,11 @@ interface Player {
 
 const MARKET: Player[] = [
   { id: 'p1', name: 'Lucas Varela',   pos: 'FWD', rating: 88, price: 1800, color: '#FFB800', emoji: '⚡' },
-  { id: 'p2', name: 'Nico Acuña',     pos: 'MID', rating: 82, price: 1200, color: '#CCFF00', emoji: '🎯' },
+  { id: 'p2', name: 'Nico Acuña',     pos: 'MID', rating: 82, price: 1200, color: '#10B981', emoji: '🎯' },
   { id: 'p3', name: 'Matías Godoy',   pos: 'DEF', rating: 79, price: 900,  color: '#00D4FF', emoji: '🛡️' },
   { id: 'p4', name: 'Rafa Pizarro',   pos: 'GK',  rating: 85, price: 1500, color: '#B347FF', emoji: '🧤' },
   { id: 'p5', name: 'Tobías Salas',   pos: 'FWD', rating: 76, price: 700,  color: '#FF5B3A', emoji: '🏃' },
-  { id: 'p6', name: 'Emilio Ruiz',    pos: 'MID', rating: 84, price: 1400, color: '#CCFF00', emoji: '🧠' },
+  { id: 'p6', name: 'Emilio Ruiz',    pos: 'MID', rating: 84, price: 1400, color: '#10B981', emoji: '🧠' },
   { id: 'p7', name: 'Joaquín Vega',   pos: 'DEF', rating: 81, price: 1100, color: '#00D4FF', emoji: '💪' },
   { id: 'p8', name: 'Santi Paredes',  pos: 'FWD', rating: 90, price: 2400, color: '#FFB800', emoji: '🌟' },
 ]

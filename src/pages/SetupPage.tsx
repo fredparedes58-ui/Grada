@@ -74,8 +74,8 @@ export default function SetupPage() {
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="9" fill="none" stroke="#0F0D0A" strokeWidth="1.8" />
-              <path d="M12 4l2.5 3.5L12 10l-2.5-2.5zM4 12l3.5 2.5L10 12l-2.5-2.5zM20 12l-3.5 2.5L14 12l2.5-2.5zM12 20l-2.5-3.5L12 14l2.5 2.5z" fill="#0F0D0A" />
+              <circle cx="12" cy="12" r="9" fill="none" stroke="#091A12" strokeWidth="1.8" />
+              <path d="M12 4l2.5 3.5L12 10l-2.5-2.5zM4 12l3.5 2.5L10 12l-2.5-2.5zM20 12l-3.5 2.5L14 12l2.5-2.5zM12 20l-2.5-3.5L12 14l2.5 2.5z" fill="#091A12" />
             </svg>
           </div>
           <span style={{ fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 16, color: '#FAFBFD' }}>

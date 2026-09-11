@@ -299,7 +299,7 @@ export default function LeaguePage() {
                       <div style={{
                         width: 24, height: 24, borderRadius: 6,
                         background: isPromotion ? 'var(--accent-primary)' : isRelega ? 'rgba(255, 91, 58, 0.2)' : 'rgba(10, 21, 48, 0.06)',
-                        color: isPromotion ? '#0F0D0A' : isRelega ? '#FF5B3A' : 'rgba(10, 21, 48, 0.7)',
+                        color: isPromotion ? '#091A12' : isRelega ? '#FF5B3A' : 'rgba(10, 21, 48, 0.7)',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         fontFamily: 'Archivo', fontWeight: 800, fontSize: 11,
                         border: isRelega ? '1px solid rgba(255,91,58,0.3)' : 'none',
@@ -576,7 +576,7 @@ export default function LeaguePage() {
                   <div style={{
                     width: 30, height: 30, borderRadius: '50%',
                     background: i === 0 ? 'var(--accent-primary)' : 'rgba(10, 21, 48, 0.06)',
-                    color: i === 0 ? '#0F0D0A' : 'rgba(10, 21, 48, 0.7)',
+                    color: i === 0 ? '#091A12' : 'rgba(10, 21, 48, 0.7)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontFamily: 'Archivo', fontWeight: 800, fontSize: 12,
                   }}>
