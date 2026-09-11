@@ -354,7 +354,7 @@ export default function HomePage() {
               }} />
               <span style={{
                 fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 10,
-                color: 'rgba(250, 245, 235, 0.5)', letterSpacing: '0.1em',
+                color: 'var(--text-dim)', letterSpacing: '0.1em',
                 textTransform: 'uppercase',
               }}>
                 Novedades FFCV · en tiempo real
@@ -1486,7 +1486,7 @@ export default function HomePage() {
                       boxShadow: '0 4px 12px rgba(93, 195, 255, 0.3)',
                     }}
                   >
-                    <Play size={13} fill="#0F0D0A" />
+                    <Play size={13} fill="#091A12" />
                   </button>
                 </div>
               ))}

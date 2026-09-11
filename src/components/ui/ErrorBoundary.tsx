@@ -64,7 +64,7 @@ export default class ErrorBoundary extends Component<Props, State> {
         <button onClick={this.reset} style={{
           padding: '10px 18px', borderRadius: 12,
           background: 'linear-gradient(135deg, #10B981, #FFB800)',
-          color: '#0F0D0A', border: 'none', cursor: 'pointer',
+          color: '#091A12', border: 'none', cursor: 'pointer',
           fontFamily: 'Space Grotesk', fontWeight: 800, fontSize: 13,
           display: 'inline-flex', alignItems: 'center', gap: 6,
           boxShadow: '0 0 18px rgba(16,185,129,0.35)',

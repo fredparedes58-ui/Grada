@@ -413,7 +413,7 @@ export default function TournamentsTab() {
                 style={{
                   width: '100%', padding: '13px', borderRadius: 12,
                   background: `linear-gradient(135deg, ${selected.color}, #FFB800)`,
-                  border: 'none', color: '#0F0D0A',
+                  border: 'none', color: '#091A12',
                   fontFamily: 'Archivo', fontWeight: 800, fontSize: 13,
                   cursor: 'pointer',
                   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
@@ -497,7 +497,7 @@ export default function TournamentsTab() {
                 ? 'linear-gradient(135deg, #10B981, #FFB800)'
                 : 'var(--surface-2)',
               border: 'none',
-              color: newName.trim() ? '#0F0D0A' : 'var(--text-dim)',
+              color: newName.trim() ? '#091A12' : 'var(--text-dim)',
               fontFamily: 'Archivo', fontWeight: 800, fontSize: 13,
               cursor: newName.trim() ? 'pointer' : 'default',
               boxShadow: newName.trim() ? '0 6px 20px rgba(16,185,129,0.3)' : 'none',

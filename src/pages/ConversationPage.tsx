@@ -312,7 +312,7 @@ export default function ConversationPage() {
                   key={i}
                   style={{
                     width: 6, height: 6, borderRadius: '50%',
-                    background: 'rgba(250,245,235,0.6)',
+                    background: 'var(--text-muted)',
                     animation: `pulse-glow 1s ease-in-out ${i * 0.15}s infinite`,
                   }}
                 />

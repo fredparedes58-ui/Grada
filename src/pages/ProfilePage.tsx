@@ -45,7 +45,7 @@ const RECENT = [
 
 // Forma reciente — últimos 5 resultados (más reciente a la derecha)
 const FORM: Array<'W' | 'D' | 'L'> = ['W', 'L', 'W', 'D', 'W']
-const FORM_COLOR: Record<'W' | 'D' | 'L', string> = { W: '#CCFF00', D: '#FFB800', L: '#FF5B3A' }
+const FORM_COLOR: Record<'W' | 'D' | 'L', string> = { W: '#10B981', D: '#FFB800', L: '#FF5B3A' }
 
 const POSITIONS = ['Portero', 'Defensa', 'Mediocampista', 'Delantero', 'Extremo']
 
@@ -517,22 +517,22 @@ export default function ProfilePage() {
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{
                 width: 38, height: 38, borderRadius: 10,
-                background: 'linear-gradient(135deg, #CCFF00, #FFB800)',
+                background: 'linear-gradient(135deg, #10B981, #FFB800)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 flexShrink: 0,
               }}>
-                <PlusCircle size={18} color="#0F0D0A" />
+                <PlusCircle size={18} color="#091A12" />
               </div>
               <div style={{ textAlign: 'left' }}>
                 <div style={{
                   fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 15,
-                  color: '#FAF5EB', letterSpacing: '-0.01em',
+                  color: '#091A12', letterSpacing: '-0.01em',
                 }}>
                   Registrar partido
                 </div>
                 <div style={{
                   fontFamily: 'Space Grotesk, sans-serif', fontSize: 11,
-                  color: 'rgba(250,245,235,0.45)', marginTop: 1,
+                  color: 'rgba(9,26,18,0.7)', marginTop: 1,
                 }}>
                   Anota el resultado · el Coach AI lo analiza
                 </div>

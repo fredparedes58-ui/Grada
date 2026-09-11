@@ -14,10 +14,10 @@ interface NeonButtonProps {
 }
 
 const COLORS: Record<Variant, { bg: string; glow: string; text: string }> = {
-  lime:     { bg: '#CCFF00', glow: 'rgba(204, 255, 0, 0.5)', text: '#0F0D0A' },
-  amber:    { bg: '#FFB800', glow: 'rgba(255, 184, 0, 0.5)', text: '#0F0D0A' },
+  lime:     { bg: '#10B981', glow: 'rgba(16, 185, 129, 0.5)', text: '#091A12' },
+  amber:    { bg: '#FFB800', glow: 'rgba(255, 184, 0, 0.5)', text: '#091A12' },
   coral:    { bg: '#FF5B3A', glow: 'rgba(255, 91, 58, 0.5)', text: '#FFFFFF' },
-  gradient: { bg: 'linear-gradient(90deg, #CCFF00, #FFB800, #CCFF00)', glow: 'rgba(204, 255, 0, 0.35)', text: '#0F0D0A' },
+  gradient: { bg: 'linear-gradient(90deg, #10B981, #5DC3FF, #10B981)', glow: 'rgba(16, 185, 129, 0.35)', text: '#091A12' },
 }
 
 export default function NeonButton({
@@ -71,7 +71,7 @@ export default function NeonButton({
         }}
       />
       <span style={{ position: 'relative', zIndex: 1 }}>{children}</span>
-      <RippleLayer ripples={ripples} color={c.text === '#0F0D0A' ? 'rgba(15,13,10,0.3)' : 'rgba(255,255,255,0.4)'} />
+      <RippleLayer ripples={ripples} color={c.text === '#091A12' ? 'rgba(15,13,10,0.3)' : 'rgba(255,255,255,0.4)'} />
     </button>
   )
 }

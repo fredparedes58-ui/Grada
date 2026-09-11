@@ -57,7 +57,7 @@ export default function TeamSubscribeSheet({ open, onClose, team, existing, onSa
     width: 18,
     height: 18,
     borderRadius: '50%',
-    background: active ? '#0F0D0A' : 'rgba(10, 21, 48, 0.35)',
+    background: active ? '#091A12' : 'rgba(10, 21, 48, 0.35)',
     transition: 'left 0.2s',
   })
 
@@ -195,7 +195,7 @@ export default function TeamSubscribeSheet({ open, onClose, team, existing, onSa
             style={{
               width: '100%', padding: '14px', borderRadius: 14,
               background: saving ? 'rgba(16, 185, 129, 0.4)' : 'linear-gradient(135deg, #10B981, #FFB800)',
-              border: 'none', color: '#0F0D0A',
+              border: 'none', color: '#091A12',
               fontFamily: 'Archivo', fontWeight: 800, fontSize: 13,
               letterSpacing: '0.06em', textTransform: 'uppercase',
               cursor: saving ? 'default' : 'pointer',
@@ -208,7 +208,7 @@ export default function TeamSubscribeSheet({ open, onClose, team, existing, onSa
               <>
                 <div style={{
                   width: 14, height: 14, borderRadius: '50%',
-                  border: '2px solid #0F0D0A',
+                  border: '2px solid #091A12',
                   borderTopColor: 'transparent',
                   animation: 'spin 700ms linear infinite',
                 }} />

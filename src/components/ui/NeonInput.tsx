@@ -11,7 +11,7 @@ interface NeonInputProps {
 }
 
 export default function NeonInput({
-  placeholder, type = 'text', icon, value, onChange, error, accent = '#CCFF00',
+  placeholder, type = 'text', icon, value, onChange, error, accent = '#10B981',
 }: NeonInputProps) {
   const [focused, setFocused] = useState(false)
   const color = error ? '#FF5B3A' : accent
@@ -25,8 +25,8 @@ export default function NeonInput({
           gap: 12,
           padding: '14px 16px',
           borderRadius: 14,
-          background: focused ? 'rgba(204, 255, 0, 0.04)' : 'rgba(255, 255, 255, 0.03)',
-          border: `1.5px solid ${focused ? color : 'rgba(255, 220, 180, 0.12)'}`,
+          background: focused ? 'rgba(16, 185, 129, 0.04)' : 'rgba(255, 255, 255, 0.03)',
+          border: `1.5px solid ${focused ? color : 'var(--border)'}`,
           boxShadow: focused ? `0 0 0 4px ${color}22, 0 0 16px ${color}33` : 'none',
           transition: 'all 0.2s',
         }}
@@ -34,7 +34,7 @@ export default function NeonInput({
         {icon && (
           <span
             style={{
-              color: focused ? color : 'rgba(250, 245, 235, 0.5)',
+              color: focused ? color : 'var(--text-dim)',
               display: 'flex',
               alignItems: 'center',
               transition: 'color 0.2s',
@@ -55,7 +55,7 @@ export default function NeonInput({
             background: 'transparent',
             outline: 'none',
             border: 'none',
-            color: '#FAF5EB',
+            color: 'var(--text-primary)',
             fontSize: 15,
             fontFamily: 'Space Grotesk, sans-serif',
           }}
