@@ -29,7 +29,7 @@ service firebase.storage {
     }
 
     // Imágenes de publicaciones: solo el propio usuario, máx 8 MB
-    match /publicaciones/{uid}/{uuid}.webp {
+    match /publicaciones/{uid}/{imagen} {
       allow read:  if autenticado();
       allow write: if autenticado() &&
         request.auth.uid == uid &&

@@ -1,13 +1,6 @@
 {
   "indexes": [
     {
-      "collectionGroup": "publicaciones",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "creadoEn", "order": "DESCENDING" }
-      ]
-    },
-    {
       "collectionGroup": "partidos",
       "queryScope": "COLLECTION",
       "fields": [
