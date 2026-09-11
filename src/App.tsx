@@ -11,10 +11,11 @@ import RouteFallback from './components/ui/RouteFallback'
 import ErrorBoundary from './components/ui/ErrorBoundary'
 import RequireAuth from './components/RequireAuth'
 
-// Keep onboarding/login eager (first paint), lazy-load the rest
+// Keep onboarding/login/register/setup eager (first paint), lazy-load the rest
 import OnboardingPage from './pages/OnboardingPage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
+import SetupPage from './pages/SetupPage'
 
 const HomePage         = lazy(() => import('./pages/HomePage'))
 const ChatPage         = lazy(() => import('./pages/ChatPage'))
@@ -22,6 +23,7 @@ const ConversationPage = lazy(() => import('./pages/ConversationPage'))
 const CommunityPage    = lazy(() => import('./pages/CommunityPage'))
 const LeaguePage       = lazy(() => import('./pages/LeaguePage'))
 const ProfilePage      = lazy(() => import('./pages/ProfilePage'))
+const RecordMatchPage  = lazy(() => import('./pages/RecordMatchPage'))
 const LandingPage      = lazy(() => import('./pages/LandingPage'))
 const AdminPage        = lazy(() => import('./pages/AdminPage'))
 
@@ -30,7 +32,7 @@ function AnimatedRoutes() {
   const path = location.pathname
 
   const variant: 'slide' | 'fade' | 'scale' =
-    path === '/' || path === '/login' || path === '/register' ? 'fade' :
+    path === '/' || path === '/login' || path === '/register' || path === '/setup' ? 'fade' :
     path === '/chat/conversation' ? 'scale' :
     'slide'
 
@@ -41,12 +43,14 @@ function AnimatedRoutes() {
         <Route path="/"          element={<PageTransition variant={variant}><OnboardingPage /></PageTransition>} />
         <Route path="/login"     element={<PageTransition variant={variant}><LoginPage /></PageTransition>} />
         <Route path="/register"  element={<PageTransition variant={variant}><RegisterPage /></PageTransition>} />
+        <Route path="/setup"     element={<RequireAuth><PageTransition variant={variant}><SetupPage /></PageTransition></RequireAuth>} />
         <Route path="/home"      element={<RequireAuth><PageTransition variant={variant}><Suspense fallback={<RouteFallback />}><HomePage /></Suspense></PageTransition></RequireAuth>} />
         <Route path="/chat"      element={<RequireAuth><PageTransition variant={variant}><Suspense fallback={<RouteFallback />}><ChatPage /></Suspense></PageTransition></RequireAuth>} />
         <Route path="/chat/conversation" element={<RequireAuth><PageTransition variant={variant}><Suspense fallback={<RouteFallback />}><ConversationPage /></Suspense></PageTransition></RequireAuth>} />
         <Route path="/community" element={<RequireAuth><PageTransition variant={variant}><Suspense fallback={<RouteFallback />}><CommunityPage /></Suspense></PageTransition></RequireAuth>} />
         <Route path="/league"    element={<RequireAuth><PageTransition variant={variant}><Suspense fallback={<RouteFallback />}><LeaguePage /></Suspense></PageTransition></RequireAuth>} />
         <Route path="/profile"   element={<RequireAuth><PageTransition variant={variant}><Suspense fallback={<RouteFallback />}><ProfilePage /></Suspense></PageTransition></RequireAuth>} />
+        <Route path="/record"    element={<RequireAuth><PageTransition variant="scale"><Suspense fallback={<RouteFallback />}><RecordMatchPage /></Suspense></PageTransition></RequireAuth>} />
         <Route path="/admin"     element={<RequireAuth><PageTransition variant={variant}><Suspense fallback={<RouteFallback />}><AdminPage /></Suspense></PageTransition></RequireAuth>} />
         <Route path="/landing"   element={<PageTransition variant="fade"><Suspense fallback={<RouteFallback />}><LandingPage /></Suspense></PageTransition>} />
         <Route path="*"          element={<Navigate to="/" replace />} />

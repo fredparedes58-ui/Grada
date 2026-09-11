@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { acceder } from '../lib/auth'
+import LeFavoleAd from '../components/ui/LeFavoleAd'
 
 export default function LoginPage() {
   const nav = useNavigate()
@@ -219,6 +220,9 @@ export default function LoginPage() {
           </button>
         </div>
       </div>
+
+      {/* Le Favole — publicidad flotante */}
+      <LeFavoleAd />
     </div>
   )
 }

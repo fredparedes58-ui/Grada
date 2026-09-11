@@ -6,6 +6,8 @@ interface ThemeCtx {
 
 const Ctx = createContext<ThemeCtx | null>(null)
 
+// Tema único claro (Krujens Light Fresh). Se incluyen todos los nombres de
+// token que usan los componentes (incl. amber/coral/purple de features de main).
 const TOKENS: Record<string, string> = {
   '--bg-deep':         '#FAFBFD',
   '--bg-base':         '#F0F4F8',
@@ -22,6 +24,9 @@ const TOKENS: Record<string, string> = {
   '--accent-primary':  '#10B981',
   '--accent-secondary':'#5DC3FF',
   '--accent-warm':     '#34D399',
+  '--accent-amber':    '#F59E0B',
+  '--accent-coral':    '#FF5B3A',
+  '--accent-purple':   '#B347FF',
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {

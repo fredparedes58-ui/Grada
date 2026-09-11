@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef, type ChangeEvent } from 'react'
-import { LogOut, Trophy, Target, Zap, Star, Pencil, Check, X, Sparkles, TrendingUp, AlertCircle, Camera, Loader2, ShieldCheck } from 'lucide-react'
+import { LogOut, Trophy, Target, Zap, Star, Pencil, Check, X, Sparkles, TrendingUp, AlertCircle, Camera, Loader2, ShieldCheck, PlusCircle } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { subirAvatar } from '../lib/almacenamiento'
@@ -19,7 +19,10 @@ import DuelsSheet from '../features/duels/DuelsSheet'
 import MarketSheet from '../features/market/MarketSheet'
 import MatchReplaySheet from '../features/replay/MatchReplaySheet'
 import { shareFifaCard } from '../features/share/shareFifaCard'
-import { MessageCircle, Flame, Crown, Swords, Store, Share2, Film } from 'lucide-react'
+import LeaderboardSheet from '../features/leaderboard/LeaderboardSheet'
+import TacticsBoardSheet from '../features/tactics/TacticsBoardSheet'
+import DrillsSheet from '../features/training/DrillsSheet'
+import { MessageCircle, Flame, Crown, Swords, Store, Share2, Film, BarChart2, Grid3X3, Dumbbell } from 'lucide-react'
 
 const STATS = [
   { icon: Trophy, label: 'Partidos',    value: 12, color: 'var(--accent-primary)' },
@@ -39,6 +42,10 @@ const RECENT = [
   { opponent: 'Valencia Mestalla B', result: 'W 1-0', goals: 0 },
   { opponent: 'CD Borriol',         result: 'L 0-2', goals: 0 },
 ]
+
+// Forma reciente — últimos 5 resultados (más reciente a la derecha)
+const FORM: Array<'W' | 'D' | 'L'> = ['W', 'L', 'W', 'D', 'W']
+const FORM_COLOR: Record<'W' | 'D' | 'L', string> = { W: '#CCFF00', D: '#FFB800', L: '#FF5B3A' }
 
 const POSITIONS = ['Portero', 'Defensa', 'Mediocampista', 'Delantero', 'Extremo']
 
@@ -89,6 +96,9 @@ export default function ProfilePage() {
   const [duelsOpen, setDuelsOpen] = useState(false)
   const [marketOpen, setMarketOpen] = useState(false)
   const [replayOpen, setReplayOpen] = useState(false)
+  const [leaderboardOpen, setLeaderboardOpen] = useState(false)
+  const [tacticsOpen, setTacticsOpen] = useState(false)
+  const [drillsOpen, setDrillsOpen] = useState(false)
   const fifaCardRef = useRef<HTMLDivElement>(null)
 
   const [editing, setEditing] = useState(false)
@@ -463,6 +473,9 @@ export default function ProfilePage() {
             { label: 'Duelos',     icon: Swords,        color: 'var(--accent-warm)', onClick: () => setDuelsOpen(true) },
             { label: 'Mercado',    icon: Store,         color: 'var(--accent-secondary)', onClick: () => setMarketOpen(true) },
             { label: 'Replay',     icon: Film,          color: 'var(--accent-primary)', onClick: () => setReplayOpen(true) },
+            { label: 'Ranking',    icon: BarChart2,     color: 'var(--accent-secondary)', onClick: () => setLeaderboardOpen(true) },
+            { label: 'Táctica',    icon: Grid3X3,       color: 'var(--accent-secondary)', onClick: () => setTacticsOpen(true) },
+            { label: 'Entrenos',   icon: Dumbbell,      color: 'var(--accent-primary)', onClick: () => setDrillsOpen(true) },
             { label: 'Compartir',  icon: Share2,        color: 'var(--text-primary)', onClick: async () => {
               if (!fifaCardRef.current) return
               const ok = await shareFifaCard(fifaCardRef.current, `${name}-fifa-card`)
@@ -483,6 +496,64 @@ export default function ProfilePage() {
               </button>
             )
           })}
+        </div>
+
+        {/* Registrar partido CTA */}
+        <div style={{ padding: '0 20px 18px' }}>
+          <button
+            onClick={() => nav('/record')}
+            style={{
+              width: '100%',
+              padding: '14px 20px',
+              borderRadius: 16,
+              background: 'linear-gradient(135deg, rgba(204,255,0,0.14), rgba(255,184,0,0.10))',
+              border: '1.5px solid rgba(204,255,0,0.35)',
+              cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              boxShadow: '0 0 18px rgba(204,255,0,0.10)',
+              transition: 'box-shadow 0.18s',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{
+                width: 38, height: 38, borderRadius: 10,
+                background: 'linear-gradient(135deg, #CCFF00, #FFB800)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                flexShrink: 0,
+              }}>
+                <PlusCircle size={18} color="#0F0D0A" />
+              </div>
+              <div style={{ textAlign: 'left' }}>
+                <div style={{
+                  fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 15,
+                  color: '#FAF5EB', letterSpacing: '-0.01em',
+                }}>
+                  Registrar partido
+                </div>
+                <div style={{
+                  fontFamily: 'Space Grotesk, sans-serif', fontSize: 11,
+                  color: 'rgba(250,245,235,0.45)', marginTop: 1,
+                }}>
+                  Anota el resultado · el Coach AI lo analiza
+                </div>
+              </div>
+            </div>
+            {/* Forma reciente */}
+            <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
+              {FORM.map((r, i) => (
+                <div key={i} style={{
+                  width: 22, height: 22, borderRadius: 5,
+                  background: `${FORM_COLOR[r]}22`,
+                  border: `1px solid ${FORM_COLOR[r]}55`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 9,
+                  color: FORM_COLOR[r],
+                }}>
+                  {r}
+                </div>
+              ))}
+            </div>
+          </button>
         </div>
 
         {/* Heatmap */}
@@ -813,6 +884,9 @@ export default function ProfilePage() {
       <DuelsSheet open={duelsOpen} onClose={() => setDuelsOpen(false)} me={name} />
       <MarketSheet open={marketOpen} onClose={() => setMarketOpen(false)} />
       <MatchReplaySheet open={replayOpen} onClose={() => setReplayOpen(false)} home={team} away="Mestalla CF" />
+      <LeaderboardSheet open={leaderboardOpen} onClose={() => setLeaderboardOpen(false)} me={name} />
+      <TacticsBoardSheet open={tacticsOpen} onClose={() => setTacticsOpen(false)} />
+      <DrillsSheet open={drillsOpen} onClose={() => setDrillsOpen(false)} name={name} weaknesses={['shot', 'def', 'pace']} />
       <BottomNav />
     </div>
   )

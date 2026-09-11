@@ -1,5 +1,8 @@
-﻿import { useState, useMemo, useEffect, useRef, type ChangeEvent } from 'react'
+import { useState, useMemo, useEffect, useRef, type ChangeEvent } from 'react'
 import { Search, Users, Trophy, MapPin, Calendar, Check, Sparkles, ChevronRight, Wand2, X, Plus, ImagePlus, Shield } from 'lucide-react'
+import TournamentsTab from '../features/tournaments/TournamentsTab'
+import PollCard from '../features/polls/PollCard'
+import EventsSheet from '../features/events/EventsSheet'
 import BottomNav from '../components/ui/BottomNav'
 import GlassCard from '../components/ui/GlassCard'
 import BottomSheet from '../components/ui/BottomSheet'
@@ -195,7 +198,10 @@ export default function CommunityPage() {
     })
   }, [query, intent, hasSemanticFilters])
 
+  const [eventsOpen, setEventsOpen] = useState(false)
+
   // Matcher
+  const [communityTab, setCommunityTab] = useState<'equipos' | 'torneos'>('equipos')
   const [matcherOpen, setMatcherOpen] = useState(false)
   const [mStep, setMStep] = useState(0)
   const [mAns, setMAns] = useState<Partial<MatcherAnswers>>({})
@@ -251,11 +257,39 @@ export default function CommunityPage() {
               fontSize: 14, color: 'var(--text-muted)',
             }}
           >
-            Descubre clubes y equipos cerca
+            Descubre clubes, equipos y torneos
           </div>
         </div>
 
-        <div style={{ padding: '0 20px 20px' }}>
+        {/* Tabs: Equipos / Torneos */}
+        <div style={{ padding: '0 20px 16px', display: 'flex', gap: 8 }}>
+          {(['equipos', 'torneos'] as const).map(t => (
+            <button
+              key={t}
+              onClick={() => setCommunityTab(t)}
+              style={{
+                flex: 1, padding: '9px', borderRadius: 10,
+                background: communityTab === t ? 'rgba(16, 185, 129, 0.12)' : 'rgba(10, 21, 48, 0.03)',
+                border: `1px solid ${communityTab === t ? 'var(--accent-primary)' : 'rgba(16, 185, 129, 0.12)'}`,
+                color: communityTab === t ? 'var(--accent-primary)' : 'var(--text-muted)',
+                fontFamily: 'Space Grotesk', fontWeight: 700,
+                fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.05em',
+                cursor: 'pointer',
+                boxShadow: communityTab === t ? '0 0 12px rgba(16, 185, 129, 0.15)' : 'none',
+              }}
+            >
+              {t === 'equipos' ? '👥 Equipos' : '🏆 Torneos'}
+            </button>
+          ))}
+        </div>
+
+        {communityTab === 'torneos' && (
+          <div style={{ padding: '0 20px' }}>
+            <TournamentsTab />
+          </div>
+        )}
+
+        {communityTab === 'equipos' && (<><div style={{ padding: '0 20px 20px' }}>
           <div
             style={{
               display: 'flex', alignItems: 'center', gap: 10,
@@ -347,6 +381,74 @@ export default function CommunityPage() {
             </div>
             <ChevronRight size={16} color="#B347FF" />
           </button>
+
+          {/* Eventos CTA */}
+          <button
+            onClick={() => setEventsOpen(true)}
+            style={{
+              marginTop: 10, width: '100%',
+              padding: '11px 14px', borderRadius: 12,
+              background: 'linear-gradient(135deg, rgba(0,212,255,0.12), rgba(16,185,129,0.07))',
+              border: '1px solid rgba(0,212,255,0.35)',
+              color: 'var(--text-primary)', cursor: 'pointer',
+              display: 'flex', alignItems: 'center', gap: 10,
+              textAlign: 'left',
+            }}
+          >
+            <div style={{
+              width: 30, height: 30, borderRadius: 8,
+              background: 'rgba(0,212,255,0.2)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: '#00D4FF', flexShrink: 0,
+            }}>
+              <Calendar size={14} />
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 10, color: '#00D4FF', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+                Eventos
+              </div>
+              <div style={{ fontFamily: 'Space Grotesk', fontSize: 13, color: 'var(--text-primary)', fontWeight: 600 }}>
+                Partidos abiertos · RSVP en 1 tap
+              </div>
+            </div>
+            <ChevronRight size={16} color="#00D4FF" />
+          </button>
+        </div>
+
+        {/* ═══ Encuestas comunidad ═══ */}
+        <div style={{ padding: '0 20px 14px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+            <Trophy size={14} color="#FFB800" />
+            <div style={{
+              fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 13,
+              color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em',
+            }}>
+              Encuestas de la semana
+            </div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <PollCard
+              id="community-poll-mvp"
+              question="¿Quién es el mejor jugador amateur de tu liga?"
+              options={[
+                { id: 'p1', label: 'El delantero explosivo', votes: 54, color: '#10B981' },
+                { id: 'p2', label: 'El mediocampista creativo', votes: 38, color: '#FFB800' },
+                { id: 'p3', label: 'El portero infranqueable', votes: 29, color: '#00D4FF' },
+              ]}
+              totalVoters={130}
+            />
+            <PollCard
+              id="community-poll-formation"
+              question="¿Qué formación prefiere tu equipo?"
+              options={[
+                { id: 'f1', label: '4-3-3',   votes: 61, color: '#10B981' },
+                { id: 'f2', label: '4-4-2',   votes: 44, color: '#FFB800' },
+                { id: 'f3', label: '4-2-3-1', votes: 33, color: '#B347FF' },
+                { id: 'f4', label: '3-5-2',   votes: 18, color: '#FF5B3A' },
+              ]}
+              totalVoters={165}
+            />
+          </div>
         </div>
 
         {/* ═══ Quinielas / Predicciones de partidos ═══ */}
@@ -609,6 +711,7 @@ export default function CommunityPage() {
             </div>
           ))}
         </div>
+      </>)}
       </div>
 
       <BottomSheet
@@ -765,7 +868,7 @@ export default function CommunityPage() {
                 background: joined[selected.name]
                   ? 'rgba(16, 185, 129, 0.15)'
                   : `linear-gradient(135deg, ${selected.color}, ${selected.color}cc)`,
-                color: joined[selected.name] ? selected.color : '#0F0D0A',
+                color: joined[selected.name] ? selected.color : '#FAFBFD',
                 border: joined[selected.name] ? `1px solid ${selected.color}66` : 'none',
                 fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 14,
                 letterSpacing: '0.06em', textTransform: 'uppercase',
@@ -884,7 +987,7 @@ export default function CommunityPage() {
                         position: 'absolute', top: -8, left: 12,
                         padding: '3px 10px', borderRadius: 999,
                         background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',
-                        color: '#0F0D0A',
+                        color: '#FAFBFD',
                         fontFamily: 'Archivo', fontWeight: 800, fontSize: 10,
                         letterSpacing: '0.1em', textTransform: 'uppercase',
                         boxShadow: '0 4px 12px rgba(16, 185, 129, 0.4)',
@@ -1051,6 +1154,7 @@ export default function CommunityPage() {
         </div>
       </BottomSheet>
 
+      <EventsSheet open={eventsOpen} onClose={() => setEventsOpen(false)} />
       <BottomNav />
     </div>
   )

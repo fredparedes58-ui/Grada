@@ -5,6 +5,7 @@ import FloatingOrbs from '../components/ui/FloatingOrbs'
 import FloatingEmojis from '../components/ui/FloatingEmojis'
 import FloatingChip from '../components/ui/FloatingChip'
 import PulseRings from '../components/ui/PulseRings'
+import LeFavoleAd from '../components/ui/LeFavoleAd'
 
 export default function OnboardingPage() {
   const nav = useNavigate()
@@ -13,9 +14,9 @@ export default function OnboardingPage() {
   useEffect(() => { setMounted(true) }, [])
 
   const CHIPS = [
-    { label: 'jugadores',    value: '12K+', color: '#10B981', delay: 0.2 },
-    { label: 'online ahora', value: '847',  color: '#5DC3FF', delay: 0.35 },
-    { label: 'goles hoy',    value: '2.3K', color: '#34D399', delay: 0.5 },
+    { label: 'jugadores activos', value: '12K+', color: '#10B981', delay: 0.2 },
+    { label: 'partidos en vivo',  value: '47',   color: '#5DC3FF', delay: 0.35 },
+    { label: 'ligas creadas',     value: '380+', color: '#34D399', delay: 0.5 },
   ]
 
   return (
@@ -249,6 +250,10 @@ export default function OnboardingPage() {
         </button>
       </div>
 
+      {/* Le Favole — publicidad flotante */}
+      <LeFavoleAd />
+
+      {/* Local keyframes used in this page */}
       <style>{`
         @keyframes pulse-glow {
           0%, 100% { opacity: 0.7; transform: scale(1); }

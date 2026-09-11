@@ -10,6 +10,8 @@ export interface User {
   avatarUrl?: string
   position?: string
   team?: string
+  level?: string
+  setupDone?: boolean
 }
 
 export type EstadoCuenta = 'pendiente' | 'aprobado' | 'rechazado' | null
