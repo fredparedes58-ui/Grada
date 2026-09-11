@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef, type ChangeEvent } from 'react'
-import { LogOut, Trophy, Target, Zap, Star, Pencil, Check, X, Sparkles, TrendingUp, AlertCircle, Camera, Loader2 } from 'lucide-react'
+import { LogOut, Trophy, Target, Zap, Star, Pencil, Check, X, Sparkles, TrendingUp, AlertCircle, Camera, Loader2, ShieldCheck } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { subirAvatar } from '../lib/almacenamiento'
@@ -43,7 +43,7 @@ const RECENT = [
 const POSITIONS = ['Portero', 'Defensa', 'Mediocampista', 'Delantero', 'Extremo']
 
 export default function ProfilePage() {
-  const { user, logout, updateUser, setToast } = useAuth()
+  const { user, logout, updateUser, setToast, esAdmin } = useAuth()
   const nav = useNavigate()
   const name = user?.name ?? 'Carlos Martínez'
   const position = user?.position ?? 'Centrocampista'
@@ -181,6 +181,22 @@ export default function ProfilePage() {
                   <Check size={16} />
                 </button>
               </>
+            )}
+            {esAdmin && (
+              <button
+                onClick={() => nav('/admin')}
+                title="Solicitudes (admin)"
+                aria-label="Solicitudes de admin"
+                style={{
+                  width: 40, height: 40, borderRadius: 10,
+                  background: 'rgba(16, 185, 129, 0.12)',
+                  border: '1px solid rgba(16, 185, 129, 0.3)',
+                  color: 'var(--accent-primary)', cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}
+              >
+                <ShieldCheck size={18} />
+              </button>
             )}
             <button
               onClick={handleLogout}

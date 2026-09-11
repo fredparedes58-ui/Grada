@@ -14,15 +14,34 @@ service cloud.firestore {
         exists(/databases/$(database)/documents/equipos/$(equipoId)/miembros/$(request.auth.uid)) &&
         get(/databases/$(database)/documents/equipos/$(equipoId)/miembros/$(request.auth.uid)).data.rol == 'admin';
     }
+    // Admin de la app: uid listado en config/roles.admins
+    function esAdminApp() {
+      return autenticado() &&
+        exists(/databases/$(database)/documents/config/roles) &&
+        request.auth.uid in get(/databases/$(database)/documents/config/roles).data.admins;
+    }
+
+    // ── Config (roles de admin) ──────────────────────────────────────────────
+    match /config/{docId} {
+      allow read:  if autenticado();
+      allow write: if false; // gestionado en la consola / fuera de banda
+    }
 
     // ── Usuarios ─────────────────────────────────────────────────────────────
     match /usuarios/{uid} {
       allow read:  if autenticado();
+      // Nueva alta: siempre 'pendiente' (nadie se auto-aprueba)
       allow create: if esPropio(uid) &&
-        request.resource.data.keys().hasAll(['uid','nombre','apodo','creadoEn']) &&
-        request.resource.data.creadoEn == request.time;
+        request.resource.data.keys().hasAll(['uid','nombre','apodo','creadoEn','estado']) &&
+        request.resource.data.creadoEn == request.time &&
+        request.resource.data.estado == 'pendiente';
+      // El propio usuario edita su perfil, pero NO su estado (ni uid/creadoEn)
       allow update: if esPropio(uid) &&
-        !request.resource.data.diff(resource.data).affectedKeys().hasAny(['uid','creadoEn']);
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(['uid','creadoEn','estado']);
+      // El admin aprueba/rechaza cambiando SOLO el estado
+      allow update: if esAdminApp() &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['estado']) &&
+        request.resource.data.estado in ['aprobado','rechazado'];
 
       match /privado/{docId} {
         allow read, write: if esPropio(uid);

@@ -23,6 +23,7 @@ const CommunityPage    = lazy(() => import('./pages/CommunityPage'))
 const LeaguePage       = lazy(() => import('./pages/LeaguePage'))
 const ProfilePage      = lazy(() => import('./pages/ProfilePage'))
 const LandingPage      = lazy(() => import('./pages/LandingPage'))
+const AdminPage        = lazy(() => import('./pages/AdminPage'))
 
 function AnimatedRoutes() {
   const location = useLocation()
@@ -46,6 +47,7 @@ function AnimatedRoutes() {
         <Route path="/community" element={<RequireAuth><PageTransition variant={variant}><Suspense fallback={<RouteFallback />}><CommunityPage /></Suspense></PageTransition></RequireAuth>} />
         <Route path="/league"    element={<RequireAuth><PageTransition variant={variant}><Suspense fallback={<RouteFallback />}><LeaguePage /></Suspense></PageTransition></RequireAuth>} />
         <Route path="/profile"   element={<RequireAuth><PageTransition variant={variant}><Suspense fallback={<RouteFallback />}><ProfilePage /></Suspense></PageTransition></RequireAuth>} />
+        <Route path="/admin"     element={<RequireAuth><PageTransition variant={variant}><Suspense fallback={<RouteFallback />}><AdminPage /></Suspense></PageTransition></RequireAuth>} />
         <Route path="/landing"   element={<PageTransition variant="fade"><Suspense fallback={<RouteFallback />}><LandingPage /></Suspense></PageTransition>} />
         <Route path="*"          element={<Navigate to="/" replace />} />
       </Routes>

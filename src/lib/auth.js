@@ -41,6 +41,7 @@ export async function registrar({ email, password, nombre, apodo, ciudad, posici
     pieHabil: '',
     bio: '',
     avatarUrl: '',
+    estado: 'pendiente',
     creadoEn: serverTimestamp(),
   })
   batch.set(doc(db, 'usuarios', uid, 'privado', 'contacto'), {
