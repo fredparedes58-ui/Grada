@@ -1,5 +1,5 @@
-﻿import { useState, useMemo } from 'react'
-import { Search, Users, Trophy, MapPin, Calendar, Check, Sparkles, ChevronRight, Wand2, X } from 'lucide-react'
+﻿import { useState, useMemo, useEffect, useRef, type ChangeEvent } from 'react'
+import { Search, Users, Trophy, MapPin, Calendar, Check, Sparkles, ChevronRight, Wand2, X, Plus, ImagePlus, Shield } from 'lucide-react'
 import BottomNav from '../components/ui/BottomNav'
 import GlassCard from '../components/ui/GlassCard'
 import BottomSheet from '../components/ui/BottomSheet'
@@ -13,6 +13,18 @@ import {
   type PlayStyle, type PlayDay, type PlayLevel,
   type TeamCandidate, type MatcherAnswers,
 } from '../lib/aiMocks'
+import { crearEquipo, actualizarEscudo, obtenerMisEquipos } from '../lib/equipos'
+import { subirEscudo } from '../lib/almacenamiento'
+
+interface MiEquipo {
+  id: string
+  nombre?: string
+  ciudad?: string
+  categoria?: string
+  escudoUrl?: string
+}
+
+const CATEGORIAS = ['Sub-13', 'Sub-15', 'Sub-17', 'Sub-19', 'Senior', 'Amateur']
 
 interface Team {
   name: string
@@ -100,6 +112,64 @@ export default function CommunityPage() {
   const [joined, setJoined] = useState<Record<string, boolean>>({})
   const [predictionMatch, setPredictionMatch] = useState<PredictionMatch | null>(null)
   const userName = user?.name ?? 'Tú'
+
+  // Mis equipos (Firestore) + crear equipo
+  const [misEquipos, setMisEquipos] = useState<MiEquipo[]>([])
+  const [crearOpen, setCrearOpen] = useState(false)
+  const [nombre, setNombre] = useState('')
+  const [ciudad, setCiudad] = useState('')
+  const [categoria, setCategoria] = useState('Sub-17')
+  const [escudoFile, setEscudoFile] = useState<File | null>(null)
+  const [escudoPreview, setEscudoPreview] = useState<string | null>(null)
+  const [creando, setCreando] = useState(false)
+  const escudoInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (user) obtenerMisEquipos().then(setMisEquipos).catch(() => {})
+  }, [user])
+
+  useEffect(() => () => {
+    if (escudoPreview) URL.revokeObjectURL(escudoPreview)
+  }, [escudoPreview])
+
+  function pickEscudo(e: ChangeEvent<HTMLInputElement>) {
+    const f = e.target.files?.[0]
+    e.target.value = ''
+    if (!f) return
+    if (escudoPreview) URL.revokeObjectURL(escudoPreview)
+    setEscudoFile(f)
+    setEscudoPreview(URL.createObjectURL(f))
+  }
+
+  function closeCrear() {
+    setCrearOpen(false)
+    setNombre('')
+    setCiudad('')
+    setCategoria('Sub-17')
+    if (escudoPreview) URL.revokeObjectURL(escudoPreview)
+    setEscudoFile(null)
+    setEscudoPreview(null)
+  }
+
+  async function crearNuevoEquipo() {
+    if (!nombre.trim() || creando) return
+    setCreando(true)
+    try {
+      const equipoId = await crearEquipo({ nombre: nombre.trim(), ciudad: ciudad.trim(), categoria })
+      if (escudoFile) {
+        const url = await subirEscudo(equipoId, escudoFile)
+        await actualizarEscudo(equipoId, url)
+      }
+      setToast(`Equipo "${nombre.trim()}" creado`)
+      if ('vibrate' in navigator) navigator.vibrate(30)
+      closeCrear()
+      obtenerMisEquipos().then(setMisEquipos).catch(() => {})
+    } catch (err) {
+      setToast(err instanceof Error ? err.message : 'No se pudo crear el equipo')
+    } finally {
+      setCreando(false)
+    }
+  }
 
   // Semantic search intent
   const intent = useMemo(() => query.trim() ? parseSearchIntent(query) : null, [query])
@@ -403,8 +473,57 @@ export default function CommunityPage() {
           </div>
         </div>
 
+        {/* Tus equipos (Firestore) */}
+        {misEquipos.length > 0 && (
+          <div style={{ padding: '4px 20px 6px' }}>
+            <div
+              style={{
+                fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 13,
+                color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em',
+                marginBottom: 10,
+              }}
+            >
+              Tus equipos
+            </div>
+            <div className="screen-scroll" style={{ display: 'flex', gap: 12, overflowX: 'auto', paddingBottom: 4 }}>
+              {misEquipos.map(eq => (
+                <div
+                  key={eq.id}
+                  style={{
+                    flex: '0 0 auto', display: 'flex', alignItems: 'center', gap: 10,
+                    padding: '10px 14px 10px 10px', borderRadius: 14,
+                    background: 'var(--surface-1)', border: '1px solid var(--border)',
+                    boxShadow: '0 1px 4px rgba(10, 21, 48, 0.05)',
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 44, height: 44, borderRadius: 12, overflow: 'hidden', flexShrink: 0,
+                      background: eq.escudoUrl ? 'var(--surface-1)' : 'rgba(16, 185, 129, 0.12)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      color: 'var(--accent-primary)',
+                    }}
+                  >
+                    {eq.escudoUrl
+                      ? <img src={eq.escudoUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      : <Shield size={20} />}
+                  </div>
+                  <div>
+                    <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 13, color: 'var(--text-primary)' }}>
+                      {eq.nombre}
+                    </div>
+                    <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontSize: 11, color: 'var(--text-muted)' }}>
+                      {eq.categoria}{eq.ciudad ? ` · ${eq.ciudad}` : ''}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Separator */}
-        <div style={{ padding: '12px 20px 8px' }}>
+        <div style={{ padding: '12px 20px 8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div
             style={{
               fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 13,
@@ -414,6 +533,18 @@ export default function CommunityPage() {
           >
             Equipos
           </div>
+          <button
+            onClick={() => setCrearOpen(true)}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 6,
+              padding: '7px 12px', borderRadius: 999,
+              background: 'var(--border-warm)', border: '1px solid rgba(16, 185, 129, 0.3)',
+              color: 'var(--accent-primary)', cursor: 'pointer',
+              fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 12,
+            }}
+          >
+            <Plus size={14} /> Crear equipo
+          </button>
         </div>
 
         <div style={{ padding: '0 20px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
@@ -819,6 +950,105 @@ export default function CommunityPage() {
             </button>
           </div>
         )}
+      </BottomSheet>
+
+      {/* Crear equipo */}
+      <BottomSheet open={crearOpen} onClose={closeCrear} title="Crear equipo" accent="#10B981" height="82%">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          {/* Escudo picker */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+            <button
+              type="button"
+              onClick={() => escudoInputRef.current?.click()}
+              aria-label="Subir escudo del equipo"
+              style={{
+                position: 'relative', width: 96, height: 96, borderRadius: 24, padding: 0, overflow: 'hidden',
+                background: escudoPreview ? 'var(--surface-1)' : 'rgba(16, 185, 129, 0.1)',
+                border: '2px dashed rgba(16, 185, 129, 0.4)', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-primary)',
+              }}
+            >
+              {escudoPreview
+                ? <img src={escudoPreview} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                : <Shield size={30} />}
+              <span
+                style={{
+                  position: 'absolute', right: -2, bottom: -2, width: 30, height: 30, borderRadius: '50%',
+                  background: 'var(--accent-primary)', border: '2px solid var(--bg-deep)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#091A12',
+                }}
+              >
+                <ImagePlus size={14} />
+              </span>
+            </button>
+            <input ref={escudoInputRef} type="file" accept="image/*" onChange={pickEscudo} style={{ display: 'none' }} />
+            <span style={{ fontFamily: 'Space Grotesk, sans-serif', fontSize: 12, color: 'var(--text-dim)' }}>
+              Escudo del equipo (opcional)
+            </span>
+          </div>
+
+          <input
+            value={nombre}
+            onChange={e => setNombre(e.target.value)}
+            placeholder="Nombre del equipo"
+            style={{
+              width: '100%', boxSizing: 'border-box', height: 48, padding: '0 14px', borderRadius: 12,
+              background: 'var(--surface-1)', border: '1px solid var(--border)', outline: 'none',
+              fontFamily: 'Space Grotesk, sans-serif', fontSize: 15, color: 'var(--text-primary)',
+            }}
+          />
+          <input
+            value={ciudad}
+            onChange={e => setCiudad(e.target.value)}
+            placeholder="Ciudad"
+            style={{
+              width: '100%', boxSizing: 'border-box', height: 48, padding: '0 14px', borderRadius: 12,
+              background: 'var(--surface-1)', border: '1px solid var(--border)', outline: 'none',
+              fontFamily: 'Space Grotesk, sans-serif', fontSize: 15, color: 'var(--text-primary)',
+            }}
+          />
+
+          <div>
+            <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 11, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>
+              Categoría
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+              {CATEGORIAS.map(c => {
+                const active = categoria === c
+                return (
+                  <button
+                    key={c}
+                    onClick={() => setCategoria(c)}
+                    style={{
+                      padding: '7px 14px', borderRadius: 999,
+                      background: active ? 'var(--border-warm)' : 'rgba(10, 21, 48, 0.03)',
+                      border: `1px solid ${active ? 'var(--accent-primary)' : 'rgba(16, 185, 129, 0.12)'}`,
+                      color: active ? 'var(--accent-primary)' : 'var(--text-muted)',
+                      fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 12, cursor: 'pointer',
+                    }}
+                  >
+                    {c}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          <button
+            onClick={crearNuevoEquipo}
+            disabled={!nombre.trim() || creando}
+            style={{
+              marginTop: 4, height: 52, width: '100%', borderRadius: 14,
+              background: (!nombre.trim() || creando) ? 'var(--border)' : 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',
+              color: '#FAFBFD', border: 'none',
+              cursor: (!nombre.trim() || creando) ? 'default' : 'pointer',
+              fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 15,
+              boxShadow: (!nombre.trim() || creando) ? 'none' : '0 6px 20px rgba(16, 185, 129, 0.3)',
+            }}
+          >
+            {creando ? 'Creando…' : 'Crear equipo'}
+          </button>
+        </div>
       </BottomSheet>
 
       <BottomNav />

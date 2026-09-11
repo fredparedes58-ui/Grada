@@ -1,8 +1,21 @@
 import {
-  collection, doc, query, orderBy, limit,
-  getDocs, getDoc, serverTimestamp, writeBatch,
+  collection, doc, query, where, orderBy, limit,
+  getDocs, getDoc, updateDoc, serverTimestamp, writeBatch,
 } from 'firebase/firestore'
 import { db, auth } from './firebase'
+
+// Actualiza el escudo del equipo (solo admin, segun las reglas).
+export async function actualizarEscudo(equipoId, url) {
+  await updateDoc(doc(db, 'equipos', equipoId), { escudoUrl: url })
+}
+
+// Equipos creados por el usuario actual (es admin de ellos).
+export async function obtenerMisEquipos() {
+  const uid = auth.currentUser?.uid
+  if (!uid) return []
+  const snap = await getDocs(query(collection(db, 'equipos'), where('creadorUid', '==', uid)))
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }))
+}
 
 export async function obtenerEquipos(lim = 50) {
   const snap = await getDocs(query(collection(db, 'equipos'), orderBy('nombre'), limit(lim)))

@@ -56,6 +56,11 @@ service cloud.firestore {
 
       match /miembros/{uid} {
         allow read: if autenticado();
+        // Bootstrap: el creador se auto-registra como primer admin en el mismo
+        // batch que crea el equipo (aún no existe ningún admin previo).
+        allow create: if uid == request.auth.uid &&
+          request.resource.data.rol == 'admin' &&
+          getAfter(/databases/$(database)/documents/equipos/$(equipoId)).data.creadorUid == request.auth.uid;
         allow write: if esAdminEquipo(equipoId);
       }
       match /solicitudes/{uid} {
