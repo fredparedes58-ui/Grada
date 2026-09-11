@@ -1,0 +1,29 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "partidos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "equipoId", "order": "ASCENDING" },
+        { "fieldPath": "fecha",    "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "partidos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "ciudad", "order": "ASCENDING" },
+        { "fieldPath": "fecha",  "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "quinielas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "equipoId",  "order": "ASCENDING" },
+        { "fieldPath": "cierraEn", "order": "ASCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

@@ -1,8 +1,9 @@
-import { useState, useMemo, useRef } from 'react'
-import { LogOut, Trophy, Target, Zap, Star, Pencil, Check, X, Sun, Moon, Sparkles, TrendingUp, AlertCircle, PlusCircle } from 'lucide-react'
+import { useState, useMemo, useRef, type ChangeEvent } from 'react'
+import { LogOut, Trophy, Target, Zap, Star, Pencil, Check, X, Sparkles, TrendingUp, AlertCircle, Camera, Loader2, ShieldCheck, PlusCircle } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { useTheme } from '../context/ThemeContext'
+import { subirAvatar } from '../lib/almacenamiento'
+import { actualizarFotoPerfil } from '../lib/auth'
 import BottomNav from '../components/ui/BottomNav'
 import GlassCard from '../components/ui/GlassCard'
 import AIBorder from '../components/ui/AIBorder'
@@ -24,10 +25,10 @@ import DrillsSheet from '../features/training/DrillsSheet'
 import { MessageCircle, Flame, Crown, Swords, Store, Share2, Film, BarChart2, Grid3X3, Dumbbell } from 'lucide-react'
 
 const STATS = [
-  { icon: Trophy, label: 'Partidos',   value: 42, color: '#CCFF00' },
-  { icon: Target, label: 'Goles',      value: 32, color: '#FFB800' },
-  { icon: Zap,    label: 'Asistencias', value: 15, color: '#FF5B3A' },
-  { icon: Star,   label: 'MVPs',       value: 5, color: '#CCFF00' },
+  { icon: Trophy, label: 'Partidos',    value: 12, color: 'var(--accent-primary)' },
+  { icon: Target, label: 'Goles',       value: 6,  color: 'var(--accent-secondary)' },
+  { icon: Zap,    label: 'Asistencias', value: 4,  color: 'var(--accent-warm)' },
+  { icon: Star,   label: 'MVPs',        value: 3,  color: 'var(--accent-primary)' },
 ]
 
 const RATINGS = [
@@ -35,9 +36,11 @@ const RATINGS = [
 ] as [string, number][]
 
 const RECENT = [
-  { opponent: 'Rayo Urbano',     result: 'W 3-1', goals: 2 },
-  { opponent: 'Águilas Doradas', result: 'D 1-1', goals: 1 },
-  { opponent: 'Tigres Verdes',   result: 'W 4-0', goals: 1 },
+  { opponent: 'CF Benimàmet',       result: 'W 3-1', goals: 2 },
+  { opponent: 'Mestalla CF',        result: 'D 1-1', goals: 1 },
+  { opponent: 'CD Borriol',         result: 'W 2-0', goals: 1 },
+  { opponent: 'Valencia Mestalla B', result: 'W 1-0', goals: 0 },
+  { opponent: 'CD Borriol',         result: 'L 0-2', goals: 0 },
 ]
 
 // Forma reciente — últimos 5 resultados (más reciente a la derecha)
@@ -47,21 +50,42 @@ const FORM_COLOR: Record<'W' | 'D' | 'L', string> = { W: '#CCFF00', D: '#FFB800'
 const POSITIONS = ['Portero', 'Defensa', 'Mediocampista', 'Delantero', 'Extremo']
 
 export default function ProfilePage() {
-  const { user, logout, updateUser, setToast } = useAuth()
-  const { mode, toggle } = useTheme()
+  const { user, logout, updateUser, setToast, esAdmin } = useAuth()
   const nav = useNavigate()
-  const name = user?.name ?? 'Alex Rivera'
-  const position = user?.position ?? 'Delantero'
-  const team = user?.team ?? 'Los Pumas FC'
+  const name = user?.name ?? 'Carlos Martínez'
+  const position = user?.position ?? 'Centrocampista'
+  const team = user?.team ?? 'Valencia BC'
   const overall = Math.round(RATINGS.reduce((a, [, v]) => a + v, 0) / RATINGS.length)
+  const avatarUrl = user?.avatarUrl
+
+  const [avatarBusy, setAvatarBusy] = useState(false)
+  const avatarInputRef = useRef<HTMLInputElement>(null)
+
+  async function handleAvatarPick(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    setAvatarBusy(true)
+    try {
+      const url = await subirAvatar(file)
+      await actualizarFotoPerfil(url)
+      updateUser({ avatarUrl: url })
+      setToast('Foto actualizada')
+      if ('vibrate' in navigator) navigator.vibrate(25)
+    } catch (err) {
+      setToast(err instanceof Error ? err.message : 'No se pudo subir la foto')
+    } finally {
+      setAvatarBusy(false)
+    }
+  }
 
   const coach = useMemo(() => generateCoachFeedback({
     name, position,
-    matches: 42, goals: 32, assists: 15, mvps: 5,
+    matches: 12, goals: 6, assists: 4, mvps: 3,
   }), [name, position])
 
   const playerStats = useMemo(() => ({
-    matches: 42, goals: 32, assists: 15, mvps: 5, wins: 28, draws: 8, losses: 6,
+    matches: 12, goals: 6, assists: 4, mvps: 3, wins: 8, draws: 2, losses: 2,
   }), [])
   const achievements = useMemo(() => evaluateAchievements(playerStats), [playerStats])
   const unlockedCount = achievements.filter(a => a.unlocked).length
@@ -110,7 +134,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div style={{ position: 'absolute', inset: 0, background: 'var(--bg-deep, #0F0D0A)', overflow: 'hidden' }}>
+    <div style={{ position: 'absolute', inset: 0, background: 'var(--bg-deep)', overflow: 'hidden' }}>
       <div
         className="screen-scroll"
         style={{ position: 'absolute', inset: 0, overflowY: 'auto', paddingTop: 60, paddingBottom: 90 }}
@@ -119,11 +143,11 @@ export default function ProfilePage() {
         <div style={{ padding: '0 20px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div
             style={{
-              fontFamily: 'Archivo, sans-serif', fontWeight: 800,
-              fontSize: 28, color: '#FAF5EB', letterSpacing: '-0.02em',
+              fontFamily: 'Fraunces, Georgia, serif', fontWeight: 700,
+              fontSize: 28, color: 'var(--text-primary)', letterSpacing: '-0.018em',
             }}
           >
-            Perfil
+            Mi Perfil
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
             {!editing ? (
@@ -131,9 +155,9 @@ export default function ProfilePage() {
                 onClick={startEdit}
                 style={{
                   width: 40, height: 40, borderRadius: 10,
-                  background: 'rgba(204, 255, 0, 0.12)',
-                  border: '1px solid rgba(204, 255, 0, 0.3)',
-                  color: '#CCFF00', cursor: 'pointer',
+                  background: 'rgba(16, 185, 129, 0.12)',
+                  border: '1px solid rgba(16, 185, 129, 0.3)',
+                  color: 'var(--accent-primary)', cursor: 'pointer',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}
                 title="Editar"
@@ -146,9 +170,9 @@ export default function ProfilePage() {
                   onClick={cancelEdit}
                   style={{
                     width: 40, height: 40, borderRadius: 10,
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    border: '1px solid rgba(255, 220, 180, 0.12)',
-                    color: 'rgba(250, 245, 235, 0.7)', cursor: 'pointer',
+                    background: 'rgba(10, 21, 48, 0.04)',
+                    border: '1px solid rgba(16, 185, 129, 0.12)',
+                    color: 'rgba(10, 21, 48, 0.65)', cursor: 'pointer',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}
                 >
@@ -158,36 +182,39 @@ export default function ProfilePage() {
                   onClick={saveEdit}
                   style={{
                     width: 40, height: 40, borderRadius: 10,
-                    background: 'linear-gradient(135deg, #CCFF00, #FFB800)',
-                    border: 'none', color: '#0F0D0A', cursor: 'pointer',
+                    background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',
+                    border: 'none', color: '#091A12', cursor: 'pointer',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    boxShadow: '0 0 14px rgba(204, 255, 0, 0.45)',
+                    boxShadow: '0 0 14px rgba(16, 185, 129, 0.45)',
                   }}
                 >
                   <Check size={16} />
                 </button>
               </>
             )}
-            <button
-              onClick={() => { toggle(); setToast(mode === 'dark' ? 'Tema claro activado' : 'Tema oscuro activado') }}
-              style={{
-                width: 40, height: 40, borderRadius: 10,
-                background: 'rgba(255, 184, 0, 0.12)',
-                border: '1px solid rgba(255, 184, 0, 0.3)',
-                color: '#FFB800', cursor: 'pointer',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}
-              title={mode === 'dark' ? 'Cambiar a claro' : 'Cambiar a oscuro'}
-            >
-              {mode === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
-            </button>
+            {esAdmin && (
+              <button
+                onClick={() => nav('/admin')}
+                title="Solicitudes (admin)"
+                aria-label="Solicitudes de admin"
+                style={{
+                  width: 40, height: 40, borderRadius: 10,
+                  background: 'rgba(16, 185, 129, 0.12)',
+                  border: '1px solid rgba(16, 185, 129, 0.3)',
+                  color: 'var(--accent-primary)', cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}
+              >
+                <ShieldCheck size={18} />
+              </button>
+            )}
             <button
               onClick={handleLogout}
               style={{
                 width: 40, height: 40, borderRadius: 10,
-                background: 'rgba(255, 91, 58, 0.12)',
-                border: '1px solid rgba(255, 91, 58, 0.3)',
-                color: '#FF5B3A', cursor: 'pointer',
+                background: 'rgba(52, 211, 153, 0.12)',
+                border: '1px solid rgba(52, 211, 153, 0.3)',
+                color: 'var(--accent-warm)', cursor: 'pointer',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}
               title="Cerrar sesión"
@@ -206,7 +233,7 @@ export default function ProfilePage() {
               borderRadius: 20,
               padding: 2,
               overflow: 'hidden',
-              boxShadow: '0 0 30px rgba(204, 255, 0, 0.18), 0 0 80px rgba(179, 71, 255, 0.10)',
+              boxShadow: '0 0 30px rgba(16, 185, 129, 0.18), 0 0 80px rgba(93, 195, 255, 0.10)',
             }}
           >
             {/* Capa cónica rotando detrás → el 2px de padding deja ver el borde */}
@@ -215,7 +242,7 @@ export default function ProfilePage() {
               style={{
                 position: 'absolute',
                 inset: '-50%',
-                background: 'conic-gradient(from 0deg, #CCFF00, #FFB800, #FF5B3A, #B347FF, #00D4FF, #CCFF00)',
+                background: 'conic-gradient(from 0deg, #10B981, #5DC3FF, #B347FF, #00D4FF, #10B981)',
                 animation: 'ring-sweep 5s linear infinite',
                 filter: 'blur(1px) saturate(130%)',
                 pointerEvents: 'none',
@@ -227,7 +254,7 @@ export default function ProfilePage() {
               style={{
                 position: 'absolute',
                 inset: '-30%',
-                background: 'conic-gradient(from 180deg, transparent, #CCFF0044, transparent, #B347FF44, transparent)',
+                background: 'conic-gradient(from 180deg, transparent, #10B98144, transparent, #B347FF44, transparent)',
                 animation: 'ring-sweep 8s linear infinite reverse',
                 filter: 'blur(24px)',
                 pointerEvents: 'none',
@@ -235,29 +262,60 @@ export default function ProfilePage() {
               }}
             />
             <div style={{ position: 'relative', borderRadius: 18, overflow: 'hidden' }}>
-          <GlassCard accent="#CCFF00" padding={0}>
+          <GlassCard accent="#10B981" padding={0}>
             <div
               style={{
-                background: 'linear-gradient(135deg, rgba(204, 255, 0, 0.2), rgba(255, 184, 0, 0.15))',
+                background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(93, 195, 255, 0.15))',
                 padding: 20,
                 display: 'flex', gap: 16, alignItems: 'center',
               }}
             >
               {/* Avatar */}
-              <div
+              <button
+                type="button"
+                onClick={() => avatarInputRef.current?.click()}
+                disabled={avatarBusy}
+                title="Cambiar foto"
                 style={{
-                  width: 96, height: 96, borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #CCFF00, #FFB800)',
+                  position: 'relative',
+                  width: 96, height: 96, borderRadius: '50%', padding: 0,
+                  background: avatarUrl
+                    ? 'var(--surface-1)'
+                    : 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 34,
-                  color: '#0F0D0A',
-                  boxShadow: '0 0 24px rgba(204, 255, 0, 0.4)',
-                  border: '3px solid #CCFF00',
-                  flexShrink: 0,
+                  fontFamily: 'Fraunces, Georgia, serif', fontWeight: 700, fontSize: 34,
+                  color: '#091A12',
+                  boxShadow: '0 0 24px rgba(16, 185, 129, 0.4)',
+                  border: '3px solid var(--accent-primary)',
+                  flexShrink: 0, overflow: 'hidden',
+                  cursor: avatarBusy ? 'default' : 'pointer',
                 }}
               >
-                {(editing ? draftName : name).split(' ').map(n => n[0]).join('').slice(0, 2)}
-              </div>
+                {avatarUrl ? (
+                  <img src={avatarUrl} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  (editing ? draftName : name).split(' ').map(n => n[0]).join('').slice(0, 2)
+                )}
+                <span
+                  style={{
+                    position: 'absolute', right: -2, bottom: -2,
+                    width: 30, height: 30, borderRadius: '50%',
+                    background: 'var(--accent-primary)', border: '2px solid var(--surface-1)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#091A12',
+                  }}
+                >
+                  {avatarBusy
+                    ? <Loader2 size={14} style={{ animation: 'spin-slow 0.8s linear infinite' }} />
+                    : <Camera size={14} />}
+                </span>
+              </button>
+              <input
+                ref={avatarInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleAvatarPick}
+                style={{ display: 'none' }}
+              />
 
               {/* Info */}
               <div style={{ flex: 1, minWidth: 0 }}>
@@ -267,8 +325,8 @@ export default function ProfilePage() {
                   whenVisible={false}
                   style={{
                     fontFamily: 'Archivo, sans-serif', fontWeight: 900, fontStyle: 'italic',
-                    fontSize: 42, color: '#CCFF00', lineHeight: 1,
-                    textShadow: '0 0 16px rgba(204, 255, 0, 0.5)',
+                    fontSize: 42, color: 'var(--accent-primary)', lineHeight: 1,
+                    textShadow: '0 0 16px rgba(16, 185, 129, 0.5)',
                     display: 'block',
                   }}
                 />
@@ -283,10 +341,10 @@ export default function ProfilePage() {
                         marginTop: 6, width: '100%',
                         padding: '6px 10px', borderRadius: 8,
                         background: 'rgba(15, 13, 10, 0.5)',
-                        border: '1px solid rgba(204, 255, 0, 0.35)',
+                        border: '1px solid rgba(16, 185, 129, 0.35)',
                         outline: 'none',
-                        fontFamily: 'Archivo, sans-serif', fontWeight: 800,
-                        fontSize: 16, color: '#FAF5EB',
+                        fontFamily: 'Fraunces, Georgia, serif', fontWeight: 700,
+                        fontSize: 16, color: 'var(--text-primary)',
                       }}
                     />
                     <input
@@ -297,10 +355,10 @@ export default function ProfilePage() {
                         marginTop: 6, width: '100%',
                         padding: '5px 10px', borderRadius: 8,
                         background: 'rgba(15, 13, 10, 0.5)',
-                        border: '1px solid rgba(255, 220, 180, 0.15)',
+                        border: '1px solid rgba(16, 185, 129, 0.15)',
                         outline: 'none',
                         fontFamily: 'Space Grotesk, sans-serif',
-                        fontSize: 12, color: 'rgba(250, 245, 235, 0.9)',
+                        fontSize: 12, color: 'rgba(10, 21, 48, 0.85)',
                       }}
                     />
                   </>
@@ -309,8 +367,8 @@ export default function ProfilePage() {
                     <div
                       style={{
                         marginTop: 4,
-                        fontFamily: 'Archivo, sans-serif', fontWeight: 800,
-                        fontSize: 18, color: '#FAF5EB',
+                        fontFamily: 'Fraunces, Georgia, serif', fontWeight: 700,
+                        fontSize: 18, color: 'var(--text-primary)',
                       }}
                     >
                       {name}
@@ -319,7 +377,7 @@ export default function ProfilePage() {
                       style={{
                         marginTop: 2,
                         fontFamily: 'Space Grotesk, sans-serif',
-                        fontSize: 12, color: 'rgba(250, 245, 235, 0.6)',
+                        fontSize: 12, color: 'var(--text-muted)',
                       }}
                     >
                       {position} · {team}
@@ -334,7 +392,7 @@ export default function ProfilePage() {
                 <div
                   style={{
                     fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700,
-                    fontSize: 11, color: 'rgba(250, 245, 235, 0.5)',
+                    fontSize: 11, color: 'rgba(10, 21, 48, 0.45)',
                     textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8,
                   }}
                 >
@@ -349,12 +407,12 @@ export default function ProfilePage() {
                         onClick={() => setDraftPos(p)}
                         style={{
                           padding: '6px 12px', borderRadius: 999,
-                          background: active ? 'rgba(204, 255, 0, 0.18)' : 'rgba(255, 255, 255, 0.04)',
-                          border: `1px solid ${active ? '#CCFF00' : 'rgba(255, 220, 180, 0.12)'}`,
-                          color: active ? '#CCFF00' : 'rgba(250, 245, 235, 0.7)',
+                          background: active ? 'var(--border-warm)' : 'rgba(10, 21, 48, 0.03)',
+                          border: `1px solid ${active ? 'var(--accent-primary)' : 'rgba(16, 185, 129, 0.12)'}`,
+                          color: active ? 'var(--accent-primary)' : 'rgba(10, 21, 48, 0.65)',
                           fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 12,
                           cursor: 'pointer',
-                          boxShadow: active ? '0 0 10px rgba(204,255,0,0.25)' : 'none',
+                          boxShadow: active ? '0 0 10px rgba(16, 185, 129, 0.25)' : 'none',
                         }}
                       >
                         {p}
@@ -372,7 +430,7 @@ export default function ProfilePage() {
                   key={label}
                   style={{
                     padding: '8px 12px',
-                    background: 'rgba(255, 255, 255, 0.04)',
+                    background: 'rgba(10, 21, 48, 0.03)',
                     borderRadius: 8,
                     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                   }}
@@ -380,7 +438,7 @@ export default function ProfilePage() {
                   <span
                     style={{
                       fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700,
-                      fontSize: 10, color: 'rgba(250, 245, 235, 0.6)',
+                      fontSize: 10, color: 'var(--text-muted)',
                       letterSpacing: '0.1em',
                     }}
                   >
@@ -388,9 +446,9 @@ export default function ProfilePage() {
                   </span>
                   <span
                     style={{
-                      fontFamily: 'Archivo, sans-serif', fontWeight: 800,
+                      fontFamily: 'Fraunces, Georgia, serif', fontWeight: 700,
                       fontSize: 15,
-                      color: val >= 85 ? '#CCFF00' : val >= 70 ? '#FFB800' : '#FAF5EB',
+                      color: val >= 85 ? 'var(--accent-primary)' : val >= 70 ? '#FFB800' : 'var(--text-primary)',
                     }}
                   >
                     {val}
@@ -410,15 +468,15 @@ export default function ProfilePage() {
 
         <div style={{ padding: '0 20px 18px', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
           {[
-            { label: 'Coach AI',    icon: MessageCircle, color: '#B347FF', onClick: () => setCoachOpen(true) },
-            { label: 'Pase',        icon: Crown,         color: '#FFB800', onClick: () => setPassOpen(true) },
-            { label: 'Duelos',      icon: Swords,        color: '#FF5B3A', onClick: () => setDuelsOpen(true) },
-            { label: 'Mercado',     icon: Store,         color: '#00D4FF', onClick: () => setMarketOpen(true) },
-            { label: 'Replay',      icon: Film,          color: '#CCFF00', onClick: () => setReplayOpen(true) },
-            { label: 'Ranking',     icon: BarChart2,     color: '#FFB800', onClick: () => setLeaderboardOpen(true) },
-            { label: 'Táctica',     icon: Grid3X3,       color: '#00D4FF', onClick: () => setTacticsOpen(true) },
-            { label: 'Entrenos',    icon: Dumbbell,      color: '#CCFF00', onClick: () => setDrillsOpen(true) },
-            { label: 'Compartir',   icon: Share2,        color: '#FAF5EB', onClick: async () => {
+            { label: 'Coach AI',   icon: MessageCircle, color: 'var(--accent-secondary)', onClick: () => setCoachOpen(true) },
+            { label: 'Pase',       icon: Crown,         color: 'var(--accent-secondary)', onClick: () => setPassOpen(true) },
+            { label: 'Duelos',     icon: Swords,        color: 'var(--accent-warm)', onClick: () => setDuelsOpen(true) },
+            { label: 'Mercado',    icon: Store,         color: 'var(--accent-secondary)', onClick: () => setMarketOpen(true) },
+            { label: 'Replay',     icon: Film,          color: 'var(--accent-primary)', onClick: () => setReplayOpen(true) },
+            { label: 'Ranking',    icon: BarChart2,     color: 'var(--accent-secondary)', onClick: () => setLeaderboardOpen(true) },
+            { label: 'Táctica',    icon: Grid3X3,       color: 'var(--accent-secondary)', onClick: () => setTacticsOpen(true) },
+            { label: 'Entrenos',   icon: Dumbbell,      color: 'var(--accent-primary)', onClick: () => setDrillsOpen(true) },
+            { label: 'Compartir',  icon: Share2,        color: 'var(--text-primary)', onClick: async () => {
               if (!fifaCardRef.current) return
               const ok = await shareFifaCard(fifaCardRef.current, `${name}-fifa-card`)
               setToast(ok ? 'Tarjeta compartida' : 'No se pudo compartir')
@@ -502,7 +560,7 @@ export default function ProfilePage() {
         <div style={{ padding: '0 20px 20px' }}>
           <div style={{
             fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700,
-            fontSize: 13, color: 'rgba(250, 245, 235, 0.6)',
+            fontSize: 13, color: 'var(--text-muted)',
             textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10,
           }}>
             <Flame size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />
@@ -532,15 +590,15 @@ export default function ProfilePage() {
                       value={s.value}
                       duration={1200 + i * 120}
                       style={{
-                        fontFamily: 'Archivo, sans-serif', fontWeight: 800,
-                        fontSize: 20, color: '#FAF5EB',
+                        fontFamily: 'Fraunces, Georgia, serif', fontWeight: 700,
+                        fontSize: 20, color: 'var(--text-primary)',
                         display: 'block',
                       }}
                     />
                     <div
                       style={{
                         fontFamily: 'Space Grotesk, sans-serif',
-                        fontSize: 10, color: 'rgba(250, 245, 235, 0.5)',
+                        fontSize: 10, color: 'rgba(10, 21, 48, 0.45)',
                         textTransform: 'uppercase', letterSpacing: '0.05em',
                       }}
                     >
@@ -558,27 +616,27 @@ export default function ProfilePage() {
           <AIBorder colors={['#B347FF', '#00D4FF', '#B347FF']} radius={16} speed={10} halo={0.4}>
           <div style={{
             padding: 16,
-            background: 'linear-gradient(135deg, rgba(179, 71, 255, 0.18), rgba(0, 212, 255, 0.08))',
+            background: 'linear-gradient(135deg, rgba(93, 195, 255, 0.18), rgba(93, 195, 255, 0.08))',
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
               <div style={{
                 width: 30, height: 30, borderRadius: 8,
-                background: 'rgba(179, 71, 255, 0.25)',
+                background: 'rgba(93, 195, 255, 0.25)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: '#B347FF',
+                color: 'var(--accent-secondary)',
               }}>
                 <Sparkles size={15} />
               </div>
               <div style={{ flex: 1 }}>
                 <div style={{
                   fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 10,
-                  color: '#B347FF', letterSpacing: '0.12em', textTransform: 'uppercase',
+                  color: 'var(--accent-secondary)', letterSpacing: '0.12em', textTransform: 'uppercase',
                 }}>
                   Coach AI · análisis personal
                 </div>
                 <div style={{
-                  fontFamily: 'Archivo, sans-serif', fontWeight: 800,
-                  fontSize: 15, color: '#FAF5EB', letterSpacing: '-0.01em',
+                  fontFamily: 'Fraunces, Georgia, serif', fontWeight: 700,
+                  fontSize: 15, color: 'var(--text-primary)', letterSpacing: '-0.01em',
                 }}>
                   Tu desempeño de temporada
                 </div>
@@ -586,11 +644,11 @@ export default function ProfilePage() {
               {/* Grade badge */}
               <div style={{
                 padding: '6px 12px', borderRadius: 10,
-                background: 'linear-gradient(135deg, #CCFF00, #FFB800)',
-                color: '#0F0D0A',
+                background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',
+                color: '#091A12',
                 fontFamily: 'Archivo', fontStyle: 'italic', fontWeight: 900,
                 fontSize: 18, lineHeight: 1,
-                boxShadow: '0 0 14px rgba(204, 255, 0, 0.4)',
+                boxShadow: '0 0 14px rgba(16, 185, 129, 0.4)',
               }}>
                 {coach.grade}
               </div>
@@ -598,7 +656,7 @@ export default function ProfilePage() {
 
             <div style={{
               fontFamily: 'Space Grotesk', fontSize: 13, lineHeight: 1.5,
-              color: 'rgba(250, 245, 235, 0.9)', marginBottom: 14,
+              color: 'rgba(10, 21, 48, 0.85)', marginBottom: 14,
             }}>
               {coach.verdict}
             </div>
@@ -608,7 +666,7 @@ export default function ProfilePage() {
               <div style={{
                 display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6,
                 fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 10,
-                color: '#CCFF00', letterSpacing: '0.1em', textTransform: 'uppercase',
+                color: 'var(--accent-primary)', letterSpacing: '0.1em', textTransform: 'uppercase',
               }}>
                 <TrendingUp size={11} /> Fortalezas
               </div>
@@ -616,10 +674,10 @@ export default function ProfilePage() {
                 {coach.strengths.map((t, i) => (
                   <div key={i} style={{
                     padding: '7px 10px', borderRadius: 8,
-                    background: 'rgba(204, 255, 0, 0.06)',
-                    border: '1px solid rgba(204, 255, 0, 0.18)',
+                    background: 'var(--bg-surface)',
+                    border: '1px solid var(--border-warm)',
                     fontFamily: 'Space Grotesk', fontSize: 12,
-                    color: 'rgba(250, 245, 235, 0.85)',
+                    color: 'rgba(10, 21, 48, 0.80)',
                   }}>
                     {t}
                   </div>
@@ -632,7 +690,7 @@ export default function ProfilePage() {
               <div style={{
                 display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6,
                 fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 10,
-                color: '#FF5B3A', letterSpacing: '0.1em', textTransform: 'uppercase',
+                color: 'var(--accent-warm)', letterSpacing: '0.1em', textTransform: 'uppercase',
               }}>
                 <AlertCircle size={11} /> A mejorar
               </div>
@@ -640,10 +698,10 @@ export default function ProfilePage() {
                 {coach.improvements.map((t, i) => (
                   <div key={i} style={{
                     padding: '7px 10px', borderRadius: 8,
-                    background: 'rgba(255, 91, 58, 0.06)',
-                    border: '1px solid rgba(255, 91, 58, 0.18)',
+                    background: 'rgba(52, 211, 153, 0.06)',
+                    border: '1px solid rgba(52, 211, 153, 0.18)',
                     fontFamily: 'Space Grotesk', fontSize: 12,
-                    color: 'rgba(250, 245, 235, 0.85)',
+                    color: 'rgba(10, 21, 48, 0.80)',
                   }}>
                     {t}
                   </div>
@@ -654,19 +712,19 @@ export default function ProfilePage() {
             {/* Next focus */}
             <div style={{
               padding: '10px 12px', borderRadius: 10,
-              background: 'rgba(0, 212, 255, 0.08)',
-              border: '1px solid rgba(0, 212, 255, 0.3)',
+              background: 'rgba(93, 195, 255, 0.08)',
+              border: '1px solid rgba(93, 195, 255, 0.3)',
             }}>
               <div style={{
                 fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 10,
-                color: '#00D4FF', letterSpacing: '0.1em', textTransform: 'uppercase',
+                color: 'var(--accent-secondary)', letterSpacing: '0.1em', textTransform: 'uppercase',
                 marginBottom: 4,
               }}>
                 🎯 Próximo foco
               </div>
               <div style={{
                 fontFamily: 'Space Grotesk', fontSize: 12, lineHeight: 1.4,
-                color: 'rgba(250, 245, 235, 0.9)',
+                color: 'rgba(10, 21, 48, 0.85)',
               }}>
                 {coach.nextFocus}
               </div>
@@ -683,7 +741,7 @@ export default function ProfilePage() {
           }}>
             <div style={{
               fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700,
-              fontSize: 13, color: 'rgba(250, 245, 235, 0.6)',
+              fontSize: 13, color: 'var(--text-muted)',
               textTransform: 'uppercase', letterSpacing: '0.08em',
             }}>
               Logros · {unlockedCount}/{achievements.length}
@@ -692,7 +750,7 @@ export default function ProfilePage() {
               onClick={() => setAchievementsOpen(true)}
               style={{
                 background: 'transparent', border: 'none',
-                color: '#FFB800', cursor: 'pointer',
+                color: 'var(--accent-secondary)', cursor: 'pointer',
                 fontFamily: 'Space Grotesk', fontSize: 12, fontWeight: 700,
               }}
             >
@@ -717,8 +775,8 @@ export default function ProfilePage() {
                 >
                   <div style={{ fontSize: 22, marginBottom: 4 }}>{a.emoji}</div>
                   <div style={{
-                    fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 11,
-                    color: '#FAF5EB',
+                    fontFamily: 'Fraunces, Georgia, serif', fontWeight: 700, fontSize: 11,
+                    color: 'var(--text-primary)',
                   }}>
                     {a.title}
                   </div>
@@ -735,7 +793,7 @@ export default function ProfilePage() {
             {latestUnlocked.length === 0 && (
               <div style={{
                 fontFamily: 'Space Grotesk', fontSize: 12,
-                color: 'rgba(250,245,235,0.5)', padding: 10,
+                color: 'rgba(10, 21, 48, 0.45)', padding: 10,
               }}>
                 Aún no desbloqueaste logros. Seguí jugando 💪
               </div>
@@ -748,7 +806,7 @@ export default function ProfilePage() {
           <div
             style={{
               fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700,
-              fontSize: 13, color: 'rgba(250, 245, 235, 0.6)',
+              fontSize: 13, color: 'var(--text-muted)',
               textTransform: 'uppercase', letterSpacing: '0.08em',
               marginBottom: 10,
             }}
@@ -759,14 +817,14 @@ export default function ProfilePage() {
             {RECENT.map((r, i) => {
               const won = r.result.startsWith('W')
               const drew = r.result.startsWith('D')
-              const resultColor = won ? '#CCFF00' : drew ? '#FFB800' : '#FF5B3A'
+              const resultColor = won ? 'var(--accent-primary)' : drew ? '#FFB800' : '#FF5B3A'
               return (
                 <div
                   key={i}
                   style={{
                     display: 'flex', alignItems: 'center', gap: 12,
                     padding: '12px 14px',
-                    borderBottom: i < RECENT.length - 1 ? '1px solid rgba(255, 220, 180, 0.05)' : 'none',
+                    borderBottom: i < RECENT.length - 1 ? '1px solid rgba(16, 185, 129, 0.05)' : 'none',
                   }}
                 >
                   <div
@@ -779,7 +837,7 @@ export default function ProfilePage() {
                     <div
                       style={{
                         fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700,
-                        fontSize: 13, color: '#FAF5EB',
+                        fontSize: 13, color: 'var(--text-primary)',
                       }}
                     >
                       vs {r.opponent}
@@ -796,8 +854,8 @@ export default function ProfilePage() {
                   <div
                     style={{
                       display: 'flex', alignItems: 'center', gap: 4,
-                      fontFamily: 'Archivo, sans-serif', fontWeight: 800,
-                      fontSize: 14, color: '#CCFF00',
+                      fontFamily: 'Fraunces, Georgia, serif', fontWeight: 700,
+                      fontSize: 14, color: 'var(--accent-primary)',
                     }}
                   >
                     <Target size={14} />
@@ -825,7 +883,7 @@ export default function ProfilePage() {
       <SeasonPassSheet open={passOpen} onClose={() => setPassOpen(false)} />
       <DuelsSheet open={duelsOpen} onClose={() => setDuelsOpen(false)} me={name} />
       <MarketSheet open={marketOpen} onClose={() => setMarketOpen(false)} />
-      <MatchReplaySheet open={replayOpen} onClose={() => setReplayOpen(false)} home={team} away="Rival FC" />
+      <MatchReplaySheet open={replayOpen} onClose={() => setReplayOpen(false)} home={team} away="Mestalla CF" />
       <LeaderboardSheet open={leaderboardOpen} onClose={() => setLeaderboardOpen(false)} me={name} />
       <TacticsBoardSheet open={tacticsOpen} onClose={() => setTacticsOpen(false)} />
       <DrillsSheet open={drillsOpen} onClose={() => setDrillsOpen(false)} name={name} weaknesses={['shot', 'def', 'pace']} />

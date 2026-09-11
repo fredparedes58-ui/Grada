@@ -1,13 +1,13 @@
 import { useLocation, useNavigate } from 'react-router-dom'
-import { Home, Users, Trophy, MessageCircle, User } from 'lucide-react'
+import { Home, Users, Trophy, Brain, User } from 'lucide-react'
 import { useNotifications } from '../../context/NotificationsContext'
 
 const TABS = [
-  { id: 'home',      path: '/home',      icon: Home,          label: 'Inicio' },
-  { id: 'community', path: '/community', icon: Users,         label: 'Comunidad' },
-  { id: 'league',    path: '/league',    icon: Trophy,        label: 'Liga' },
-  { id: 'chat',      path: '/chat',      icon: MessageCircle, label: 'Chat' },
-  { id: 'profile',   path: '/profile',   icon: User,          label: 'Perfil' },
+  { id: 'home',      path: '/home',      icon: Home,   label: 'Inicio' },
+  { id: 'league',    path: '/league',    icon: Trophy, label: 'Liga' },
+  { id: 'community', path: '/community', icon: Users,  label: 'Comunidad' },
+  { id: 'coach',     path: '/chat',      icon: Brain,  label: 'Coach' },
+  { id: 'profile',   path: '/profile',   icon: User,   label: 'Perfil' },
 ]
 
 export default function BottomNav() {
@@ -26,18 +26,18 @@ export default function BottomNav() {
         margin: '0 auto',
         zIndex: 50,
         padding: '10px 12px calc(12px + env(safe-area-inset-bottom))',
-        background: 'rgba(var(--nav-bg, 15, 13, 10), 0.88)',
-        backgroundColor: 'color-mix(in srgb, var(--bg-deep, #0F0D0A) 88%, transparent)',
-        backdropFilter: 'blur(24px) saturate(180%)',
-        WebkitBackdropFilter: 'blur(24px) saturate(180%)',
-        borderTop: '1px solid var(--border-warm, rgba(255, 220, 180, 0.08))',
+        background: 'rgba(250, 251, 253, 0.92)',
+        backdropFilter: 'blur(24px) saturate(160%)',
+        WebkitBackdropFilter: 'blur(24px) saturate(160%)',
+        borderTop: '1px solid var(--border)',
+        boxShadow: '0 -4px 20px var(--border)',
       }}
     >
       <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
         {TABS.map(t => {
           const active = loc.pathname === t.path || (t.path === '/chat' && loc.pathname.startsWith('/chat'))
           const Icon = t.icon
-          const showBadge = t.id === 'chat' && unread > 0
+          const showBadge = t.id === 'coach' && unread > 0
 
           return (
             <button
@@ -53,7 +53,7 @@ export default function BottomNav() {
                 background: 'transparent',
                 border: 'none',
                 cursor: 'pointer',
-                color: active ? 'var(--accent-primary, #CCFF00)' : 'var(--text-dim, rgba(250, 245, 235, 0.5))',
+                color: active ? 'var(--accent-primary)' : 'rgba(10, 21, 48, 0.38)',
                 transition: 'color 0.2s, transform 0.15s',
                 transform: active ? 'translateY(-1px)' : 'translateY(0)',
                 position: 'relative',
@@ -63,9 +63,7 @@ export default function BottomNav() {
                 <Icon
                   size={22}
                   style={{
-                    filter: active
-                      ? 'drop-shadow(0 0 8px var(--accent-primary, #CCFF00))'
-                      : 'none',
+                    filter: active ? 'drop-shadow(0 0 8px var(--accent-primary))' : 'none',
                     transition: 'filter 0.2s',
                   }}
                 />
@@ -78,7 +76,7 @@ export default function BottomNav() {
                     height: 14,
                     borderRadius: 7,
                     background: '#FF5B3A',
-                    border: '1.5px solid var(--bg-deep, #0F0D0A)',
+                    border: '1.5px solid var(--bg-deep, #FAFBFD)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',

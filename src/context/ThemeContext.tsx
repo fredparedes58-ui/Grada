@@ -1,87 +1,47 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
-
-export type ThemeMode = 'dark' | 'light'
+import { createContext, useContext, useEffect, type ReactNode } from 'react'
 
 interface ThemeCtx {
-  mode: ThemeMode
-  toggle: () => void
-  setMode: (m: ThemeMode) => void
+  mode: 'light'
 }
-
-const STORAGE_KEY = 'grada_theme_v1'
 
 const Ctx = createContext<ThemeCtx | null>(null)
 
-/**
- * Theme CSS tokens applied to :root. Pages can read via `var(--*)` or keep
- * legacy hex values (dark default). Light mode swaps surfaces + text contrast.
- */
-const TOKENS: Record<ThemeMode, Record<string, string>> = {
-  dark: {
-    '--bg-deep':         '#0F0D0A',
-    '--bg-base':         '#141009',
-    '--surface-1':       '#1A1612',
-    '--surface-2':       '#241F18',
-    '--bg-surface':      'rgba(255, 255, 255, 0.04)',
-    '--bg-surface-alt':  'rgba(255, 255, 255, 0.06)',
-    '--text-primary':    '#FAF5EB',
-    '--text-warm':       '#FAF5EB',
-    '--text-muted':      'rgba(250, 245, 235, 0.6)',
-    '--text-dim':        'rgba(250, 245, 235, 0.4)',
-    '--border':          'rgba(255, 220, 180, 0.08)',
-    '--border-warm':     'rgba(255, 220, 180, 0.08)',
-    '--accent-primary':  '#CCFF00',
-    '--accent-secondary':'#FFB800',
-    '--accent-amber':    '#FFB800',
-    '--accent-coral':    '#FF5B3A',
-    '--accent-warm':     '#FF5B3A',
-    '--accent-purple':   '#B347FF',
-  },
-  light: {
-    '--bg-deep':         '#F5F1E8',
-    '--bg-base':         '#FAF5EB',
-    '--surface-1':       '#EEE7D8',
-    '--surface-2':       '#E2D9C5',
-    '--bg-surface':      'rgba(15, 13, 10, 0.04)',
-    '--bg-surface-alt':  'rgba(15, 13, 10, 0.06)',
-    '--text-primary':    '#0F0D0A',
-    '--text-warm':       '#0F0D0A',
-    '--text-muted':      'rgba(15, 13, 10, 0.65)',
-    '--text-dim':        'rgba(15, 13, 10, 0.45)',
-    '--border':          'rgba(15, 13, 10, 0.12)',
-    '--border-warm':     'rgba(15, 13, 10, 0.10)',
-    '--accent-primary':  '#7AB800',
-    '--accent-secondary':'#D99200',
-    '--accent-amber':    '#D99200',
-    '--accent-coral':    '#E04828',
-    '--accent-warm':     '#E04828',
-    '--accent-purple':   '#8B2FCC',
-  },
+// Tema único claro (Krujens Light Fresh). Se incluyen todos los nombres de
+// token que usan los componentes (incl. amber/coral/purple de features de main).
+const TOKENS: Record<string, string> = {
+  '--bg-deep':         '#FAFBFD',
+  '--bg-base':         '#F0F4F8',
+  '--surface-1':       '#FFFFFF',
+  '--surface-2':       '#F5F7FA',
+  '--bg-surface':      'rgba(16, 185, 129, 0.06)',
+  '--bg-surface-alt':  'rgba(16, 185, 129, 0.10)',
+  '--text-primary':    '#0A1530',
+  '--text-warm':       '#0A1530',
+  '--text-muted':      'rgba(10, 21, 48, 0.55)',
+  '--text-dim':        'rgba(10, 21, 48, 0.35)',
+  '--border':          'rgba(10, 21, 48, 0.10)',
+  '--border-warm':     'rgba(16, 185, 129, 0.18)',
+  '--accent-primary':  '#10B981',
+  '--accent-secondary':'#5DC3FF',
+  '--accent-warm':     '#34D399',
+  '--accent-amber':    '#F59E0B',
+  '--accent-coral':    '#FF5B3A',
+  '--accent-purple':   '#B347FF',
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [mode, setModeState] = useState<ThemeMode>(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY)
-      return (raw === 'light' || raw === 'dark') ? raw : 'dark'
-    } catch {
-      return 'dark'
-    }
-  })
-
   useEffect(() => {
-    const tokens = TOKENS[mode]
     const root = document.documentElement
-    Object.entries(tokens).forEach(([k, v]) => root.style.setProperty(k, v))
-    root.setAttribute('data-theme', mode)
-    try { localStorage.setItem(STORAGE_KEY, mode) } catch { /* ignore */ }
-  }, [mode])
-
-  const toggle = () => setModeState(m => (m === 'dark' ? 'light' : 'dark'))
-  const setMode = (m: ThemeMode) => setModeState(m)
+    Object.entries(TOKENS).forEach(([k, v]) => root.style.setProperty(k, v))
+    root.setAttribute('data-theme', 'light')
+    try {
+      localStorage.removeItem('grada_theme_v1')
+      localStorage.removeItem('grada_theme_v2')
+    } catch { /* ignore */ }
+  }, [])
 
   return (
-    <Ctx.Provider value={{ mode, toggle, setMode }}>
+    <Ctx.Provider value={{ mode: 'light' }}>
       {children}
     </Ctx.Provider>
   )
@@ -92,3 +52,5 @@ export function useTheme() {
   if (!v) throw new Error('useTheme must be used within ThemeProvider')
   return v
 }
+
+export type ThemeMode = 'light'

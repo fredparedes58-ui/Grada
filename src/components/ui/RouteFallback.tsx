@@ -5,7 +5,7 @@ export default function RouteFallback() {
       style={{
         position: 'absolute',
         inset: 0,
-        background: '#0F0D0A',
+        background: 'var(--bg-deep)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -14,10 +14,9 @@ export default function RouteFallback() {
       <div
         style={{
           width: 48, height: 48, borderRadius: '50%',
-          border: '3px solid rgba(204, 255, 0, 0.15)',
-          borderTopColor: '#CCFF00',
+          border: '3px solid var(--border)',
+          borderTopColor: 'var(--accent-primary)',
           animation: 'spin-slow 0.8s linear infinite',
-          boxShadow: '0 0 20px rgba(204, 255, 0, 0.25)',
         }}
       />
     </div>

@@ -1,0 +1,194 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helpers ──────────────────────────────────────────────────────────────
+    function autenticado() {
+      return request.auth != null;
+    }
+    function esPropio(uid) {
+      return request.auth.uid == uid;
+    }
+    function esAdminEquipo(equipoId) {
+      return autenticado() &&
+        exists(/databases/$(database)/documents/equipos/$(equipoId)/miembros/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/equipos/$(equipoId)/miembros/$(request.auth.uid)).data.rol == 'admin';
+    }
+    // Admin de la app: uid listado en config/roles.admins
+    function esAdminApp() {
+      return autenticado() &&
+        exists(/databases/$(database)/documents/config/roles) &&
+        request.auth.uid in get(/databases/$(database)/documents/config/roles).data.admins;
+    }
+
+    // ── Config (roles de admin) ──────────────────────────────────────────────
+    match /config/{docId} {
+      allow read:  if autenticado();
+      allow write: if false; // gestionado en la consola / fuera de banda
+    }
+
+    // ── Usuarios ─────────────────────────────────────────────────────────────
+    match /usuarios/{uid} {
+      allow read:  if autenticado();
+      // Nueva alta: siempre 'pendiente' (nadie se auto-aprueba)
+      allow create: if esPropio(uid) &&
+        request.resource.data.keys().hasAll(['uid','nombre','apodo','creadoEn','estado']) &&
+        request.resource.data.creadoEn == request.time &&
+        request.resource.data.estado == 'pendiente';
+      // El propio usuario edita su perfil, pero NO su estado (ni uid/creadoEn)
+      allow update: if esPropio(uid) &&
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(['uid','creadoEn','estado']);
+      // El admin aprueba/rechaza cambiando SOLO el estado
+      allow update: if esAdminApp() &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['estado']) &&
+        request.resource.data.estado in ['aprobado','rechazado'];
+
+      match /privado/{docId} {
+        allow read, write: if esPropio(uid);
+      }
+      match /notificaciones/{notifId} {
+        allow read:   if esPropio(uid);
+        allow update: if esPropio(uid) &&
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['leida']);
+        allow create, delete: if false; // solo backend
+      }
+    }
+
+    // ── Seguimientos ─────────────────────────────────────────────────────────
+    match /seguimientos/{docId} {
+      allow read:   if autenticado();
+      allow create: if autenticado() &&
+        request.resource.data.seguidorUid == request.auth.uid &&
+        docId == request.resource.data.seguidorUid + '_' + request.resource.data.seguidoUid;
+      allow delete: if autenticado() &&
+        resource.data.seguidorUid == request.auth.uid;
+    }
+
+    // ── Equipos ──────────────────────────────────────────────────────────────
+    match /equipos/{equipoId} {
+      allow read: if autenticado();
+      allow create: if autenticado() &&
+        request.resource.data.creadorUid == request.auth.uid &&
+        existsAfter(/databases/$(database)/documents/equipos/$(equipoId)/miembros/$(request.auth.uid));
+      allow update: if esAdminEquipo(equipoId);
+      allow delete: if false;
+
+      match /miembros/{uid} {
+        allow read: if autenticado();
+        // Bootstrap: el creador se auto-registra como primer admin en el mismo
+        // batch que crea el equipo (aún no existe ningún admin previo).
+        allow create: if uid == request.auth.uid &&
+          request.resource.data.rol == 'admin' &&
+          getAfter(/databases/$(database)/documents/equipos/$(equipoId)).data.creadorUid == request.auth.uid;
+        allow write: if esAdminEquipo(equipoId);
+      }
+      match /solicitudes/{uid} {
+        allow read:   if esAdminEquipo(equipoId) || esPropio(uid);
+        allow create: if esPropio(uid);
+        allow delete: if esAdminEquipo(equipoId) || esPropio(uid);
+      }
+    }
+
+    // ── Partidos ─────────────────────────────────────────────────────────────
+    match /partidos/{partidoId} {
+      allow read: if autenticado();
+      allow create: if autenticado() &&
+        request.resource.data.organizadorUid == request.auth.uid &&
+        request.resource.data.numInscritos == 0;
+      allow update: if autenticado() &&
+        request.resource.data.organizadorUid == resource.data.organizadorUid &&
+        (
+          // Organizador edita info del partido
+          request.auth.uid == resource.data.organizadorUid ||
+          // Inscripción: solo sube/baja numInscritos en ±1 dentro del batch
+          (
+            request.resource.data.diff(resource.data).affectedKeys().hasOnly(['numInscritos']) &&
+            (
+              (request.resource.data.numInscritos == resource.data.numInscritos + 1 &&
+               existsAfter(/databases/$(database)/documents/partidos/$(partidoId)/inscripciones/$(request.auth.uid))) ||
+              (request.resource.data.numInscritos == resource.data.numInscritos - 1 &&
+               !existsAfter(/databases/$(database)/documents/partidos/$(partidoId)/inscripciones/$(request.auth.uid)))
+            )
+          )
+        );
+
+      match /inscripciones/{uid} {
+        allow read:          if autenticado();
+        allow create, update: if esPropio(uid);
+        allow delete:         if esPropio(uid);
+      }
+    }
+
+    // ── Publicaciones ────────────────────────────────────────────────────────
+    match /publicaciones/{postId} {
+      allow read: if autenticado();
+      allow create: if autenticado() &&
+        request.resource.data.autorUid == request.auth.uid &&
+        request.resource.data.creadoEn == request.time &&
+        request.resource.data.numLikes == 0 &&
+        request.resource.data.numComentarios == 0;
+      allow update: if autenticado() && (
+        // Autor edita texto/imagen
+        (resource.data.autorUid == request.auth.uid &&
+         request.resource.data.diff(resource.data).affectedKeys()
+           .hasOnly(['texto','imagenUrl'])) ||
+        // Like: numLikes ±1 con like doc en el mismo batch
+        (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['numLikes']) && (
+          (request.resource.data.numLikes == resource.data.numLikes + 1 &&
+           existsAfter(/databases/$(database)/documents/publicaciones/$(postId)/likes/$(request.auth.uid))) ||
+          (request.resource.data.numLikes == resource.data.numLikes - 1 &&
+           resource.data.numLikes > 0 &&
+           !existsAfter(/databases/$(database)/documents/publicaciones/$(postId)/likes/$(request.auth.uid)))
+        )) ||
+        // Comentario: numComentarios +1 con comentario doc en el mismo batch
+        (request.resource.data.diff(resource.data).affectedKeys()
+           .hasOnly(['numComentarios','refComentario']) &&
+         request.resource.data.numComentarios == resource.data.numComentarios + 1 &&
+         existsAfter(/databases/$(database)/documents/publicaciones/$(postId)/comentarios/$(request.resource.data.refComentario)))
+      );
+
+      match /likes/{uid} {
+        allow read:          if autenticado();
+        allow create, delete: if esPropio(uid);
+      }
+      match /comentarios/{comentarioId} {
+        allow read:   if autenticado();
+        allow create: if autenticado() &&
+          request.resource.data.autorUid == request.auth.uid &&
+          request.resource.data.creadoEn == request.time;
+      }
+    }
+
+    // ── Quinielas ────────────────────────────────────────────────────────────
+    match /quinielas/{quinielaId} {
+      allow read: if autenticado();
+      allow create: if autenticado() &&
+        request.resource.data.creadorUid == request.auth.uid;
+      allow update: if autenticado() &&
+        resource.data.creadorUid == request.auth.uid;
+
+      match /pronosticos/{uid} {
+        allow read: if autenticado() && (
+          esPropio(uid) ||
+          resource.data == null ||
+          request.time > get(/databases/$(database)/documents/quinielas/$(quinielaId)).data.cierraEn
+        );
+        allow create: if esPropio(uid) &&
+          request.time < get(/databases/$(database)/documents/quinielas/$(quinielaId)).data.cierraEn;
+        allow update: if esPropio(uid) &&
+          request.time < get(/databases/$(database)/documents/quinielas/$(quinielaId)).data.cierraEn;
+      }
+      match /clasificacion/{uid} {
+        allow read:  if autenticado();
+        allow write: if false; // solo backend
+      }
+    }
+
+    // ── Reportes ─────────────────────────────────────────────────────────────
+    match /reportes/{reporteId} {
+      allow create: if autenticado() &&
+        request.resource.data.reportanteUid == request.auth.uid;
+      allow read, update, delete: if false;
+    }
+  }
+}

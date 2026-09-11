@@ -1,54 +1,84 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
+import { observarSesion, cerrarSesion } from '../lib/auth'
+import { obtenerEstadoYRol } from '../lib/usuarios'
+import type { User as FirebaseUser } from 'firebase/auth'
 
 export interface User {
+  uid: string
   name: string
   email: string
+  avatarUrl?: string
   position?: string
   team?: string
   level?: string
   setupDone?: boolean
 }
 
+export type EstadoCuenta = 'pendiente' | 'aprobado' | 'rechazado' | null
+
 interface AuthCtx {
   user: User | null
-  login: (u: User) => void
-  logout: () => void
+  firebaseUser: FirebaseUser | null
+  loading: boolean
+  estado: EstadoCuenta
+  esAdmin: boolean
+  estadoLoading: boolean
+  logout: () => Promise<void>
   updateUser: (patch: Partial<User>) => void
   toast: string
   setToast: (s: string) => void
 }
 
-const STORAGE_KEY = 'grada_user_v1'
-
 const Ctx = createContext<AuthCtx | null>(null)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY)
-      return raw ? JSON.parse(raw) : null
-    } catch {
-      return null
-    }
-  })
+  const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null)
+  const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [estado, setEstado] = useState<EstadoCuenta>(null)
+  const [esAdmin, setEsAdmin] = useState(false)
+  const [estadoLoading, setEstadoLoading] = useState(false)
   const [toast, setToast] = useState('')
 
   useEffect(() => {
-    try {
-      if (user) localStorage.setItem(STORAGE_KEY, JSON.stringify(user))
-      else localStorage.removeItem(STORAGE_KEY)
-    } catch {
-      /* ignore */
-    }
-  }, [user])
+    const unsub = observarSesion(async (fbUser: import('firebase/auth').User | null) => {
+      setFirebaseUser(fbUser)
+      if (fbUser) {
+        setUser({
+          uid:       fbUser.uid,
+          name:      fbUser.displayName ?? fbUser.email ?? 'Jugador',
+          email:     fbUser.email ?? '',
+          avatarUrl: fbUser.photoURL ?? '',
+        })
+        setEstadoLoading(true)
+        setLoading(false)
+        try {
+          const r = await obtenerEstadoYRol(fbUser.uid)
+          setEstado(r.estado as EstadoCuenta)
+          setEsAdmin(r.esAdmin)
+        } catch {
+          setEstado(null)
+          setEsAdmin(false)
+        } finally {
+          setEstadoLoading(false)
+        }
+      } else {
+        setUser(null)
+        setEstado(null)
+        setEsAdmin(false)
+        setEstadoLoading(false)
+        setLoading(false)
+      }
+    })
+    return unsub
+  }, [])
 
-  function login(u: User) {
-    setUser(u)
-    setToast(`¡Bienvenido, ${u.name.split(' ')[0]}!`)
-  }
-
-  function logout() {
+  async function logout() {
+    await cerrarSesion()
     setUser(null)
+    setFirebaseUser(null)
+    setEstado(null)
+    setEsAdmin(false)
     setToast('Sesión cerrada')
   }
 
@@ -57,7 +87,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <Ctx.Provider value={{ user, login, logout, updateUser, toast, setToast }}>
+    <Ctx.Provider value={{ user, firebaseUser, loading, estado, esAdmin, estadoLoading, logout, updateUser, toast, setToast }}>
       {children}
     </Ctx.Provider>
   )

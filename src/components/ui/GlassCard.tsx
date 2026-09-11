@@ -13,20 +13,20 @@ export default function GlassCard({
 }: GlassCardProps) {
   // Double glow (ring sharp + halo medio + halo lejano) + inner highlight superior
   // + drop shadow de profundidad. Cuando hay accent el halo toma su color.
-  const borderColor = accent ? `${accent}60` : 'rgba(255, 220, 180, 0.10)'
-  const ringSharp   = accent ? `0 0 0 1px ${accent}40`      : '0 0 0 1px rgba(255,220,180,0.04)'
-  const haloMid     = accent ? `0 0 22px ${accent}38`       : '0 0 18px rgba(0,0,0,0.25)'
-  const haloFar     = accent ? `0 0 58px ${accent}1A`       : '0 0 40px rgba(0,0,0,0.18)'
-  const innerTop    = 'inset 0 1px 0 rgba(255, 255, 255, 0.10)'
-  const innerBot    = 'inset 0 -1px 0 rgba(0, 0, 0, 0.25)'
-  const depth       = '0 10px 28px rgba(0, 0, 0, 0.38)'
+  const borderColor = accent ? `${accent}30` : 'var(--border)'
+  const ringSharp   = accent ? `0 0 0 1px ${accent}25`      : '0 0 0 1px var(--bg-surface)'
+  const haloMid     = accent ? `0 0 22px ${accent}20`       : '0 2px 12px var(--border)'
+  const haloFar     = accent ? `0 0 58px ${accent}10`       : '0 4px 24px rgba(10,21,48,0.05)'
+  const innerTop    = 'inset 0 1px 0 rgba(255, 255, 255, 0.90)'
+  const innerBot    = 'inset 0 -1px 0 var(--bg-surface)'
+  const depth       = '0 1px 3px rgba(10, 21, 48, 0.05)'
 
   return (
     <div
       onClick={onClick}
       style={{
         position: 'relative',
-        background: 'linear-gradient(180deg, rgba(36,31,24,0.62) 0%, rgba(22,18,14,0.55) 100%)',
+        background: 'var(--bg-surface-alt)',
         backdropFilter: 'blur(20px) saturate(180%)',
         WebkitBackdropFilter: 'blur(20px) saturate(180%)',
         border: `1px solid ${borderColor}`,

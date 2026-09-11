@@ -1,19 +1,18 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { User, Mail, Lock } from 'lucide-react'
+import { User, Mail, Lock, Eye, EyeOff } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
-import EpicStadiumBackground from '../components/ui/EpicStadiumBackground'
-import FloatingOrbs from '../components/ui/FloatingOrbs'
-import NeonButton from '../components/ui/NeonButton'
-import NeonInput from '../components/ui/NeonInput'
+import { registrar } from '../lib/auth'
 
 export default function RegisterPage() {
   const nav = useNavigate()
-  const { login } = useAuth()
+  const { setToast } = useAuth()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [errors, setErrors] = useState<{ name?: string; email?: string; password?: string }>({})
+  const [showPwd, setShowPwd] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [errors, setErrors] = useState<{ name?: string; email?: string; password?: string; general?: string }>({})
 
   function validate() {
     const e: typeof errors = {}
@@ -24,117 +23,159 @@ export default function RegisterPage() {
     return Object.keys(e).length === 0
   }
 
-  function handleSubmit() {
-    if (!validate()) return
-    login({ name, email })
-    nav('/setup')
+  async function handleSubmit() {
+    if (!validate() || loading) return
+    setLoading(true)
+    setErrors({})
+    try {
+      await registrar({ email, password, nombre: name.trim(), apodo: '', ciudad: '', posicion: '' })
+      setToast(`¡Bienvenido, ${name.split(' ')[0]}!`)
+      nav('/setup')
+    } catch (err: unknown) {
+      setErrors({ general: err instanceof Error ? err.message : 'Error al registrarse' })
+    } finally {
+      setLoading(false)
+    }
   }
 
+  const fields = [
+    { key: 'name' as const, placeholder: 'Tu nombre completo', type: 'text', icon: User, value: name, set: setName },
+    { key: 'email' as const, placeholder: 'tu@email.com', type: 'email', icon: Mail, value: email, set: setEmail },
+    { key: 'password' as const, placeholder: 'Contraseña', type: showPwd ? 'text' : 'password', icon: Lock, value: password, set: setPassword },
+  ]
+
   return (
-    <div style={{ position: 'absolute', inset: 0, background: 'var(--bg-deep, #0F0D0A)', overflow: 'hidden' }}>
-      <div style={{ position: 'absolute', inset: 0, zIndex: 1 }}>
-        <EpicStadiumBackground interval={6000} initial={1} />
-      </div>
-      <div
-        style={{
-          position: 'absolute', inset: 0, zIndex: 2,
-          background:
-            'linear-gradient(180deg, rgba(15,13,10,0.55) 0%, rgba(15,13,10,0.72) 45%, rgba(15,13,10,0.95) 100%)',
-        }}
-      />
-      <div style={{ position: 'absolute', inset: 0, zIndex: 2 }}>
-        <FloatingOrbs
-          orbs={[
-            { x: 20, y: 30, size: 180, color: '#CCFF00', opacity: 0.22, dur: 16 },
-            { x: 80, y: 70, size: 200, color: '#FFB800', opacity: 0.18, dur: 20 },
-          ]}
-        />
-      </div>
+    <div
+      className="screen-scroll"
+      style={{
+        position: 'absolute', inset: 0,
+        background: 'var(--bg-deep)',
+        overflowY: 'auto',
+        display: 'flex', flexDirection: 'column',
+      }}
+    >
+      {/* Mint top accent bar */}
+      <div style={{ height: 4, background: 'linear-gradient(90deg, var(--accent-primary), var(--accent-secondary))', flexShrink: 0 }} />
 
-      <div
-        className="screen-scroll"
-        style={{
-          position: 'absolute', inset: 0, zIndex: 5,
-          display: 'flex', flexDirection: 'column',
-          padding: '80px 24px 32px',
-          overflowY: 'auto',
-        }}
-      >
-        <div style={{ marginBottom: 40 }}>
+      <div style={{ flex: 1, padding: '48px 28px 40px', display: 'flex', flexDirection: 'column' }}>
+        {/* Brand */}
+        <div style={{ marginBottom: 44 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 32 }}>
+            <div
+              style={{
+                width: 36, height: 36, borderRadius: 10,
+                background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                boxShadow: '0 4px 14px rgba(16, 185, 129, 0.35)',
+              }}
+            >
+              <span style={{ fontFamily: 'Fraunces, serif', fontWeight: 900, fontSize: 20, color: '#FAFBFD' }}>G</span>
+            </div>
+            <span style={{ fontFamily: 'Fraunces, serif', fontWeight: 700, fontSize: 18, color: 'var(--text-primary)' }}>GRADA</span>
+          </div>
+
           <div
             style={{
-              fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontStyle: 'italic',
-              fontSize: 13, color: '#CCFF00',
-              letterSpacing: '0.2em', textTransform: 'uppercase',
-              marginBottom: 12, textShadow: '0 0 12px rgba(204, 255, 0, 0.5)',
+              fontFamily: 'JetBrains Mono, monospace', fontWeight: 500,
+              fontSize: 10, color: 'var(--accent-primary)', letterSpacing: '0.16em',
+              textTransform: 'uppercase', marginBottom: 10,
             }}
           >
-            GRADA · Registro
+            Registro · Nueva cuenta
           </div>
-          <div
+          <h1
             style={{
-              fontFamily: 'Archivo, sans-serif', fontWeight: 800,
-              fontSize: 34, color: '#FAF5EB', letterSpacing: '-0.02em',
-              lineHeight: 1.05,
+              fontFamily: 'Fraunces, Georgia, serif', fontWeight: 700,
+              fontSize: 34, color: 'var(--text-primary)', letterSpacing: '-0.018em',
+              lineHeight: 1.05, margin: 0,
             }}
           >
-            Únete al juego
-          </div>
-          <div
-            style={{
-              marginTop: 8,
-              fontFamily: 'Space Grotesk, sans-serif',
-              fontSize: 14, color: 'rgba(250, 245, 235, 0.6)',
-            }}
-          >
-            Crea tu cuenta para empezar a jugar
-          </div>
+            Únete a tu cancha
+          </h1>
+          <p style={{ marginTop: 10, fontFamily: 'Inter, sans-serif', fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.5 }}>
+            Crea tu perfil y conecta con tu equipo
+          </p>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 24 }}>
-          <NeonInput
-            placeholder="Nombre completo"
-            icon={<User size={18} />}
-            value={name}
-            onChange={setName}
-            error={errors.name}
-          />
-          <NeonInput
-            placeholder="tu@email.com"
-            type="email"
-            icon={<Mail size={18} />}
-            value={email}
-            onChange={setEmail}
-            error={errors.email}
-          />
-          <NeonInput
-            placeholder="Contraseña"
-            type="password"
-            icon={<Lock size={18} />}
-            value={password}
-            onChange={setPassword}
-            error={errors.password}
-          />
+        {/* Fields */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 28 }}>
+          {fields.map(f => {
+            const Icon = f.icon
+            const err = errors[f.key]
+            return (
+              <div key={f.key}>
+                <div
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 10,
+                    background: 'var(--surface-1)',
+                    border: `1.5px solid ${err ? '#EF4444' : 'var(--border)'}`,
+                    borderRadius: 12, padding: '14px 16px',
+                    boxShadow: '0 1px 4px rgba(10, 21, 48, 0.05)',
+                  }}
+                >
+                  <Icon size={18} color="var(--text-dim)" />
+                  <input
+                    type={f.type}
+                    placeholder={f.placeholder}
+                    value={f.value}
+                    onChange={e => f.set(e.target.value)}
+                    style={{
+                      flex: 1, background: 'transparent', border: 'none', outline: 'none',
+                      fontFamily: 'Inter, sans-serif', fontSize: 15, color: 'var(--text-primary)',
+                    }}
+                  />
+                  {f.key === 'password' && (
+                    <button
+                      onClick={() => setShowPwd(s => !s)}
+                      style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}
+                    >
+                      {showPwd
+                        ? <EyeOff size={18} color="var(--text-dim)" />
+                        : <Eye size={18} color="var(--text-dim)" />}
+                    </button>
+                  )}
+                </div>
+                {err && (
+                  <div style={{ marginTop: 4, fontSize: 12, color: '#EF4444', fontFamily: 'Inter, sans-serif', paddingLeft: 4 }}>
+                    {err}
+                  </div>
+                )}
+              </div>
+            )
+          })}
         </div>
 
-        <NeonButton variant="gradient" onClick={handleSubmit}>
-          Unirse a la comunidad
-        </NeonButton>
+        {errors.general && (
+          <div style={{ marginBottom: 12, padding: '10px 14px', borderRadius: 10, background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)', color: '#EF4444', fontFamily: 'Inter, sans-serif', fontSize: 13 }}>
+            {errors.general}
+          </div>
+        )}
 
-        <div
+        {/* CTA */}
+        <button
+          onClick={handleSubmit}
+          disabled={loading}
           style={{
-            marginTop: 24, textAlign: 'center',
+            height: 54, width: '100%', borderRadius: 14,
+            background: loading ? 'var(--border)' : 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',
+            border: 'none', cursor: loading ? 'default' : 'pointer',
             fontFamily: 'Space Grotesk, sans-serif',
-            fontSize: 14, color: 'rgba(250, 245, 235, 0.6)',
+            fontWeight: 700, fontSize: 15, color: '#FAFBFD',
+            boxShadow: loading ? 'none' : '0 6px 20px rgba(16, 185, 129, 0.3)',
+            transition: 'transform 0.12s',
+            marginBottom: 20,
           }}
+          onMouseDown={e => { if (!loading) (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.98)' }}
+          onMouseUp={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)' }}
         >
+          {loading ? 'Creando cuenta…' : 'Crear cuenta'}
+        </button>
+
+        <div style={{ textAlign: 'center', fontFamily: 'Inter, sans-serif', fontSize: 14, color: 'var(--text-muted)' }}>
           ¿Ya tienes cuenta?{' '}
           <button
             onClick={() => nav('/login')}
-            style={{
-              background: 'transparent', border: 'none', cursor: 'pointer',
-              color: '#CCFF00', fontWeight: 700, fontFamily: 'inherit', fontSize: 14,
-            }}
+            style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--accent-primary)', fontWeight: 700, fontFamily: 'inherit', fontSize: 14 }}
           >
             Inicia sesión
           </button>

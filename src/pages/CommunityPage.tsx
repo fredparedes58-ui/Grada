@@ -1,5 +1,5 @@
-import { useState, useMemo } from 'react'
-import { Search, Users, Trophy, MapPin, Calendar, Check, Sparkles, ChevronRight, Wand2, X } from 'lucide-react'
+import { useState, useMemo, useEffect, useRef, type ChangeEvent } from 'react'
+import { Search, Users, Trophy, MapPin, Calendar, Check, Sparkles, ChevronRight, Wand2, X, Plus, ImagePlus, Shield } from 'lucide-react'
 import TournamentsTab from '../features/tournaments/TournamentsTab'
 import PollCard from '../features/polls/PollCard'
 import EventsSheet from '../features/events/EventsSheet'
@@ -16,6 +16,18 @@ import {
   type PlayStyle, type PlayDay, type PlayLevel,
   type TeamCandidate, type MatcherAnswers,
 } from '../lib/aiMocks'
+import { crearEquipo, actualizarEscudo, obtenerMisEquipos } from '../lib/equipos'
+import { subirEscudo } from '../lib/almacenamiento'
+
+interface MiEquipo {
+  id: string
+  nombre?: string
+  ciudad?: string
+  categoria?: string
+  escudoUrl?: string
+}
+
+const CATEGORIAS = ['Sub-13', 'Sub-15', 'Sub-17', 'Sub-19', 'Senior', 'Amateur']
 
 interface Team {
   name: string
@@ -33,7 +45,7 @@ interface Team {
 
 const TEAMS: Team[] = [
   {
-    name: 'Los Pumas FC', members: 342, badge: 'LP', level: 'Sub-18', color: '#CCFF00',
+    name: 'Los Pumas FC', members: 342, badge: 'LP', level: 'Sub-18', color: '#10B981',
     city: 'Buenos Aires', founded: 2014, wins: 28, draws: 6, losses: 4,
     roster: [
       { name: 'Alex Rivera', position: 'DEL', number: 9 },
@@ -43,7 +55,7 @@ const TEAMS: Team[] = [
     ],
   },
   {
-    name: 'Águilas Doradas', members: 188, badge: 'AD', level: 'Sub-17', color: '#FFB800',
+    name: 'Águilas Doradas', members: 188, badge: 'AD', level: 'Sub-17', color: 'var(--accent-secondary)',
     city: 'Córdoba', founded: 2016, wins: 19, draws: 8, losses: 7,
     roster: [
       { name: 'Lautaro Paz', position: 'DEL', number: 10 },
@@ -52,7 +64,7 @@ const TEAMS: Team[] = [
     ],
   },
   {
-    name: 'Rayo Urbano', members: 211, badge: 'RU', level: 'Sub-21', color: '#FF5B3A',
+    name: 'Rayo Urbano', members: 211, badge: 'RU', level: 'Sub-21', color: '#34D399',
     city: 'Rosario', founded: 2012, wins: 22, draws: 5, losses: 9,
     roster: [
       { name: 'Santi Ruiz', position: 'DEL', number: 7 },
@@ -60,7 +72,7 @@ const TEAMS: Team[] = [
     ],
   },
   {
-    name: 'Phantom FC', members: 76, badge: 'PF', level: 'Sub-15', color: '#CCFF00',
+    name: 'Phantom FC', members: 76, badge: 'PF', level: 'Sub-15', color: '#10B981',
     city: 'La Plata', founded: 2020, wins: 12, draws: 3, losses: 5,
     roster: [
       { name: 'Bruno Díaz', position: 'DEL', number: 9 },
@@ -68,7 +80,7 @@ const TEAMS: Team[] = [
     ],
   },
   {
-    name: 'Tigres Verdes', members: 154, badge: 'TV', level: 'Sub-19', color: '#FFB800',
+    name: 'Tigres Verdes', members: 154, badge: 'TV', level: 'Sub-19', color: 'var(--accent-secondary)',
     city: 'Mendoza', founded: 2015, wins: 17, draws: 9, losses: 6,
     roster: [
       { name: 'Gabi Torres', position: 'MED', number: 8 },
@@ -76,7 +88,7 @@ const TEAMS: Team[] = [
     ],
   },
   {
-    name: 'Cometa SC', members: 98, badge: 'CS', level: 'Sub-16', color: '#FF5B3A',
+    name: 'Cometa SC', members: 98, badge: 'CS', level: 'Sub-16', color: '#34D399',
     city: 'Salta', founded: 2018, wins: 14, draws: 6, losses: 8,
     roster: [
       { name: 'Dante Vera', position: 'DEL', number: 10 },
@@ -103,6 +115,64 @@ export default function CommunityPage() {
   const [joined, setJoined] = useState<Record<string, boolean>>({})
   const [predictionMatch, setPredictionMatch] = useState<PredictionMatch | null>(null)
   const userName = user?.name ?? 'Tú'
+
+  // Mis equipos (Firestore) + crear equipo
+  const [misEquipos, setMisEquipos] = useState<MiEquipo[]>([])
+  const [crearOpen, setCrearOpen] = useState(false)
+  const [nombre, setNombre] = useState('')
+  const [ciudad, setCiudad] = useState('')
+  const [categoria, setCategoria] = useState('Sub-17')
+  const [escudoFile, setEscudoFile] = useState<File | null>(null)
+  const [escudoPreview, setEscudoPreview] = useState<string | null>(null)
+  const [creando, setCreando] = useState(false)
+  const escudoInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (user) obtenerMisEquipos().then(setMisEquipos).catch(() => {})
+  }, [user])
+
+  useEffect(() => () => {
+    if (escudoPreview) URL.revokeObjectURL(escudoPreview)
+  }, [escudoPreview])
+
+  function pickEscudo(e: ChangeEvent<HTMLInputElement>) {
+    const f = e.target.files?.[0]
+    e.target.value = ''
+    if (!f) return
+    if (escudoPreview) URL.revokeObjectURL(escudoPreview)
+    setEscudoFile(f)
+    setEscudoPreview(URL.createObjectURL(f))
+  }
+
+  function closeCrear() {
+    setCrearOpen(false)
+    setNombre('')
+    setCiudad('')
+    setCategoria('Sub-17')
+    if (escudoPreview) URL.revokeObjectURL(escudoPreview)
+    setEscudoFile(null)
+    setEscudoPreview(null)
+  }
+
+  async function crearNuevoEquipo() {
+    if (!nombre.trim() || creando) return
+    setCreando(true)
+    try {
+      const equipoId = await crearEquipo({ nombre: nombre.trim(), ciudad: ciudad.trim(), categoria })
+      if (escudoFile) {
+        const url = await subirEscudo(equipoId, escudoFile)
+        await actualizarEscudo(equipoId, url)
+      }
+      setToast(`Equipo "${nombre.trim()}" creado`)
+      if ('vibrate' in navigator) navigator.vibrate(30)
+      closeCrear()
+      obtenerMisEquipos().then(setMisEquipos).catch(() => {})
+    } catch (err) {
+      setToast(err instanceof Error ? err.message : 'No se pudo crear el equipo')
+    } finally {
+      setCreando(false)
+    }
+  }
 
   // Semantic search intent
   const intent = useMemo(() => query.trim() ? parseSearchIntent(query) : null, [query])
@@ -166,7 +236,7 @@ export default function CommunityPage() {
   }
 
   return (
-    <div style={{ position: 'absolute', inset: 0, background: 'var(--bg-deep, #0F0D0A)', overflow: 'hidden' }}>
+    <div style={{ position: 'absolute', inset: 0, background: 'var(--bg-deep)', overflow: 'hidden' }}>
       <div
         className="screen-scroll"
         style={{ position: 'absolute', inset: 0, overflowY: 'auto', paddingTop: 60, paddingBottom: 90 }}
@@ -175,7 +245,7 @@ export default function CommunityPage() {
           <div
             style={{
               fontFamily: 'Archivo, sans-serif', fontWeight: 800,
-              fontSize: 32, color: '#FAF5EB', letterSpacing: '-0.02em',
+              fontSize: 32, color: 'var(--text-primary)', letterSpacing: '-0.02em',
             }}
           >
             Comunidad
@@ -184,7 +254,7 @@ export default function CommunityPage() {
             style={{
               marginTop: 4,
               fontFamily: 'Space Grotesk, sans-serif',
-              fontSize: 14, color: 'rgba(250, 245, 235, 0.6)',
+              fontSize: 14, color: 'var(--text-muted)',
             }}
           >
             Descubre clubes, equipos y torneos
@@ -199,13 +269,13 @@ export default function CommunityPage() {
               onClick={() => setCommunityTab(t)}
               style={{
                 flex: 1, padding: '9px', borderRadius: 10,
-                background: communityTab === t ? 'rgba(204,255,0,0.15)' : 'rgba(255,255,255,0.03)',
-                border: `1px solid ${communityTab === t ? '#CCFF00' : 'rgba(255,220,180,0.08)'}`,
-                color: communityTab === t ? '#CCFF00' : 'rgba(250,245,235,0.55)',
+                background: communityTab === t ? 'rgba(16, 185, 129, 0.12)' : 'rgba(10, 21, 48, 0.03)',
+                border: `1px solid ${communityTab === t ? 'var(--accent-primary)' : 'rgba(16, 185, 129, 0.12)'}`,
+                color: communityTab === t ? 'var(--accent-primary)' : 'var(--text-muted)',
                 fontFamily: 'Space Grotesk', fontWeight: 700,
                 fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.05em',
                 cursor: 'pointer',
-                boxShadow: communityTab === t ? '0 0 12px rgba(204,255,0,0.15)' : 'none',
+                boxShadow: communityTab === t ? '0 0 12px rgba(16, 185, 129, 0.15)' : 'none',
               }}
             >
               {t === 'equipos' ? '👥 Equipos' : '🏆 Torneos'}
@@ -224,18 +294,18 @@ export default function CommunityPage() {
             style={{
               display: 'flex', alignItems: 'center', gap: 10,
               padding: '12px 16px', borderRadius: 14,
-              background: 'rgba(255, 255, 255, 0.04)',
-              border: '1px solid rgba(255, 220, 180, 0.12)',
+              background: 'rgba(10, 21, 48, 0.03)',
+              border: '1px solid rgba(16, 185, 129, 0.12)',
             }}
           >
-            <Search size={18} color="rgba(250, 245, 235, 0.5)" />
+            <Search size={18} color="rgba(10, 21, 48, 0.45)" />
             <input
               value={query}
               onChange={e => setQuery(e.target.value)}
               placeholder="Prueba: 'equipos ofensivos los domingos'"
               style={{
                 flex: 1, background: 'transparent', border: 'none', outline: 'none',
-                color: '#FAF5EB', fontSize: 14,
+                color: 'var(--text-primary)', fontSize: 14,
                 fontFamily: 'Space Grotesk, sans-serif',
               }}
             />
@@ -246,7 +316,7 @@ export default function CommunityPage() {
                 style={{
                   width: 22, height: 22, borderRadius: 6,
                   background: 'transparent', border: 'none',
-                  color: 'rgba(250,245,235,0.5)', cursor: 'pointer',
+                  color: 'var(--text-muted)', cursor: 'pointer',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}
               >
@@ -259,17 +329,17 @@ export default function CommunityPage() {
           {intent && hasSemanticFilters && (
             <div style={{
               marginTop: 8, padding: '7px 10px', borderRadius: 10,
-              background: 'rgba(0, 212, 255, 0.08)',
-              border: '1px solid rgba(0, 212, 255, 0.3)',
+              background: 'rgba(93, 195, 255, 0.08)',
+              border: '1px solid rgba(93, 195, 255, 0.3)',
               display: 'flex', alignItems: 'center', gap: 8,
               animation: 'slide-up-fade 200ms ease-out',
             }}>
               <Sparkles size={12} color="#00D4FF" />
               <div style={{
                 flex: 1, fontFamily: 'Space Grotesk', fontSize: 11,
-                color: 'rgba(250, 245, 235, 0.85)',
+                color: 'rgba(10, 21, 48, 0.80)',
               }}>
-                <span style={{ color: '#00D4FF', fontWeight: 700 }}>AI: </span>
+                <span style={{ color: 'var(--accent-secondary)', fontWeight: 700 }}>AI: </span>
                 {intent.interpretation} · <b>{filtered.length}</b> resultado{filtered.length === 1 ? '' : 's'}
               </div>
             </div>
@@ -281,30 +351,30 @@ export default function CommunityPage() {
             style={{
               marginTop: 10, width: '100%',
               padding: '11px 14px', borderRadius: 12,
-              background: 'linear-gradient(135deg, rgba(179, 71, 255, 0.14), rgba(204, 255, 0, 0.08))',
-              border: '1px solid rgba(179, 71, 255, 0.4)',
-              color: '#FAF5EB', cursor: 'pointer',
+              background: 'linear-gradient(135deg, rgba(93, 195, 255, 0.14), rgba(16, 185, 129, 0.08))',
+              border: '1px solid rgba(93, 195, 255, 0.4)',
+              color: 'var(--text-primary)', cursor: 'pointer',
               display: 'flex', alignItems: 'center', gap: 10,
               textAlign: 'left',
             }}
           >
             <div style={{
               width: 30, height: 30, borderRadius: 8,
-              background: 'rgba(179, 71, 255, 0.25)',
+              background: 'rgba(93, 195, 255, 0.25)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: '#B347FF', flexShrink: 0,
+              color: 'var(--accent-secondary)', flexShrink: 0,
             }}>
               <Wand2 size={14} />
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{
                 fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 10,
-                color: '#B347FF', letterSpacing: '0.12em', textTransform: 'uppercase',
+                color: 'var(--accent-secondary)', letterSpacing: '0.12em', textTransform: 'uppercase',
               }}>
                 Match AI
               </div>
               <div style={{
-                fontFamily: 'Space Grotesk', fontSize: 13, color: '#FAF5EB', fontWeight: 600,
+                fontFamily: 'Space Grotesk', fontSize: 13, color: 'var(--text-primary)', fontWeight: 600,
               }}>
                 Encuentra tu equipo ideal
               </div>
@@ -318,9 +388,9 @@ export default function CommunityPage() {
             style={{
               marginTop: 10, width: '100%',
               padding: '11px 14px', borderRadius: 12,
-              background: 'linear-gradient(135deg, rgba(0,212,255,0.12), rgba(204,255,0,0.07))',
+              background: 'linear-gradient(135deg, rgba(0,212,255,0.12), rgba(16,185,129,0.07))',
               border: '1px solid rgba(0,212,255,0.35)',
-              color: '#FAF5EB', cursor: 'pointer',
+              color: 'var(--text-primary)', cursor: 'pointer',
               display: 'flex', alignItems: 'center', gap: 10,
               textAlign: 'left',
             }}
@@ -337,7 +407,7 @@ export default function CommunityPage() {
               <div style={{ fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 10, color: '#00D4FF', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
                 Eventos
               </div>
-              <div style={{ fontFamily: 'Space Grotesk', fontSize: 13, color: '#FAF5EB', fontWeight: 600 }}>
+              <div style={{ fontFamily: 'Space Grotesk', fontSize: 13, color: 'var(--text-primary)', fontWeight: 600 }}>
                 Partidos abiertos · RSVP en 1 tap
               </div>
             </div>
@@ -351,7 +421,7 @@ export default function CommunityPage() {
             <Trophy size={14} color="#FFB800" />
             <div style={{
               fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 13,
-              color: 'rgba(250, 245, 235, 0.75)', textTransform: 'uppercase', letterSpacing: '0.08em',
+              color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em',
             }}>
               Encuestas de la semana
             </div>
@@ -361,7 +431,7 @@ export default function CommunityPage() {
               id="community-poll-mvp"
               question="¿Quién es el mejor jugador amateur de tu liga?"
               options={[
-                { id: 'p1', label: 'El delantero explosivo', votes: 54, color: '#CCFF00' },
+                { id: 'p1', label: 'El delantero explosivo', votes: 54, color: '#10B981' },
                 { id: 'p2', label: 'El mediocampista creativo', votes: 38, color: '#FFB800' },
                 { id: 'p3', label: 'El portero infranqueable', votes: 29, color: '#00D4FF' },
               ]}
@@ -371,7 +441,7 @@ export default function CommunityPage() {
               id="community-poll-formation"
               question="¿Qué formación prefiere tu equipo?"
               options={[
-                { id: 'f1', label: '4-3-3',   votes: 61, color: '#CCFF00' },
+                { id: 'f1', label: '4-3-3',   votes: 61, color: '#10B981' },
                 { id: 'f2', label: '4-4-2',   votes: 44, color: '#FFB800' },
                 { id: 'f3', label: '4-2-3-1', votes: 33, color: '#B347FF' },
                 { id: 'f4', label: '3-5-2',   votes: 18, color: '#FF5B3A' },
@@ -388,11 +458,11 @@ export default function CommunityPage() {
               display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10,
             }}
           >
-            <Sparkles size={16} color="#CCFF00" />
+            <Sparkles size={16} color="#10B981" />
             <div
               style={{
                 fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 13,
-                color: 'rgba(250, 245, 235, 0.75)',
+                color: 'var(--text-muted)',
                 textTransform: 'uppercase', letterSpacing: '0.08em',
               }}
             >
@@ -402,7 +472,7 @@ export default function CommunityPage() {
           <div
             style={{
               fontFamily: 'Space Grotesk, sans-serif', fontSize: 12,
-              color: 'rgba(250, 245, 235, 0.5)', marginBottom: 12,
+              color: 'var(--text-muted)', marginBottom: 12,
             }}
           >
             Adivina el resultado — opcional, entra solo si te animás.
@@ -425,11 +495,11 @@ export default function CommunityPage() {
                   style={{
                     flex: '0 0 240px', scrollSnapAlign: 'start',
                     padding: 14, borderRadius: 14, cursor: 'pointer',
-                    background: 'rgba(255, 255, 255, 0.04)',
+                    background: 'rgba(10, 21, 48, 0.03)',
                     border: joinedMatch
-                      ? '1px solid rgba(204, 255, 0, 0.45)'
-                      : '1px solid rgba(255, 220, 180, 0.08)',
-                    boxShadow: joinedMatch ? '0 0 18px rgba(204, 255, 0, 0.18)' : 'none',
+                      ? '1px solid rgba(16, 185, 129, 0.45)'
+                      : '1px solid rgba(16, 185, 129, 0.08)',
+                    boxShadow: joinedMatch ? '0 0 18px rgba(16, 185, 129, 0.18)' : 'none',
                     position: 'relative',
                     transition: 'all 200ms',
                   }}
@@ -440,9 +510,9 @@ export default function CommunityPage() {
                         position: 'absolute', top: 10, right: 10,
                         display: 'flex', alignItems: 'center', gap: 4,
                         padding: '3px 8px', borderRadius: 999,
-                        background: 'rgba(204, 255, 0, 0.18)',
-                        border: '1px solid rgba(204, 255, 0, 0.45)',
-                        color: '#CCFF00',
+                        background: 'rgba(16, 185, 129, 0.18)',
+                        border: '1px solid rgba(16, 185, 129, 0.45)',
+                        color: 'var(--accent-primary)',
                         fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 10,
                       }}
                     >
@@ -452,7 +522,7 @@ export default function CommunityPage() {
                   <div
                     style={{
                       fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 10,
-                      color: '#FFB800', letterSpacing: '0.08em',
+                      color: 'var(--accent-secondary)', letterSpacing: '0.08em',
                       textTransform: 'uppercase', marginBottom: 10,
                     }}
                   >
@@ -463,7 +533,7 @@ export default function CommunityPage() {
                     <div
                       style={{
                         fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 10,
-                        color: 'rgba(250, 245, 235, 0.4)',
+                        color: 'var(--text-dim)',
                       }}
                     >
                       VS
@@ -473,31 +543,31 @@ export default function CommunityPage() {
                   <div
                     style={{
                       fontFamily: 'Space Grotesk', fontSize: 12,
-                      color: '#FAF5EB', lineHeight: 1.3, marginBottom: 12,
+                      color: 'var(--text-primary)', lineHeight: 1.3, marginBottom: 12,
                       overflow: 'hidden', textOverflow: 'ellipsis',
                       display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical',
                     }}
                   >
-                    {m.home} <span style={{ color: 'rgba(250,245,235,0.4)' }}>vs</span> {m.away}
+                    {m.home} <span style={{ color: 'var(--text-dim)' }}>vs</span> {m.away}
                   </div>
                   <div
                     style={{
                       display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                       paddingTop: 10,
-                      borderTop: '1px solid rgba(255, 220, 180, 0.05)',
+                      borderTop: '1px solid rgba(16, 185, 129, 0.05)',
                     }}
                   >
                     <div
                       style={{
                         display: 'flex', alignItems: 'center', gap: 5,
                         fontFamily: 'Space Grotesk', fontSize: 11,
-                        color: 'rgba(250, 245, 235, 0.65)', fontWeight: 600,
+                        color: 'rgba(10, 21, 48, 0.60)', fontWeight: 600,
                       }}
                     >
                       <Users size={11} />
                       {count} {count === 1 ? 'pronóstico' : 'pronósticos'}
                     </div>
-                    <ChevronRight size={14} color="#CCFF00" />
+                    <ChevronRight size={14} color="#10B981" />
                   </div>
                 </div>
               )
@@ -505,17 +575,78 @@ export default function CommunityPage() {
           </div>
         </div>
 
+        {/* Tus equipos (Firestore) */}
+        {misEquipos.length > 0 && (
+          <div style={{ padding: '4px 20px 6px' }}>
+            <div
+              style={{
+                fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 13,
+                color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em',
+                marginBottom: 10,
+              }}
+            >
+              Tus equipos
+            </div>
+            <div className="screen-scroll" style={{ display: 'flex', gap: 12, overflowX: 'auto', paddingBottom: 4 }}>
+              {misEquipos.map(eq => (
+                <div
+                  key={eq.id}
+                  style={{
+                    flex: '0 0 auto', display: 'flex', alignItems: 'center', gap: 10,
+                    padding: '10px 14px 10px 10px', borderRadius: 14,
+                    background: 'var(--surface-1)', border: '1px solid var(--border)',
+                    boxShadow: '0 1px 4px rgba(10, 21, 48, 0.05)',
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 44, height: 44, borderRadius: 12, overflow: 'hidden', flexShrink: 0,
+                      background: eq.escudoUrl ? 'var(--surface-1)' : 'rgba(16, 185, 129, 0.12)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      color: 'var(--accent-primary)',
+                    }}
+                  >
+                    {eq.escudoUrl
+                      ? <img src={eq.escudoUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      : <Shield size={20} />}
+                  </div>
+                  <div>
+                    <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 13, color: 'var(--text-primary)' }}>
+                      {eq.nombre}
+                    </div>
+                    <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontSize: 11, color: 'var(--text-muted)' }}>
+                      {eq.categoria}{eq.ciudad ? ` · ${eq.ciudad}` : ''}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Separator */}
-        <div style={{ padding: '12px 20px 8px' }}>
+        <div style={{ padding: '12px 20px 8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div
             style={{
               fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 13,
-              color: 'rgba(250, 245, 235, 0.6)',
+              color: 'var(--text-muted)',
               textTransform: 'uppercase', letterSpacing: '0.08em',
             }}
           >
             Equipos
           </div>
+          <button
+            onClick={() => setCrearOpen(true)}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 6,
+              padding: '7px 12px', borderRadius: 999,
+              background: 'var(--border-warm)', border: '1px solid rgba(16, 185, 129, 0.3)',
+              color: 'var(--accent-primary)', cursor: 'pointer',
+              fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 12,
+            }}
+          >
+            <Plus size={14} /> Crear equipo
+          </button>
         </div>
 
         <div style={{ padding: '0 20px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
@@ -524,8 +655,8 @@ export default function CommunityPage() {
               key={`sk-${i}`}
               style={{
                 padding: 14, borderRadius: 14,
-                background: 'rgba(255, 255, 255, 0.03)',
-                border: '1px solid rgba(255, 220, 180, 0.06)',
+                background: 'rgba(10, 21, 48, 0.03)',
+                border: '1px solid rgba(16, 185, 129, 0.06)',
               }}
             >
               <SkeletonCircle size={46} style={{ marginBottom: 10 }} />
@@ -552,7 +683,7 @@ export default function CommunityPage() {
                 <div
                   style={{
                     fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700,
-                    fontSize: 14, color: '#FAF5EB', marginBottom: 2,
+                    fontSize: 14, color: 'var(--text-primary)', marginBottom: 2,
                   }}
                 >
                   {t.name}
@@ -560,17 +691,17 @@ export default function CommunityPage() {
                 <div
                   style={{
                     fontFamily: 'Space Grotesk, sans-serif',
-                    fontSize: 11, color: 'rgba(250, 245, 235, 0.5)', marginBottom: 10,
+                    fontSize: 11, color: 'var(--text-muted)', marginBottom: 10,
                   }}
                 >
                   {t.level}
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <Users size={12} color="rgba(250, 245, 235, 0.5)" />
+                  <Users size={12} color="rgba(10, 21, 48, 0.45)" />
                   <span
                     style={{
                       fontFamily: 'Space Grotesk, sans-serif',
-                      fontSize: 11, color: 'rgba(250, 245, 235, 0.6)',
+                      fontSize: 11, color: 'var(--text-muted)',
                     }}
                   >
                     {t.members} miembros
@@ -587,7 +718,7 @@ export default function CommunityPage() {
         open={!!selected}
         onClose={() => setSelected(null)}
         title={selected?.name}
-        accent={selected?.color ?? '#CCFF00'}
+        accent={selected?.color ?? '#10B981'}
         height="78%"
       >
         {selected && (
@@ -597,7 +728,7 @@ export default function CommunityPage() {
               style={{
                 display: 'flex', gap: 14, alignItems: 'center',
                 padding: '4px 0 16px',
-                borderBottom: '1px solid rgba(255, 220, 180, 0.06)',
+                borderBottom: '1px solid rgba(16, 185, 129, 0.06)',
               }}
             >
               <div
@@ -624,20 +755,20 @@ export default function CommunityPage() {
                 </div>
                 <div style={{ display: 'flex', gap: 12, marginTop: 6, flexWrap: 'wrap' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <MapPin size={11} color="rgba(250,245,235,0.5)" />
-                    <span style={{ fontFamily: 'Space Grotesk', fontSize: 11, color: 'rgba(250,245,235,0.6)' }}>
+                    <MapPin size={11} color="rgba(10, 21, 48, 0.45)" />
+                    <span style={{ fontFamily: 'Space Grotesk', fontSize: 11, color: 'var(--text-muted)' }}>
                       {selected.city}
                     </span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <Calendar size={11} color="rgba(250,245,235,0.5)" />
-                    <span style={{ fontFamily: 'Space Grotesk', fontSize: 11, color: 'rgba(250,245,235,0.6)' }}>
+                    <Calendar size={11} color="rgba(10, 21, 48, 0.45)" />
+                    <span style={{ fontFamily: 'Space Grotesk', fontSize: 11, color: 'var(--text-muted)' }}>
                       Desde {selected.founded}
                     </span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <Users size={11} color="rgba(250,245,235,0.5)" />
-                    <span style={{ fontFamily: 'Space Grotesk', fontSize: 11, color: 'rgba(250,245,235,0.6)' }}>
+                    <Users size={11} color="rgba(10, 21, 48, 0.45)" />
+                    <span style={{ fontFamily: 'Space Grotesk', fontSize: 11, color: 'var(--text-muted)' }}>
                       {selected.members}
                     </span>
                   </div>
@@ -648,7 +779,7 @@ export default function CommunityPage() {
             {/* Stats strip */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, padding: '16px 0' }}>
               {[
-                ['PG', selected.wins, '#CCFF00'],
+                ['PG', selected.wins, 'var(--accent-primary)'],
                 ['PE', selected.draws, '#FFB800'],
                 ['PP', selected.losses, '#FF5B3A'],
               ].map(([label, val, color]) => (
@@ -656,7 +787,7 @@ export default function CommunityPage() {
                   key={label as string}
                   style={{
                     padding: '12px 8px',
-                    background: 'rgba(255,255,255,0.04)',
+                    background: 'rgba(10, 21, 48, 0.03)',
                     borderRadius: 10,
                     textAlign: 'center',
                     border: `1px solid ${color}33`,
@@ -673,7 +804,7 @@ export default function CommunityPage() {
                   <div
                     style={{
                       fontFamily: 'Space Grotesk', fontSize: 10,
-                      color: 'rgba(250,245,235,0.5)', letterSpacing: '0.08em',
+                      color: 'var(--text-muted)', letterSpacing: '0.08em',
                     }}
                   >
                     {label}
@@ -686,7 +817,7 @@ export default function CommunityPage() {
             <div
               style={{
                 fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 12,
-                color: 'rgba(250,245,235,0.6)', textTransform: 'uppercase',
+                color: 'var(--text-muted)', textTransform: 'uppercase',
                 letterSpacing: '0.08em', marginBottom: 10,
               }}
             >
@@ -699,9 +830,9 @@ export default function CommunityPage() {
                   style={{
                     display: 'flex', alignItems: 'center', gap: 12,
                     padding: '10px 12px',
-                    background: 'rgba(255,255,255,0.03)',
+                    background: 'rgba(10, 21, 48, 0.03)',
                     borderRadius: 10,
-                    border: '1px solid rgba(255,220,180,0.05)',
+                    border: '1px solid rgba(10, 21, 48, 0.06)',
                   }}
                 >
                   <div
@@ -715,10 +846,10 @@ export default function CommunityPage() {
                     {p.number}
                   </div>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 13, color: '#FAF5EB' }}>
+                    <div style={{ fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 13, color: 'var(--text-primary)' }}>
                       {p.name}
                     </div>
-                    <div style={{ fontFamily: 'Space Grotesk', fontSize: 11, color: 'rgba(250,245,235,0.5)' }}>
+                    <div style={{ fontFamily: 'Space Grotesk', fontSize: 11, color: 'var(--text-muted)' }}>
                       {p.position}
                     </div>
                   </div>
@@ -735,9 +866,9 @@ export default function CommunityPage() {
                 marginTop: 18, width: '100%',
                 padding: '14px 20px', borderRadius: 14,
                 background: joined[selected.name]
-                  ? 'rgba(204, 255, 0, 0.15)'
+                  ? 'rgba(16, 185, 129, 0.15)'
                   : `linear-gradient(135deg, ${selected.color}, ${selected.color}cc)`,
-                color: joined[selected.name] ? selected.color : '#0F0D0A',
+                color: joined[selected.name] ? selected.color : '#FAFBFD',
                 border: joined[selected.name] ? `1px solid ${selected.color}66` : 'none',
                 fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 14,
                 letterSpacing: '0.06em', textTransform: 'uppercase',
@@ -779,7 +910,7 @@ export default function CommunityPage() {
               {[0, 1, 2].map(i => (
                 <div key={i} style={{
                   flex: 1, height: 4, borderRadius: 2,
-                  background: i <= mStep ? '#B347FF' : 'rgba(255,220,180,0.1)',
+                  background: i <= mStep ? '#B347FF' : 'rgba(10, 21, 48, 0.08)',
                   transition: 'background 200ms',
                 }} />
               ))}
@@ -827,7 +958,7 @@ export default function CommunityPage() {
               <Sparkles size={13} color="#B347FF" />
               <div style={{
                 fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 11,
-                color: '#B347FF', letterSpacing: '0.12em', textTransform: 'uppercase',
+                color: 'var(--accent-secondary)', letterSpacing: '0.12em', textTransform: 'uppercase',
               }}>
                 Encontré {matcherResults.length} match{matcherResults.length === 1 ? '' : 'es'}
               </div>
@@ -843,11 +974,11 @@ export default function CommunityPage() {
                     style={{
                       padding: 14, borderRadius: 14,
                       background: i === 0
-                        ? 'linear-gradient(135deg, rgba(204, 255, 0, 0.12), rgba(179, 71, 255, 0.08))'
-                        : 'rgba(255, 255, 255, 0.04)',
+                        ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(93, 195, 255, 0.08))'
+                        : 'rgba(10, 21, 48, 0.03)',
                       border: i === 0
-                        ? '1px solid rgba(204, 255, 0, 0.4)'
-                        : '1px solid rgba(255, 220, 180, 0.08)',
+                        ? '1px solid rgba(16, 185, 129, 0.4)'
+                        : '1px solid rgba(16, 185, 129, 0.08)',
                       cursor: 'pointer', position: 'relative',
                     }}
                   >
@@ -855,11 +986,11 @@ export default function CommunityPage() {
                       <div style={{
                         position: 'absolute', top: -8, left: 12,
                         padding: '3px 10px', borderRadius: 999,
-                        background: 'linear-gradient(135deg, #CCFF00, #FFB800)',
-                        color: '#0F0D0A',
+                        background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',
+                        color: '#FAFBFD',
                         fontFamily: 'Archivo', fontWeight: 800, fontSize: 10,
                         letterSpacing: '0.1em', textTransform: 'uppercase',
-                        boxShadow: '0 4px 12px rgba(204, 255, 0, 0.4)',
+                        boxShadow: '0 4px 12px rgba(16, 185, 129, 0.4)',
                       }}>
                         🏆 Top match
                       </div>
@@ -879,21 +1010,21 @@ export default function CommunityPage() {
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{
                           fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 15,
-                          color: '#FAF5EB', marginBottom: 2,
+                          color: 'var(--text-primary)', marginBottom: 2,
                         }}>
                           {m.team.name}
                         </div>
                         <div style={{
                           fontFamily: 'Space Grotesk', fontSize: 11,
-                          color: 'rgba(250, 245, 235, 0.7)', lineHeight: 1.35,
+                          color: 'rgba(10, 21, 48, 0.65)', lineHeight: 1.35,
                         }}>
                           {m.reason}
                         </div>
                       </div>
                       <div style={{
                         fontFamily: 'Archivo', fontStyle: 'italic', fontWeight: 900,
-                        fontSize: 22, color: i === 0 ? '#CCFF00' : '#FAF5EB',
-                        textShadow: i === 0 ? '0 0 12px rgba(204,255,0,0.5)' : 'none',
+                        fontSize: 22, color: i === 0 ? 'var(--accent-primary)' : 'var(--text-primary)',
+                        textShadow: i === 0 ? '0 0 12px rgba(16, 185, 129, 0.5)' : 'none',
                         flexShrink: 0,
                       }}>
                         {m.score}%
@@ -909,9 +1040,9 @@ export default function CommunityPage() {
               style={{
                 marginTop: 16, width: '100%',
                 padding: '12px 14px', borderRadius: 12,
-                background: 'rgba(179, 71, 255, 0.12)',
-                border: '1px solid rgba(179, 71, 255, 0.35)',
-                color: '#B347FF',
+                background: 'rgba(93, 195, 255, 0.12)',
+                border: '1px solid rgba(93, 195, 255, 0.35)',
+                color: 'var(--accent-secondary)',
                 fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 12,
                 letterSpacing: '0.08em', textTransform: 'uppercase',
                 cursor: 'pointer',
@@ -922,6 +1053,105 @@ export default function CommunityPage() {
             </button>
           </div>
         )}
+      </BottomSheet>
+
+      {/* Crear equipo */}
+      <BottomSheet open={crearOpen} onClose={closeCrear} title="Crear equipo" accent="#10B981" height="82%">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          {/* Escudo picker */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+            <button
+              type="button"
+              onClick={() => escudoInputRef.current?.click()}
+              aria-label="Subir escudo del equipo"
+              style={{
+                position: 'relative', width: 96, height: 96, borderRadius: 24, padding: 0, overflow: 'hidden',
+                background: escudoPreview ? 'var(--surface-1)' : 'rgba(16, 185, 129, 0.1)',
+                border: '2px dashed rgba(16, 185, 129, 0.4)', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-primary)',
+              }}
+            >
+              {escudoPreview
+                ? <img src={escudoPreview} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                : <Shield size={30} />}
+              <span
+                style={{
+                  position: 'absolute', right: -2, bottom: -2, width: 30, height: 30, borderRadius: '50%',
+                  background: 'var(--accent-primary)', border: '2px solid var(--bg-deep)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#091A12',
+                }}
+              >
+                <ImagePlus size={14} />
+              </span>
+            </button>
+            <input ref={escudoInputRef} type="file" accept="image/*" onChange={pickEscudo} style={{ display: 'none' }} />
+            <span style={{ fontFamily: 'Space Grotesk, sans-serif', fontSize: 12, color: 'var(--text-dim)' }}>
+              Escudo del equipo (opcional)
+            </span>
+          </div>
+
+          <input
+            value={nombre}
+            onChange={e => setNombre(e.target.value)}
+            placeholder="Nombre del equipo"
+            style={{
+              width: '100%', boxSizing: 'border-box', height: 48, padding: '0 14px', borderRadius: 12,
+              background: 'var(--surface-1)', border: '1px solid var(--border)', outline: 'none',
+              fontFamily: 'Space Grotesk, sans-serif', fontSize: 15, color: 'var(--text-primary)',
+            }}
+          />
+          <input
+            value={ciudad}
+            onChange={e => setCiudad(e.target.value)}
+            placeholder="Ciudad"
+            style={{
+              width: '100%', boxSizing: 'border-box', height: 48, padding: '0 14px', borderRadius: 12,
+              background: 'var(--surface-1)', border: '1px solid var(--border)', outline: 'none',
+              fontFamily: 'Space Grotesk, sans-serif', fontSize: 15, color: 'var(--text-primary)',
+            }}
+          />
+
+          <div>
+            <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 11, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>
+              Categoría
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+              {CATEGORIAS.map(c => {
+                const active = categoria === c
+                return (
+                  <button
+                    key={c}
+                    onClick={() => setCategoria(c)}
+                    style={{
+                      padding: '7px 14px', borderRadius: 999,
+                      background: active ? 'var(--border-warm)' : 'rgba(10, 21, 48, 0.03)',
+                      border: `1px solid ${active ? 'var(--accent-primary)' : 'rgba(16, 185, 129, 0.12)'}`,
+                      color: active ? 'var(--accent-primary)' : 'var(--text-muted)',
+                      fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 12, cursor: 'pointer',
+                    }}
+                  >
+                    {c}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          <button
+            onClick={crearNuevoEquipo}
+            disabled={!nombre.trim() || creando}
+            style={{
+              marginTop: 4, height: 52, width: '100%', borderRadius: 14,
+              background: (!nombre.trim() || creando) ? 'var(--border)' : 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',
+              color: '#FAFBFD', border: 'none',
+              cursor: (!nombre.trim() || creando) ? 'default' : 'pointer',
+              fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 15,
+              boxShadow: (!nombre.trim() || creando) ? 'none' : '0 6px 20px rgba(16, 185, 129, 0.3)',
+            }}
+          >
+            {creando ? 'Creando…' : 'Crear equipo'}
+          </button>
+        </div>
       </BottomSheet>
 
       <EventsSheet open={eventsOpen} onClose={() => setEventsOpen(false)} />
@@ -941,7 +1171,7 @@ function QuizStep<T extends string>({
     <div>
       <div style={{
         fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 20,
-        color: '#FAF5EB', lineHeight: 1.2, marginBottom: 18,
+        color: 'var(--text-primary)', lineHeight: 1.2, marginBottom: 18,
         letterSpacing: '-0.01em',
       }}>
         {question}
@@ -953,24 +1183,24 @@ function QuizStep<T extends string>({
             onClick={() => onSelect(o.value)}
             style={{
               padding: '14px 16px', borderRadius: 14,
-              background: 'rgba(255, 255, 255, 0.04)',
-              border: '1px solid rgba(255, 220, 180, 0.1)',
-              color: '#FAF5EB', cursor: 'pointer',
+              background: 'rgba(10, 21, 48, 0.03)',
+              border: '1px solid rgba(16, 185, 129, 0.1)',
+              color: 'var(--text-primary)', cursor: 'pointer',
               display: 'flex', alignItems: 'center', gap: 14,
               textAlign: 'left',
               fontFamily: 'Space Grotesk, sans-serif', fontSize: 14, fontWeight: 600,
               transition: 'all 160ms',
             }}
             onMouseEnter={e => {
-              (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(179, 71, 255, 0.5)'
+              (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(93, 195, 255, 0.5)'
             }}
             onMouseLeave={e => {
-              (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(255, 220, 180, 0.1)'
+              (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(16, 185, 129, 0.1)'
             }}
           >
             <span style={{ fontSize: 20 }}>{o.emoji}</span>
             <span style={{ flex: 1 }}>{o.label}</span>
-            <ChevronRight size={16} color="rgba(250,245,235,0.4)" />
+            <ChevronRight size={16} color="rgba(10, 21, 48, 0.35)" />
           </button>
         ))}
       </div>

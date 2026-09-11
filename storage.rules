@@ -1,0 +1,40 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function autenticado() {
+      return request.auth != null;
+    }
+    function esImagen() {
+      return request.resource.contentType.matches('image/(jpeg|png|webp|avif)');
+    }
+
+    // Avatares: solo el propio usuario, máx 2 MB
+    match /avatares/{uid}/avatar.webp {
+      allow read:  if autenticado();
+      allow write: if autenticado() &&
+        request.auth.uid == uid &&
+        esImagen() &&
+        request.resource.size <= 2 * 1024 * 1024;
+    }
+
+    // Escudos de equipo: solo admin del equipo (verificado vía Firestore), máx 2 MB
+    match /equipos/{equipoId}/escudo.webp {
+      allow read: if autenticado();
+      allow write: if autenticado() &&
+        esImagen() &&
+        request.resource.size <= 2 * 1024 * 1024 &&
+        firestore.exists(/databases/(default)/documents/equipos/$(equipoId)/miembros/$(request.auth.uid)) &&
+        firestore.get(/databases/(default)/documents/equipos/$(equipoId)/miembros/$(request.auth.uid)).data.rol == 'admin';
+    }
+
+    // Imágenes de publicaciones: solo el propio usuario, máx 8 MB
+    match /publicaciones/{uid}/{imagen} {
+      allow read:  if autenticado();
+      allow write: if autenticado() &&
+        request.auth.uid == uid &&
+        esImagen() &&
+        request.resource.size <= 8 * 1024 * 1024;
+    }
+  }
+}
