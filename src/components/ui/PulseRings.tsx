@@ -4,7 +4,7 @@ interface PulseRingsProps {
   count?: number
 }
 
-export default function PulseRings({ size = 60, color = '#CCFF00', count = 3 }: PulseRingsProps) {
+export default function PulseRings({ size = 60, color = '#10B981', count = 3 }: PulseRingsProps) {
   return (
     <div
       style={{

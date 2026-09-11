@@ -110,10 +110,10 @@ export default function CoachChatSheet({ open, onClose, name, position, stats }:
             <Sparkles size={17} />
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontFamily: 'Archivo', fontWeight: 800, fontSize: 14, color: '#FAF5EB' }}>
+            <div style={{ fontFamily: 'Archivo', fontWeight: 800, fontSize: 14, color: 'var(--text-primary)' }}>
               Conversación 1:1
             </div>
-            <div style={{ fontFamily: 'Space Grotesk', fontSize: 11, color: 'rgba(250,245,235,0.55)' }}>
+            <div style={{ fontFamily: 'Space Grotesk', fontSize: 11, color: 'var(--text-muted)' }}>
               Claude AI · personalizado a tus stats
             </div>
           </div>
@@ -127,17 +127,17 @@ export default function CoachChatSheet({ open, onClose, name, position, stats }:
                 maxWidth: '85%',
                 padding: '10px 13px', borderRadius: 14,
                 background: m.mine
-                  ? 'linear-gradient(135deg, #CCFF00, #FFB800)'
+                  ? 'linear-gradient(135deg, #10B981, #FFB800)'
                   : 'linear-gradient(135deg, rgba(179,71,255,0.18), rgba(0,212,255,0.08))',
-                color: m.mine ? '#0F0D0A' : '#FAF5EB',
+                color: m.mine ? '#091A12' : 'var(--text-primary)',
                 border: m.mine ? 'none' : '1px solid rgba(179,71,255,0.3)',
                 fontFamily: 'Space Grotesk', fontSize: 13, lineHeight: 1.45,
-                boxShadow: m.mine ? '0 0 14px rgba(204,255,0,0.25)' : 'none',
+                boxShadow: m.mine ? '0 0 14px rgba(16,185,129,0.25)' : 'none',
               }}>
                 {m.grade && (
                   <div style={{
                     display: 'inline-block', padding: '2px 8px', borderRadius: 8,
-                    background: 'rgba(204,255,0,0.2)', color: '#CCFF00',
+                    background: 'rgba(16,185,129,0.2)', color: 'var(--accent-primary)',
                     fontFamily: 'Archivo', fontStyle: 'italic', fontWeight: 900, fontSize: 11,
                     marginBottom: 6,
                   }}>{m.grade}</div>
@@ -148,11 +148,11 @@ export default function CoachChatSheet({ open, onClose, name, position, stats }:
                     {m.plan.map((d, i) => (
                       <div key={i} style={{
                         display: 'flex', gap: 8, padding: '6px 8px', borderRadius: 8,
-                        background: 'rgba(0,0,0,0.25)', fontSize: 11,
+                        background: 'rgba(10,21,48,0.05)', fontSize: 11,
                       }}>
-                        <span style={{ color: '#CCFF00', fontWeight: 800, minWidth: 28 }}>{d.day}</span>
+                        <span style={{ color: 'var(--accent-primary)', fontWeight: 800, minWidth: 28 }}>{d.day}</span>
                         <span style={{ color: '#FFB800', fontWeight: 700, minWidth: 72 }}>{d.focus}</span>
-                        <span style={{ color: 'rgba(250,245,235,0.85)', flex: 1 }}>{d.drill}</span>
+                        <span style={{ color: 'var(--text-primary)', flex: 1 }}>{d.drill}</span>
                       </div>
                     ))}
                   </div>
@@ -163,7 +163,7 @@ export default function CoachChatSheet({ open, onClose, name, position, stats }:
           {typing && (
             <div style={{
               padding: '8px 12px', borderRadius: 12, alignSelf: 'flex-start',
-              background: 'rgba(179,71,255,0.14)', color: 'rgba(250,245,235,0.6)',
+              background: 'rgba(179,71,255,0.14)', color: 'var(--text-muted)',
               fontFamily: 'Space Grotesk', fontSize: 12,
             }}>
               Coach está escribiendo…
@@ -197,18 +197,18 @@ export default function CoachChatSheet({ open, onClose, name, position, stats }:
             placeholder="Preguntale al Coach…"
             style={{
               flex: 1, padding: '10px 12px', borderRadius: 12,
-              background: 'rgba(255,255,255,0.04)',
+              background: 'rgba(10,21,48,0.04)',
               border: '1px solid rgba(179,71,255,0.3)',
-              outline: 'none', color: '#FAF5EB',
+              outline: 'none', color: 'var(--text-primary)',
               fontFamily: 'Space Grotesk', fontSize: 13,
             }}
           />
           {speech.supported && (
             <button onClick={toggleMic} style={{
               width: 40, height: 40, borderRadius: 10, cursor: 'pointer',
-              background: speech.listening ? 'rgba(255,91,58,0.2)' : 'rgba(255,255,255,0.04)',
+              background: speech.listening ? 'rgba(255,91,58,0.2)' : 'rgba(10,21,48,0.04)',
               border: `1px solid ${speech.listening ? '#FF5B3A' : 'rgba(179,71,255,0.3)'}`,
-              color: speech.listening ? '#FF5B3A' : 'rgba(250,245,235,0.7)',
+              color: speech.listening ? '#FF5B3A' : 'var(--text-muted)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
               {speech.listening ? <MicOff size={15} /> : <Mic size={15} />}
@@ -216,8 +216,8 @@ export default function CoachChatSheet({ open, onClose, name, position, stats }:
           )}
           <button onClick={() => send()} disabled={!draft.trim()} style={{
             width: 40, height: 40, borderRadius: 10,
-            background: draft.trim() ? 'linear-gradient(135deg, #B347FF, #00D4FF)' : 'rgba(255,255,255,0.06)',
-            border: 'none', color: draft.trim() ? '#fff' : 'rgba(250,245,235,0.4)',
+            background: draft.trim() ? 'linear-gradient(135deg, #B347FF, #00D4FF)' : 'rgba(10,21,48,0.06)',
+            border: 'none', color: draft.trim() ? '#fff' : 'var(--text-dim)',
             cursor: draft.trim() ? 'pointer' : 'default',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             boxShadow: draft.trim() ? '0 0 14px rgba(179,71,255,0.4)' : 'none',

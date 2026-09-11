@@ -35,7 +35,7 @@ export default class ErrorBoundary extends Component<Props, State> {
       <div style={{
         position: 'absolute', inset: 0,
         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-        padding: 24, background: '#0F0D0A', color: '#FAF5EB', textAlign: 'center',
+        padding: 24, background: 'var(--bg-deep)', color: 'var(--text-primary)', textAlign: 'center',
       }}>
         <div style={{
           width: 56, height: 56, borderRadius: 16,
@@ -48,14 +48,14 @@ export default class ErrorBoundary extends Component<Props, State> {
         <div style={{ fontFamily: 'Archivo', fontWeight: 900, fontSize: 20, marginBottom: 6 }}>
           Algo falló
         </div>
-        <div style={{ fontFamily: 'Space Grotesk', fontSize: 13, color: 'rgba(250,245,235,0.6)', maxWidth: 320, marginBottom: 20 }}>
+        <div style={{ fontFamily: 'Space Grotesk', fontSize: 13, color: 'var(--text-muted)', maxWidth: 320, marginBottom: 20 }}>
           {this.props.fallbackLabel ?? 'Ocurrió un error inesperado en esta pantalla.'} Probá recargar.
         </div>
         {this.state.message && (
           <div style={{
             padding: '8px 12px', borderRadius: 10,
-            background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,220,180,0.1)',
-            fontFamily: 'monospace', fontSize: 11, color: 'rgba(250,245,235,0.55)',
+            background: 'var(--bg-surface)', border: '1px solid var(--border)',
+            fontFamily: 'monospace', fontSize: 11, color: 'var(--text-muted)',
             maxWidth: 320, marginBottom: 20,
           }}>
             {this.state.message}
@@ -63,11 +63,11 @@ export default class ErrorBoundary extends Component<Props, State> {
         )}
         <button onClick={this.reset} style={{
           padding: '10px 18px', borderRadius: 12,
-          background: 'linear-gradient(135deg, #CCFF00, #FFB800)',
+          background: 'linear-gradient(135deg, #10B981, #FFB800)',
           color: '#0F0D0A', border: 'none', cursor: 'pointer',
           fontFamily: 'Space Grotesk', fontWeight: 800, fontSize: 13,
           display: 'inline-flex', alignItems: 'center', gap: 6,
-          boxShadow: '0 0 18px rgba(204,255,0,0.35)',
+          boxShadow: '0 0 18px rgba(16,185,129,0.35)',
         }}>
           <RefreshCw size={14} /> Reintentar
         </button>

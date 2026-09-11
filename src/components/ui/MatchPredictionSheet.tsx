@@ -71,7 +71,7 @@ export default function MatchPredictionSheet({ match, onClose }: Props) {
       submit(match.id, {
         userName,
         badge: userBadge,
-        color: '#CCFF00',
+        color: '#10B981',
         home,
         away,
       })
@@ -110,7 +110,7 @@ export default function MatchPredictionSheet({ match, onClose }: Props) {
   const dismissCopilot = () => setCopilot(null)
 
   const saveUpdate = () => {
-    submit(match.id, { userName, badge: userBadge, color: '#CCFF00', home, away })
+    submit(match.id, { userName, badge: userBadge, color: '#10B981', home, away })
     setToast(`Predicción actualizada: ${home}-${away}`)
     if ('vibrate' in navigator) navigator.vibrate(25)
   }
@@ -124,7 +124,7 @@ export default function MatchPredictionSheet({ match, onClose }: Props) {
       open={!!match}
       onClose={onClose}
       title="Predicción del partido"
-      accent="#CCFF00"
+      accent="#10B981"
       height="88%"
     >
       {/* Match hero */}
@@ -132,7 +132,7 @@ export default function MatchPredictionSheet({ match, onClose }: Props) {
         style={{
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           gap: 16, padding: '6px 0 18px',
-          borderBottom: '1px solid rgba(255, 220, 180, 0.06)',
+          borderBottom: '1px solid var(--border)',
         }}
       >
         <TeamSide name={match.home} color={match.homeColor} badge={match.homeBadge} />
@@ -153,7 +153,7 @@ export default function MatchPredictionSheet({ match, onClose }: Props) {
           background: 'rgba(255, 184, 0, 0.08)',
           border: '1px solid rgba(255, 184, 0, 0.2)',
           display: 'flex', justifyContent: 'space-between',
-          fontFamily: 'Space Grotesk', fontSize: 12, color: 'rgba(250, 245, 235, 0.85)',
+          fontFamily: 'Space Grotesk', fontSize: 12, color: 'var(--text-primary)',
         }}
       >
         <span style={{ fontWeight: 700, color: '#FFB800' }}>{match.date}</span>
@@ -174,7 +174,7 @@ export default function MatchPredictionSheet({ match, onClose }: Props) {
                 ? 'linear-gradient(135deg, rgba(0, 212, 255, 0.14), rgba(179, 71, 255, 0.08))'
                 : 'rgba(0, 212, 255, 0.08)',
               border: '1px solid rgba(0, 212, 255, 0.35)',
-              color: '#FAF5EB',
+              color: 'var(--text-primary)',
               display: 'flex', alignItems: 'center', gap: 8,
               fontFamily: 'Space Grotesk', fontSize: 12, fontWeight: 600,
               cursor: 'pointer', textAlign: 'left',
@@ -204,13 +204,13 @@ export default function MatchPredictionSheet({ match, onClose }: Props) {
             >
               <div style={{
                 fontFamily: 'Space Grotesk', fontSize: 13, lineHeight: 1.5,
-                color: 'rgba(250, 245, 235, 0.9)', marginBottom: 12,
+                color: 'var(--text-primary)', marginBottom: 12,
                 fontStyle: 'italic',
               }}>
                 {preview.hypeLine}
               </div>
 
-              <PreviewRow color="#CCFF00" label={match.home} text={preview.homeStrength} />
+              <PreviewRow color="var(--accent-primary)" label={match.home} text={preview.homeStrength} />
               <PreviewRow color="#FF5B3A" label={match.away} text={preview.awayStrength} />
               <PreviewRow color="#00D4FF" label="Matchup clave" text={preview.keyMatchup} />
               <PreviewRow color="#FFB800" label="X-factor" text={preview.xFactor} last />
@@ -224,7 +224,7 @@ export default function MatchPredictionSheet({ match, onClose }: Props) {
         style={{
           marginTop: 18,
           fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 11,
-          color: 'rgba(250, 245, 235, 0.5)',
+          color: 'var(--text-muted)',
           textTransform: 'uppercase', letterSpacing: '0.1em',
           textAlign: 'center', marginBottom: 14,
         }}
@@ -247,7 +247,7 @@ export default function MatchPredictionSheet({ match, onClose }: Props) {
         <div
           style={{
             fontFamily: 'Archivo', fontWeight: 800, fontSize: 22,
-            color: 'rgba(250, 245, 235, 0.4)',
+            color: 'var(--text-muted)',
           }}
         >
           :
@@ -271,7 +271,7 @@ export default function MatchPredictionSheet({ match, onClose }: Props) {
               width: '100%', padding: '11px 14px', borderRadius: 12,
               background: 'rgba(179, 71, 255, 0.10)',
               border: '1px solid rgba(179, 71, 255, 0.35)',
-              color: '#FAF5EB',
+              color: 'var(--text-primary)',
               fontFamily: 'Space Grotesk', fontWeight: 600, fontSize: 13,
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
               cursor: thinking ? 'default' : 'pointer',
@@ -288,7 +288,7 @@ export default function MatchPredictionSheet({ match, onClose }: Props) {
           <div
             style={{
               padding: '12px 14px', borderRadius: 14,
-              background: 'linear-gradient(135deg, rgba(179, 71, 255, 0.12), rgba(204, 255, 0, 0.06))',
+              background: 'linear-gradient(135deg, rgba(179, 71, 255, 0.12), rgba(16, 185, 129, 0.06))',
               border: '1px solid rgba(179, 71, 255, 0.4)',
               animation: 'slide-up-fade 260ms ease-out',
             }}
@@ -316,7 +316,7 @@ export default function MatchPredictionSheet({ match, onClose }: Props) {
                     style={{
                       width: 22, height: 22, borderRadius: 6,
                       background: mood === m.k ? 'rgba(179, 71, 255, 0.25)' : 'transparent',
-                      border: mood === m.k ? '1px solid rgba(179, 71, 255, 0.5)' : '1px solid rgba(255, 220, 180, 0.1)',
+                      border: mood === m.k ? '1px solid rgba(179, 71, 255, 0.5)' : '1px solid var(--border)',
                       fontSize: 10, cursor: 'pointer',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       padding: 0,
@@ -332,7 +332,7 @@ export default function MatchPredictionSheet({ match, onClose }: Props) {
                 style={{
                   marginLeft: 'auto', width: 22, height: 22, borderRadius: 6,
                   background: 'transparent', border: 'none',
-                  color: 'rgba(250,245,235,0.5)', cursor: 'pointer',
+                  color: 'var(--text-muted)', cursor: 'pointer',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}
               >
@@ -343,7 +343,7 @@ export default function MatchPredictionSheet({ match, onClose }: Props) {
               <div
                 style={{
                   fontFamily: 'Archivo', fontStyle: 'italic', fontWeight: 900,
-                  fontSize: 28, color: '#FAF5EB', lineHeight: 1,
+                  fontSize: 28, color: 'var(--text-primary)', lineHeight: 1,
                   textShadow: '0 0 14px rgba(179, 71, 255, 0.5)',
                   flexShrink: 0, minWidth: 72, textAlign: 'center',
                 }}
@@ -354,7 +354,7 @@ export default function MatchPredictionSheet({ match, onClose }: Props) {
                 style={{
                   flex: 1,
                   fontFamily: 'Space Grotesk', fontSize: 12, lineHeight: 1.45,
-                  color: 'rgba(250, 245, 235, 0.78)',
+                  color: 'var(--text-primary)',
                 }}
               >
                 {copilot.reason}
@@ -364,9 +364,9 @@ export default function MatchPredictionSheet({ match, onClose }: Props) {
               onClick={applyCopilot}
               style={{
                 marginTop: 10, width: '100%', padding: '9px 12px', borderRadius: 10,
-                background: 'rgba(204, 255, 0, 0.15)',
-                border: '1px solid rgba(204, 255, 0, 0.4)',
-                color: '#CCFF00',
+                background: 'rgba(16, 185, 129, 0.15)',
+                border: '1px solid rgba(16, 185, 129, 0.4)',
+                color: 'var(--accent-primary)',
                 fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 11,
                 letterSpacing: '0.08em', textTransform: 'uppercase',
                 cursor: 'pointer',
@@ -387,13 +387,13 @@ export default function MatchPredictionSheet({ match, onClose }: Props) {
             flex: 1, padding: '14px 16px', borderRadius: 14,
             background: joined
               ? 'rgba(255, 91, 58, 0.14)'
-              : 'linear-gradient(135deg, #CCFF00, #FFB800)',
-            color: joined ? '#FF5B3A' : '#0F0D0A',
+              : 'linear-gradient(135deg, #10B981, #FFB800)',
+            color: joined ? '#FF5B3A' : '#091A12',
             border: joined ? '1px solid rgba(255, 91, 58, 0.4)' : 'none',
             fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 13,
             letterSpacing: '0.06em', textTransform: 'uppercase',
             cursor: 'pointer',
-            boxShadow: joined ? 'none' : '0 8px 24px rgba(204, 255, 0, 0.45)',
+            boxShadow: joined ? 'none' : '0 8px 24px rgba(16, 185, 129, 0.45)',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
             transition: 'all 200ms',
           }}
@@ -405,9 +405,9 @@ export default function MatchPredictionSheet({ match, onClose }: Props) {
             onClick={saveUpdate}
             style={{
               padding: '14px 16px', borderRadius: 14,
-              background: 'rgba(204, 255, 0, 0.15)',
-              color: '#CCFF00',
-              border: '1px solid rgba(204, 255, 0, 0.35)',
+              background: 'rgba(16, 185, 129, 0.15)',
+              color: 'var(--accent-primary)',
+              border: '1px solid rgba(16, 185, 129, 0.35)',
               fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 12,
               letterSpacing: '0.05em', textTransform: 'uppercase',
               cursor: 'pointer',
@@ -423,7 +423,7 @@ export default function MatchPredictionSheet({ match, onClose }: Props) {
         style={{
           marginTop: 8,
           fontFamily: 'Space Grotesk', fontSize: 11,
-          color: 'rgba(250, 245, 235, 0.45)', textAlign: 'center',
+          color: 'var(--text-muted)', textAlign: 'center',
           lineHeight: 1.4,
         }}
       >
@@ -435,14 +435,14 @@ export default function MatchPredictionSheet({ match, onClose }: Props) {
         style={{
           marginTop: 22, display: 'flex', alignItems: 'center', gap: 8,
           paddingTop: 14,
-          borderTop: '1px solid rgba(255, 220, 180, 0.06)',
+          borderTop: '1px solid var(--border)',
         }}
       >
-        <Users size={14} color="#CCFF00" />
+        <Users size={14} color="#10B981" />
         <div
           style={{
             fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 12,
-            color: 'rgba(250, 245, 235, 0.75)',
+            color: 'var(--text-primary)',
             textTransform: 'uppercase', letterSpacing: '0.08em',
           }}
         >
@@ -456,7 +456,7 @@ export default function MatchPredictionSheet({ match, onClose }: Props) {
             style={{
               padding: '28px 12px', textAlign: 'center',
               fontFamily: 'Space Grotesk', fontSize: 13,
-              color: 'rgba(250, 245, 235, 0.4)',
+              color: 'var(--text-muted)',
             }}
           >
             Nadie ha pronosticado aún · sé el primero
@@ -470,8 +470,8 @@ export default function MatchPredictionSheet({ match, onClose }: Props) {
               style={{
                 display: 'flex', alignItems: 'center', gap: 12,
                 padding: '10px 12px', borderRadius: 10,
-                background: mine ? 'rgba(204, 255, 0, 0.1)' : 'rgba(255, 255, 255, 0.03)',
-                border: mine ? '1px solid rgba(204, 255, 0, 0.35)' : '1px solid rgba(255, 220, 180, 0.05)',
+                background: mine ? 'var(--bg-surface-alt)' : 'rgba(10, 21, 48, 0.03)',
+                border: mine ? '1px solid rgba(16, 185, 129, 0.35)' : '1px solid var(--border)',
               }}
             >
               <div
@@ -490,22 +490,22 @@ export default function MatchPredictionSheet({ match, onClose }: Props) {
                 <div
                   style={{
                     fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 13,
-                    color: '#FAF5EB', display: 'flex', alignItems: 'center', gap: 6,
+                    color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: 6,
                   }}
                 >
                   {mine ? `${p.userName} (tú)` : p.userName}
                   {i === 0 && !mine && <Trophy size={11} color="#FFB800" />}
                 </div>
-                <div style={{ fontFamily: 'Space Grotesk', fontSize: 10, color: 'rgba(250,245,235,0.4)' }}>
+                <div style={{ fontFamily: 'Space Grotesk', fontSize: 10, color: 'var(--text-muted)' }}>
                   {timeAgo(p.at)}
                 </div>
               </div>
               <div
                 style={{
                   padding: '5px 12px', borderRadius: 8,
-                  background: mine ? 'rgba(204, 255, 0, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+                  background: mine ? 'rgba(16, 185, 129, 0.2)' : 'rgba(10, 21, 48, 0.05)',
                   fontFamily: 'Archivo', fontWeight: 800, fontSize: 14,
-                  color: mine ? '#CCFF00' : '#FAF5EB',
+                  color: mine ? 'var(--accent-primary)' : 'var(--text-primary)',
                   letterSpacing: '0.04em',
                 }}
               >
@@ -536,7 +536,7 @@ function TeamSide({ name, color, badge }: { name: string; color: string; badge: 
       <div
         style={{
           fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 12,
-          color: '#FAF5EB', overflow: 'hidden',
+          color: 'var(--text-primary)', overflow: 'hidden',
           textOverflow: 'ellipsis', whiteSpace: 'nowrap',
         }}
       >
@@ -555,7 +555,7 @@ function ScorePicker({
     <div
       style={{
         padding: 12, borderRadius: 14,
-        background: 'rgba(255, 255, 255, 0.04)',
+        background: 'rgba(10, 21, 48, 0.04)',
         border: `1px solid ${color}44`,
         display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
       }}
@@ -571,7 +571,7 @@ function ScorePicker({
       <div
         style={{
           fontFamily: 'Archivo', fontStyle: 'italic', fontWeight: 900,
-          fontSize: 54, color: '#FAF5EB', lineHeight: 1,
+          fontSize: 54, color: 'var(--text-primary)', lineHeight: 1,
           textShadow: `0 0 20px ${color}66`,
           transition: 'transform 140ms',
         }}
@@ -592,9 +592,9 @@ function StepperButton({ onClick, children }: { onClick: () => void; children: R
       onClick={onClick}
       style={{
         width: 32, height: 32, borderRadius: 10,
-        background: 'rgba(255, 255, 255, 0.06)',
-        border: '1px solid rgba(255, 220, 180, 0.12)',
-        color: '#FAF5EB', cursor: 'pointer',
+        background: 'rgba(10, 21, 48, 0.06)',
+        border: '1px solid var(--border)',
+        color: 'var(--text-primary)', cursor: 'pointer',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}
     >
@@ -611,7 +611,7 @@ function PreviewRow({
       style={{
         display: 'flex', gap: 10,
         padding: '8px 0',
-        borderBottom: last ? 'none' : '1px solid rgba(255, 220, 180, 0.06)',
+        borderBottom: last ? 'none' : '1px solid var(--border)',
       }}
     >
       <div style={{
@@ -623,7 +623,7 @@ function PreviewRow({
       </div>
       <div style={{
         flex: 1, fontFamily: 'Space Grotesk', fontSize: 12, lineHeight: 1.4,
-        color: 'rgba(250, 245, 235, 0.8)',
+        color: 'var(--text-primary)',
       }}>
         {text}
       </div>

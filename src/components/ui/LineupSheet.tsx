@@ -9,7 +9,7 @@ const STYLES: Lineup['style'][] = ['ofensivo', 'equilibrado', 'defensivo']
 
 const STYLE_COLOR: Record<Lineup['style'], string> = {
   ofensivo: '#FF5B3A',
-  equilibrado: '#CCFF00',
+  equilibrado: '#10B981',
   defensivo: '#00D4FF',
 }
 
@@ -34,7 +34,7 @@ export default function LineupSheet({ open, onClose, opponent }: LineupSheetProp
       <div style={{ marginBottom: 14 }}>
         <div style={{
           fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 10,
-          color: 'rgba(250,245,235,0.5)', letterSpacing: '0.1em',
+          color: 'var(--text-muted)', letterSpacing: '0.1em',
           textTransform: 'uppercase', marginBottom: 6,
         }}>
           Formación
@@ -46,9 +46,9 @@ export default function LineupSheet({ open, onClose, opponent }: LineupSheetProp
               onClick={() => setFormation(f)}
               style={{
                 padding: '6px 12px', borderRadius: 999,
-                background: formation === f ? 'rgba(204, 255, 0, 0.18)' : 'rgba(255,255,255,0.04)',
-                border: `1px solid ${formation === f ? 'rgba(204, 255, 0, 0.5)' : 'rgba(255, 220, 180, 0.1)'}`,
-                color: formation === f ? '#CCFF00' : 'rgba(250, 245, 235, 0.6)',
+                background: formation === f ? 'rgba(16, 185, 129, 0.18)' : 'rgba(10,21,48,0.04)',
+                border: `1px solid ${formation === f ? 'rgba(16, 185, 129, 0.5)' : 'rgba(10,21,48,0.10)'}`,
+                color: formation === f ? 'var(--accent-primary)' : 'var(--text-muted)',
                 fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 11,
                 letterSpacing: '0.04em', cursor: 'pointer',
                 fontVariantNumeric: 'tabular-nums',
@@ -61,7 +61,7 @@ export default function LineupSheet({ open, onClose, opponent }: LineupSheetProp
 
         <div style={{
           fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 10,
-          color: 'rgba(250,245,235,0.5)', letterSpacing: '0.1em',
+          color: 'var(--text-muted)', letterSpacing: '0.1em',
           textTransform: 'uppercase', marginBottom: 6,
         }}>
           Estilo
@@ -73,9 +73,9 @@ export default function LineupSheet({ open, onClose, opponent }: LineupSheetProp
               onClick={() => setStyle(s)}
               style={{
                 flex: 1, padding: '8px 10px', borderRadius: 10,
-                background: style === s ? `${STYLE_COLOR[s]}22` : 'rgba(255,255,255,0.04)',
-                border: `1px solid ${style === s ? STYLE_COLOR[s] + '88' : 'rgba(255, 220, 180, 0.1)'}`,
-                color: style === s ? STYLE_COLOR[s] : 'rgba(250, 245, 235, 0.6)',
+                background: style === s ? `${STYLE_COLOR[s]}22` : 'rgba(10,21,48,0.04)',
+                border: `1px solid ${style === s ? STYLE_COLOR[s] + '88' : 'rgba(10,21,48,0.10)'}`,
+                color: style === s ? STYLE_COLOR[s] : 'var(--text-muted)',
                 fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 11,
                 textTransform: 'capitalize', cursor: 'pointer',
               }}
@@ -94,11 +94,11 @@ export default function LineupSheet({ open, onClose, opponent }: LineupSheetProp
           aspectRatio: '16/11',
           borderRadius: 14,
           background: `
-            linear-gradient(90deg, rgba(204,255,0,0.06), transparent 40%, transparent 60%, rgba(0,212,255,0.06)),
+            linear-gradient(90deg, rgba(16,185,129,0.06), transparent 40%, transparent 60%, rgba(0,212,255,0.06)),
             repeating-linear-gradient(90deg, rgba(0,0,0,0.18) 0 24px, transparent 24px 48px),
             linear-gradient(180deg, #1a2f1a, #0f2010)
           `,
-          border: '1px solid rgba(204, 255, 0, 0.2)',
+          border: '1px solid rgba(16, 185, 129, 0.2)',
           boxShadow: `inset 0 0 40px rgba(0,0,0,0.5), 0 0 24px ${styleColor}22`,
           overflow: 'hidden',
           marginBottom: 14,
@@ -159,7 +159,7 @@ export default function LineupSheet({ open, onClose, opponent }: LineupSheetProp
             </div>
             <div style={{
               fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 8,
-              color: '#FAF5EB',
+              color: '#FAFBFD',
               background: 'rgba(15, 13, 10, 0.75)',
               padding: '1px 5px',
               borderRadius: 3,
@@ -185,14 +185,14 @@ export default function LineupSheet({ open, onClose, opponent }: LineupSheetProp
           <div style={{ flex: 1 }}>
             <div style={{
               fontFamily: 'Space Grotesk', fontSize: 10,
-              color: 'rgba(250,245,235,0.5)',
+              color: 'var(--text-muted)',
               letterSpacing: '0.1em', textTransform: 'uppercase',
             }}>
               Jugador clave
             </div>
             <div style={{
               fontFamily: 'Archivo', fontWeight: 800, fontSize: 14,
-              color: '#FAF5EB', marginTop: 2,
+              color: 'var(--text-primary)', marginTop: 2,
             }}>
               {lineup.keyPlayer}
             </div>
@@ -208,7 +208,7 @@ export default function LineupSheet({ open, onClose, opponent }: LineupSheetProp
           <Shield size={14} color="#FF5B3A" style={{ marginTop: 2, flexShrink: 0 }} />
           <div style={{
             fontFamily: 'Space Grotesk', fontSize: 12,
-            color: 'rgba(250,245,235,0.85)', lineHeight: 1.5,
+            color: 'var(--text-primary)', lineHeight: 1.5,
           }}>
             <strong style={{ color: '#FF5B3A' }}>Riesgo:</strong> {lineup.risk}
           </div>
@@ -216,10 +216,10 @@ export default function LineupSheet({ open, onClose, opponent }: LineupSheetProp
 
         <div style={{
           padding: '10px 12px', borderRadius: 10,
-          background: 'rgba(204, 255, 0, 0.05)',
-          border: '1px solid rgba(204, 255, 0, 0.25)',
+          background: 'rgba(16, 185, 129, 0.05)',
+          border: '1px solid rgba(16, 185, 129, 0.25)',
           fontFamily: 'Archivo', fontStyle: 'italic', fontSize: 13,
-          color: '#FAF5EB',
+          color: 'var(--text-primary)',
           textAlign: 'center',
         }}>
           "{lineup.hypeLine}"
@@ -231,14 +231,14 @@ export default function LineupSheet({ open, onClose, opponent }: LineupSheetProp
         rippleColor="rgba(15, 13, 10, 0.35)"
         style={{
           width: '100%', padding: '12px 14px', borderRadius: 12,
-          background: 'linear-gradient(135deg, #CCFF00, #FFB800)',
+          background: 'linear-gradient(135deg, #10B981, #FFB800)',
           border: 'none',
           color: '#0F0D0A',
           fontFamily: 'Archivo', fontWeight: 800, fontSize: 12,
           letterSpacing: '0.06em', textTransform: 'uppercase',
           cursor: 'pointer',
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-          boxShadow: '0 6px 20px rgba(204, 255, 0, 0.35)',
+          boxShadow: '0 6px 20px rgba(16, 185, 129, 0.35)',
         }}
       >
         <RefreshCw size={13} />
@@ -250,7 +250,7 @@ export default function LineupSheet({ open, onClose, opponent }: LineupSheetProp
         marginTop: 10,
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
         fontFamily: 'Space Grotesk', fontSize: 10,
-        color: 'rgba(250, 245, 235, 0.4)',
+        color: 'var(--text-dim)',
       }}>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
           <Users size={10} /> {lineup.players.length} jugadores

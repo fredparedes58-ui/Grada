@@ -67,18 +67,18 @@ export default function MarketSheet({ open, onClose }: Props) {
   }
 
   return (
-    <BottomSheet open={open} onClose={onClose} title="Mercado de fichajes" height="90%" accent="#CCFF00">
+    <BottomSheet open={open} onClose={onClose} title="Mercado de fichajes" height="90%" accent="#10B981">
       {/* Wallet */}
       <div style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: '12px 14px', borderRadius: 14, marginBottom: 12,
-        background: 'linear-gradient(135deg, rgba(204,255,0,0.18), rgba(255,184,0,0.10))',
-        border: '1px solid rgba(204,255,0,0.45)',
+        background: 'linear-gradient(135deg, rgba(16,185,129,0.18), rgba(255,184,0,0.10))',
+        border: '1px solid rgba(16,185,129,0.45)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <Coins size={20} color="#FFB800" />
           <div>
-            <div style={{ fontFamily: 'Space Grotesk', fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(250,245,235,0.55)' }}>
+            <div style={{ fontFamily: 'Space Grotesk', fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)' }}>
               Créditos
             </div>
             <div style={{ fontFamily: 'Archivo', fontWeight: 900, fontSize: 22, color: '#FFB800' }}>
@@ -87,10 +87,10 @@ export default function MarketSheet({ open, onClose }: Props) {
           </div>
         </div>
         <div style={{ textAlign: 'right' }}>
-          <div style={{ fontFamily: 'Space Grotesk', fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(250,245,235,0.55)' }}>
+          <div style={{ fontFamily: 'Space Grotesk', fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)' }}>
             Plantel
           </div>
-          <div style={{ fontFamily: 'Archivo', fontWeight: 900, fontSize: 22, color: '#CCFF00' }}>
+          <div style={{ fontFamily: 'Archivo', fontWeight: 900, fontSize: 22, color: 'var(--accent-primary)' }}>
             {squad.length} jug.
           </div>
         </div>
@@ -104,9 +104,9 @@ export default function MarketSheet({ open, onClose }: Props) {
             onClick={() => setFilter(f)}
             style={{
               padding: '6px 12px', borderRadius: 999,
-              background: filter === f ? 'rgba(204,255,0,0.15)' : 'rgba(255,255,255,0.04)',
-              border: `1px solid ${filter === f ? 'rgba(204,255,0,0.5)' : 'rgba(255,220,180,0.1)'}`,
-              color: filter === f ? '#CCFF00' : 'rgba(250,245,235,0.65)',
+              background: filter === f ? 'rgba(16,185,129,0.15)' : 'rgba(10,21,48,0.04)',
+              border: `1px solid ${filter === f ? 'rgba(16,185,129,0.5)' : 'var(--border)'}`,
+              color: filter === f ? 'var(--accent-primary)' : 'var(--text-muted)',
               fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 11,
               cursor: 'pointer',
             }}
@@ -125,8 +125,8 @@ export default function MarketSheet({ open, onClose }: Props) {
             <div key={p.id} style={{
               display: 'grid', gridTemplateColumns: '42px 1fr auto', gap: 12, alignItems: 'center',
               padding: '10px 12px', borderRadius: 12,
-              background: signed ? `${p.color}14` : 'rgba(255,255,255,0.03)',
-              border: `1px solid ${signed ? p.color + '55' : 'rgba(255,220,180,0.08)'}`,
+              background: signed ? `${p.color}14` : 'rgba(10,21,48,0.03)',
+              border: `1px solid ${signed ? p.color + '55' : 'var(--border)'}`,
             }}>
               <div style={{
                 width: 42, height: 42, borderRadius: 10,
@@ -138,10 +138,10 @@ export default function MarketSheet({ open, onClose }: Props) {
                 {p.emoji}
               </div>
               <div>
-                <div style={{ fontFamily: 'Archivo', fontWeight: 700, fontSize: 13, color: '#FAF5EB' }}>
+                <div style={{ fontFamily: 'Archivo', fontWeight: 700, fontSize: 13, color: 'var(--text-primary)' }}>
                   {p.name}
                 </div>
-                <div style={{ fontFamily: 'Space Grotesk', fontSize: 10, color: 'rgba(250,245,235,0.55)' }}>
+                <div style={{ fontFamily: 'Space Grotesk', fontSize: 10, color: 'var(--text-muted)' }}>
                   {p.pos} · ⭐ {p.rating} · 🪙 {p.price}
                 </div>
               </div>
@@ -165,9 +165,9 @@ export default function MarketSheet({ open, onClose }: Props) {
                   disabled={!canAfford}
                   style={{
                     padding: '7px 12px', borderRadius: 10,
-                    background: canAfford ? 'linear-gradient(135deg, rgba(204,255,0,0.2), rgba(255,184,0,0.12))' : 'rgba(255,255,255,0.04)',
-                    border: `1px solid ${canAfford ? 'rgba(204,255,0,0.55)' : 'rgba(255,220,180,0.1)'}`,
-                    color: canAfford ? '#CCFF00' : 'rgba(250,245,235,0.3)',
+                    background: canAfford ? 'linear-gradient(135deg, rgba(16,185,129,0.2), rgba(255,184,0,0.12))' : 'rgba(10,21,48,0.04)',
+                    border: `1px solid ${canAfford ? 'rgba(16,185,129,0.55)' : 'var(--border)'}`,
+                    color: canAfford ? 'var(--accent-primary)' : 'var(--text-dim)',
                     cursor: canAfford ? 'pointer' : 'not-allowed',
                     fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 11,
                     display: 'inline-flex', alignItems: 'center', gap: 4,
@@ -181,7 +181,7 @@ export default function MarketSheet({ open, onClose }: Props) {
         })}
       </div>
 
-      <div style={{ marginTop: 12, display: 'flex', alignItems: 'center', gap: 6, fontFamily: 'Space Grotesk', fontSize: 10, color: 'rgba(250,245,235,0.45)' }}>
+      <div style={{ marginTop: 12, display: 'flex', alignItems: 'center', gap: 6, fontFamily: 'Space Grotesk', fontSize: 10, color: 'var(--text-dim)' }}>
         <Shield size={10} /> Liberar devuelve 70% del valor. Modo simulado.
       </div>
     </BottomSheet>

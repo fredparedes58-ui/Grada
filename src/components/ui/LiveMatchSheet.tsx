@@ -14,18 +14,18 @@ interface Props {
 }
 
 const EVENT_STYLE: Record<string, { color: string; icon: string }> = {
-  goal:       { color: '#CCFF00', icon: '⚽' },
+  goal:       { color: '#10B981', icon: '⚽' },
   chance:     { color: '#FFB800', icon: '🎯' },
   save:       { color: '#00D4FF', icon: '🧤' },
   yellow:     { color: '#FFB800', icon: '🟨' },
   red:        { color: '#FF5B3A', icon: '🟥' },
   sub:        { color: '#B347FF', icon: '🔁' },
-  foul:       { color: 'rgba(250,245,235,0.5)', icon: '⚠️' },
-  corner:     { color: 'rgba(250,245,235,0.5)', icon: '🚩' },
-  kickoff:    { color: '#CCFF00', icon: '🏁' },
+  foul:       { color: 'rgba(10,21,48,0.55)', icon: '⚠️' },
+  corner:     { color: 'rgba(10,21,48,0.55)', icon: '🚩' },
+  kickoff:    { color: '#10B981', icon: '🏁' },
   halftime:   { color: '#FFB800', icon: '⏸️' },
   fulltime:   { color: '#FF5B3A', icon: '🏆' },
-  commentary: { color: 'rgba(250,245,235,0.4)', icon: '💬' },
+  commentary: { color: 'rgba(10,21,48,0.35)', icon: '💬' },
 }
 
 export default function LiveMatchSheet({ open, onClose, home, away }: Props) {
@@ -75,20 +75,20 @@ export default function LiveMatchSheet({ open, onClose, home, away }: Props) {
         alignItems: 'center', gap: 12,
         padding: '16px 14px',
         borderRadius: 16,
-        background: 'linear-gradient(135deg, rgba(255,91,58,0.12), rgba(204,255,0,0.08))',
+        background: 'linear-gradient(135deg, rgba(255,91,58,0.12), rgba(16,185,129,0.08))',
         border: '1px solid rgba(255,91,58,0.35)',
         marginBottom: 14,
       }}>
         <div style={{ textAlign: 'right' }}>
-          <div style={{ fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 14, color: '#FAF5EB' }}>{home}</div>
+          <div style={{ fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 14, color: 'var(--text-primary)' }}>{home}</div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span style={{ fontFamily: 'Archivo, sans-serif', fontWeight: 900, fontSize: 32, color: '#CCFF00' }}>{homeGoals}</span>
-          <span style={{ fontSize: 18, color: 'rgba(250,245,235,0.4)' }}>-</span>
+          <span style={{ fontFamily: 'Archivo, sans-serif', fontWeight: 900, fontSize: 32, color: 'var(--accent-primary)' }}>{homeGoals}</span>
+          <span style={{ fontSize: 18, color: 'var(--text-dim)' }}>-</span>
           <span style={{ fontFamily: 'Archivo, sans-serif', fontWeight: 900, fontSize: 32, color: '#FFB800' }}>{awayGoals}</span>
         </div>
         <div>
-          <div style={{ fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 14, color: '#FAF5EB' }}>{away}</div>
+          <div style={{ fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 14, color: 'var(--text-primary)' }}>{away}</div>
         </div>
       </div>
 
@@ -104,7 +104,7 @@ export default function LiveMatchSheet({ open, onClose, home, away }: Props) {
             EN VIVO · {lastMinute}&apos;
           </span>
         </div>
-        <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontSize: 11, color: 'rgba(250,245,235,0.5)' }}>
+        <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontSize: 11, color: 'var(--text-muted)' }}>
           {shown.length} / {events.length} eventos
         </div>
       </div>
@@ -122,8 +122,8 @@ export default function LiveMatchSheet({ open, onClose, home, away }: Props) {
                 alignItems: 'center',
                 padding: '10px 12px',
                 borderRadius: 12,
-                background: isHigh ? `${st.color}14` : 'rgba(255,255,255,0.03)',
-                border: `1px solid ${isHigh ? st.color + '44' : 'rgba(255,220,180,0.07)'}`,
+                background: isHigh ? `${st.color}14` : 'rgba(10,21,48,0.04)',
+                border: `1px solid ${isHigh ? st.color + '44' : 'var(--border)'}`,
                 animation: 'slide-up-fade 280ms ease-out',
               }}
             >
@@ -136,7 +136,7 @@ export default function LiveMatchSheet({ open, onClose, home, away }: Props) {
               <div style={{ fontSize: 18, textAlign: 'center' }}>{st.icon}</div>
               <div style={{
                 fontFamily: 'Space Grotesk, sans-serif', fontSize: 13,
-                color: isHigh ? '#FAF5EB' : 'rgba(250,245,235,0.75)',
+                color: isHigh ? 'var(--text-primary)' : 'rgba(10,21,48,0.75)',
                 fontWeight: isHigh ? 600 : 400,
                 lineHeight: 1.35,
               }}>
@@ -151,7 +151,7 @@ export default function LiveMatchSheet({ open, onClose, home, away }: Props) {
         <div style={{
           padding: 30, textAlign: 'center',
           fontFamily: 'Space Grotesk, sans-serif', fontSize: 13,
-          color: 'rgba(250,245,235,0.5)',
+          color: 'var(--text-muted)',
         }}>
           Preparando el partido...
         </div>

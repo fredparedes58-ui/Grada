@@ -9,7 +9,7 @@ interface FloatingChipProps {
 }
 
 export default function FloatingChip({
-  icon, label, value, color = '#CCFF00', style,
+  icon, label, value, color = '#10B981', style,
 }: FloatingChipProps) {
   return (
     <div
@@ -19,7 +19,7 @@ export default function FloatingChip({
         gap: 8,
         padding: '8px 14px',
         borderRadius: 999,
-        background: 'rgba(26, 22, 18, 0.55)',
+        background: 'rgba(255, 255, 255, 0.55)',
         backdropFilter: 'blur(20px) saturate(180%)',
         WebkitBackdropFilter: 'blur(20px) saturate(180%)',
         border: `1px solid ${color}40`,
@@ -43,7 +43,7 @@ export default function FloatingChip({
         style={{
           fontFamily: 'Space Grotesk, sans-serif',
           fontSize: 11,
-          color: 'rgba(250, 245, 235, 0.6)',
+          color: 'var(--text-muted)',
           letterSpacing: '0.03em',
         }}
       >

@@ -51,10 +51,10 @@ export default function SeasonPassSheet({ open, onClose, xp = 680, xpPerLevel = 
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
           <div>
-            <div style={{ fontFamily: 'Space Grotesk', fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(250,245,235,0.5)' }}>
+            <div style={{ fontFamily: 'Space Grotesk', fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>
               Nivel actual
             </div>
-            <div style={{ fontFamily: 'Archivo, sans-serif', fontWeight: 900, fontSize: 30, color: '#FAF5EB' }}>
+            <div style={{ fontFamily: 'Archivo, sans-serif', fontWeight: 900, fontSize: 30, color: 'var(--text-primary)' }}>
               {level}
             </div>
           </div>
@@ -62,12 +62,12 @@ export default function SeasonPassSheet({ open, onClose, xp = 680, xpPerLevel = 
             <div style={{ fontFamily: 'Archivo, sans-serif', fontWeight: 800, fontSize: 16, color: '#B347FF' }}>
               {xp.toLocaleString()} XP
             </div>
-            <div style={{ fontFamily: 'Space Grotesk', fontSize: 10, color: 'rgba(250,245,235,0.55)' }}>
+            <div style={{ fontFamily: 'Space Grotesk', fontSize: 10, color: 'var(--text-muted)' }}>
               {xpInLevel} / {xpPerLevel} al siguiente
             </div>
           </div>
         </div>
-        <div style={{ height: 8, borderRadius: 999, background: 'rgba(255,255,255,0.08)', overflow: 'hidden' }}>
+        <div style={{ height: 8, borderRadius: 999, background: 'rgba(10,21,48,0.08)', overflow: 'hidden' }}>
           <div style={{
             width: `${progress * 100}%`, height: '100%',
             background: 'linear-gradient(90deg, #B347FF, #00D4FF)',
@@ -80,7 +80,7 @@ export default function SeasonPassSheet({ open, onClose, xp = 680, xpPerLevel = 
       {/* Recompensas */}
       <div style={{
         fontFamily: 'Space Grotesk', fontSize: 11, textTransform: 'uppercase',
-        letterSpacing: '0.1em', color: 'rgba(250,245,235,0.5)', marginBottom: 10,
+        letterSpacing: '0.1em', color: 'var(--text-muted)', marginBottom: 10,
       }}>
         Recompensas
       </div>
@@ -92,8 +92,8 @@ export default function SeasonPassSheet({ open, onClose, xp = 680, xpPerLevel = 
             <div key={r.level} style={{
               flexShrink: 0, width: 120,
               padding: 12, borderRadius: 14,
-              background: unlocked ? `${c}18` : 'rgba(255,255,255,0.03)',
-              border: `1px solid ${unlocked ? c + '77' : 'rgba(255,220,180,0.07)'}`,
+              background: unlocked ? `${c}18` : 'rgba(10,21,48,0.03)',
+              border: `1px solid ${unlocked ? c + '77' : 'var(--border)'}`,
               opacity: unlocked ? 1 : 0.7,
               boxShadow: unlocked ? `0 0 14px ${c}33` : 'none',
               textAlign: 'center',
@@ -110,18 +110,18 @@ export default function SeasonPassSheet({ open, onClose, xp = 680, xpPerLevel = 
               </div>
               <div style={{
                 fontFamily: 'Space Grotesk', fontSize: 11, fontWeight: 600,
-                color: '#FAF5EB', lineHeight: 1.25,
+                color: 'var(--text-primary)', lineHeight: 1.25,
               }}>
                 {r.title}
               </div>
               <div style={{
                 position: 'absolute', top: 8, right: 8,
                 width: 22, height: 22, borderRadius: '50%',
-                background: unlocked ? `${c}33` : 'rgba(0,0,0,0.25)',
-                border: `1px solid ${unlocked ? c : 'rgba(255,255,255,0.1)'}`,
+                background: unlocked ? `${c}33` : 'rgba(10,21,48,0.06)',
+                border: `1px solid ${unlocked ? c : 'var(--border)'}`,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>
-                {unlocked ? <Check size={12} color={c} /> : <Lock size={11} color="rgba(255,255,255,0.4)" />}
+                {unlocked ? <Check size={12} color={c} /> : <Lock size={11} color="rgba(10,21,48,0.4)" />}
               </div>
             </div>
           )
@@ -132,7 +132,7 @@ export default function SeasonPassSheet({ open, onClose, xp = 680, xpPerLevel = 
       <div style={{ marginTop: 20 }}>
         <div style={{
           fontFamily: 'Space Grotesk', fontSize: 11, textTransform: 'uppercase',
-          letterSpacing: '0.1em', color: 'rgba(250,245,235,0.5)', marginBottom: 10,
+          letterSpacing: '0.1em', color: 'var(--text-muted)', marginBottom: 10,
         }}>
           Calendario · 12 semanas
         </div>
@@ -144,13 +144,13 @@ export default function SeasonPassSheet({ open, onClose, xp = 680, xpPerLevel = 
                 padding: '10px 0', borderRadius: 10, textAlign: 'center',
                 background: done
                   ? 'linear-gradient(135deg, rgba(179,71,255,0.24), rgba(0,212,255,0.12))'
-                  : 'rgba(255,255,255,0.03)',
-                border: `1px solid ${done ? 'rgba(179,71,255,0.55)' : 'rgba(255,220,180,0.07)'}`,
+                  : 'rgba(10,21,48,0.03)',
+                border: `1px solid ${done ? 'rgba(179,71,255,0.55)' : 'var(--border)'}`,
               }}>
-                <div style={{ fontFamily: 'Space Grotesk', fontSize: 9, color: 'rgba(250,245,235,0.5)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                <div style={{ fontFamily: 'Space Grotesk', fontSize: 9, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                   Sem
                 </div>
-                <div style={{ fontFamily: 'Archivo', fontWeight: 900, fontSize: 15, color: done ? '#B347FF' : '#FAF5EB' }}>
+                <div style={{ fontFamily: 'Archivo', fontWeight: 900, fontSize: 15, color: done ? '#B347FF' : 'var(--text-primary)' }}>
                   {w}
                 </div>
                 {done && <Gift size={10} color="#B347FF" />}

@@ -12,7 +12,7 @@ const FRIENDS = [
   { name: 'Carlos Méndez',  badge: 'CM', color: '#FFB800' },
   { name: 'Martín Solís',   badge: 'MS', color: '#00D4FF' },
   { name: 'Diego Fuentes',  badge: 'DF', color: '#B347FF' },
-  { name: 'Rafa Ortiz',     badge: 'RO', color: '#CCFF00' },
+  { name: 'Rafa Ortiz',     badge: 'RO', color: '#10B981' },
   { name: 'Pablo Lanza',    badge: 'PL', color: '#FF5B3A' },
 ]
 
@@ -52,7 +52,7 @@ export default function DuelsSheet({ open, onClose, me = 'Alex Rivera' }: Props)
     <BottomSheet open={open} onClose={onClose} title="Duelos 1v1" height="88%" accent="#FF5B3A">
       {!rival ? (
         <>
-          <div style={{ fontFamily: 'Space Grotesk', fontSize: 12, color: 'rgba(250,245,235,0.65)', marginBottom: 14 }}>
+          <div style={{ fontFamily: 'Space Grotesk', fontSize: 12, color: 'var(--text-muted)', marginBottom: 14 }}>
             Elegí un rival y peleá por los puntos de la semana.
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -63,8 +63,8 @@ export default function DuelsSheet({ open, onClose, me = 'Alex Rivera' }: Props)
                 style={{
                   display: 'flex', alignItems: 'center', gap: 12,
                   padding: '12px 14px', borderRadius: 12,
-                  background: 'rgba(255,255,255,0.04)',
-                  border: '1px solid rgba(255,220,180,0.1)',
+                  background: 'var(--bg-surface)',
+                  border: '1px solid var(--border)',
                   cursor: 'pointer', textAlign: 'left',
                 }}
               >
@@ -78,10 +78,10 @@ export default function DuelsSheet({ open, onClose, me = 'Alex Rivera' }: Props)
                   {f.badge}
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontFamily: 'Archivo', fontWeight: 700, fontSize: 14, color: '#FAF5EB' }}>
+                  <div style={{ fontFamily: 'Archivo', fontWeight: 700, fontSize: 14, color: 'var(--text-primary)' }}>
                     {f.name}
                   </div>
-                  <div style={{ fontFamily: 'Space Grotesk', fontSize: 11, color: 'rgba(250,245,235,0.55)' }}>
+                  <div style={{ fontFamily: 'Space Grotesk', fontSize: 11, color: 'var(--text-muted)' }}>
                     Retar a duelo
                   </div>
                 </div>
@@ -96,16 +96,16 @@ export default function DuelsSheet({ open, onClose, me = 'Alex Rivera' }: Props)
           <div style={{
             padding: 16, borderRadius: 14, marginBottom: 16,
             background: iWin
-              ? 'linear-gradient(135deg, rgba(204,255,0,0.18), rgba(0,212,255,0.08))'
+              ? 'linear-gradient(135deg, rgba(16,185,129,0.18), rgba(0,212,255,0.08))'
               : 'linear-gradient(135deg, rgba(255,91,58,0.18), rgba(179,71,255,0.08))',
-            border: `1px solid ${iWin ? 'rgba(204,255,0,0.5)' : 'rgba(255,91,58,0.5)'}`,
+            border: `1px solid ${iWin ? 'rgba(16,185,129,0.5)' : 'rgba(255,91,58,0.5)'}`,
             textAlign: 'center',
           }}>
-            <Trophy size={32} color={iWin ? '#CCFF00' : '#FF5B3A'} style={{ marginBottom: 6, filter: `drop-shadow(0 0 10px ${iWin ? '#CCFF00' : '#FF5B3A'})` }} />
-            <div style={{ fontFamily: 'Archivo', fontWeight: 900, fontSize: 22, color: '#FAF5EB' }}>
+            <Trophy size={32} color={iWin ? '#10B981' : '#FF5B3A'} style={{ marginBottom: 6, filter: `drop-shadow(0 0 10px ${iWin ? '#10B981' : '#FF5B3A'})` }} />
+            <div style={{ fontFamily: 'Archivo', fontWeight: 900, fontSize: 22, color: 'var(--text-primary)' }}>
               {iWin ? '¡GANASTE!' : 'Derrota — próxima revancha'}
             </div>
-            <div style={{ fontFamily: 'Space Grotesk', fontSize: 12, color: 'rgba(250,245,235,0.65)', marginTop: 4 }}>
+            <div style={{ fontFamily: 'Space Grotesk', fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>
               Puntaje {myScore} vs {rivalScore}
             </div>
           </div>
@@ -116,13 +116,13 @@ export default function DuelsSheet({ open, onClose, me = 'Alex Rivera' }: Props)
             gap: 8, alignItems: 'center',
           }}>
             <div style={{ textAlign: 'right' }}>
-              <div style={{ fontFamily: 'Archivo', fontWeight: 800, fontSize: 14, color: '#CCFF00' }}>{me}</div>
-              <div style={{ fontFamily: 'Space Grotesk', fontSize: 10, color: 'rgba(250,245,235,0.5)' }}>Vos</div>
+              <div style={{ fontFamily: 'Archivo', fontWeight: 800, fontSize: 14, color: 'var(--accent-primary)' }}>{me}</div>
+              <div style={{ fontFamily: 'Space Grotesk', fontSize: 10, color: 'var(--text-muted)' }}>Vos</div>
             </div>
             <div />
             <div>
               <div style={{ fontFamily: 'Archivo', fontWeight: 800, fontSize: 14, color: rival.color }}>{rival.name}</div>
-              <div style={{ fontFamily: 'Space Grotesk', fontSize: 10, color: 'rgba(250,245,235,0.5)' }}>Rival</div>
+              <div style={{ fontFamily: 'Space Grotesk', fontSize: 10, color: 'var(--text-muted)' }}>Rival</div>
             </div>
 
             {(['goals', 'assists', 'mvps', 'wins'] as (keyof PlayerStats)[]).map(k => {
@@ -133,10 +133,10 @@ export default function DuelsSheet({ open, onClose, me = 'Alex Rivera' }: Props)
                 <div key={k} style={{ display: 'contents' }}>
                   <div style={{
                     padding: '10px 12px', borderRadius: 10, textAlign: 'right',
-                    background: win ? 'rgba(204,255,0,0.10)' : 'rgba(255,255,255,0.03)',
-                    border: `1px solid ${win ? 'rgba(204,255,0,0.3)' : 'rgba(255,220,180,0.07)'}`,
+                    background: win ? 'rgba(16,185,129,0.10)' : 'rgba(10,21,48,0.03)',
+                    border: `1px solid ${win ? 'rgba(16,185,129,0.3)' : 'var(--border)'}`,
                     fontFamily: 'Archivo', fontWeight: 900, fontSize: 18,
-                    color: win ? '#CCFF00' : 'rgba(250,245,235,0.7)',
+                    color: win ? 'var(--accent-primary)' : 'var(--text-muted)',
                   }}>
                     {mine}
                   </div>
@@ -148,10 +148,10 @@ export default function DuelsSheet({ open, onClose, me = 'Alex Rivera' }: Props)
                   </div>
                   <div style={{
                     padding: '10px 12px', borderRadius: 10,
-                    background: !win ? `${rival.color}1a` : 'rgba(255,255,255,0.03)',
-                    border: `1px solid ${!win ? rival.color + '55' : 'rgba(255,220,180,0.07)'}`,
+                    background: !win ? `${rival.color}1a` : 'rgba(10,21,48,0.03)',
+                    border: `1px solid ${!win ? rival.color + '55' : 'var(--border)'}`,
                     fontFamily: 'Archivo', fontWeight: 900, fontSize: 18,
-                    color: !win ? rival.color : 'rgba(250,245,235,0.7)',
+                    color: !win ? rival.color : 'var(--text-muted)',
                   }}>
                     {theirs}
                   </div>
@@ -165,9 +165,9 @@ export default function DuelsSheet({ open, onClose, me = 'Alex Rivera' }: Props)
             style={{
               marginTop: 20, width: '100%',
               padding: '12px 14px', borderRadius: 12,
-              background: 'rgba(255,255,255,0.05)',
-              border: '1px solid rgba(255,220,180,0.15)',
-              color: '#FAF5EB',
+              background: 'rgba(10,21,48,0.04)',
+              border: '1px solid var(--border)',
+              color: 'var(--text-primary)',
               fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 13,
               cursor: 'pointer',
             }}
